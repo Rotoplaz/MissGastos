@@ -1,4 +1,4 @@
-import { CreditCard, DebitCard } from './Card';
+import { Cash, CreditCard, DebitCard } from './PaymentMethods';
 import { Category } from './Category';
 
 export interface Expense {
@@ -6,6 +6,5 @@ export interface Expense {
     amount: number;
     concept?: string;
     category: Category;
-    paymentMethod: CreditCard | DebitCard | "cash";
+    paymentMethod: CreditCard | Cash | DebitCard;
 }
-
