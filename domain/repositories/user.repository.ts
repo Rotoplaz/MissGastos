@@ -1,8 +1,7 @@
 import { User } from "../entities/user.entity";
 
-
 export interface UserRepository {
-    getUser(): Promise<User>;
-    createUser(user: User): Promise<User>;
-    updateUser(id: number, user: Partial<User>): Promise<User>;
+  getUser(): Promise<User | null>;
+  createUser(user: User): Promise<User>;
+  updateUser(user: Partial<User>): Promise<User | null>;
 }

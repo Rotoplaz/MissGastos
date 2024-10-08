@@ -1,7 +1,6 @@
-
-
 export interface User {
-    name: string;
-    profilePictureUrl: string;
-    globalLimitBudget: number;
+  id: number;
+  name: string;
+  profilePictureUrl: string;
+  globalLimitBudget: number;
 }
