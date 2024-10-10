@@ -12,13 +12,15 @@ export class DebitCardRepositoryImpl implements DebitCardRepository {
   }
 
   async getDebitCardById(id: number): Promise<DebitCard | null> {
-    const card = await this.db.getFirstAsync<DebitCard>("SELECT * FROM User");
-
-    if (!card) {
+    const debitCard = await this.db.getFirstAsync<DebitCard>(
+      "SELECT * FROM Income WHERE id = ?",
+      [id]
+    );
+    if (!debitCard) {
       return null;
     }
 
-    return card;
+    return debitCard;
   }
 
   async createDebitCard(card: Omit<DebitCard, "id">): Promise<DebitCard> {
