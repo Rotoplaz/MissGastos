@@ -24,10 +24,10 @@ export class UserRepositorySqliteImpl implements UserRepository {
   async createUser(user: User): Promise<User> {
     const { name, globalLimitBudget, profilePictureUrl } = user;
     const result = await this.db.runAsync(
-      "INSERT INTO user (name, profilePictureUrl, globalLimitBudget) VALUES (?, ?, ?)",
+      "INSERT INTO User (name, profilePictureUrl, globalLimitBudget) VALUES (?, ?, ?)",
       name,
-      globalLimitBudget,
-      profilePictureUrl
+      profilePictureUrl,
+      globalLimitBudget
     );
 
     return { ...user };
@@ -59,7 +59,7 @@ export class UserRepositorySqliteImpl implements UserRepository {
 
     values.push(currentUser.id);
 
-    const query = `UPDATE user SET ${updates.join(", ")} WHERE id = ?`;
+    const query = `UPDATE User SET ${updates.join(", ")} WHERE id = ?`;
 
     await this.db.runAsync(query, ...values);
 
