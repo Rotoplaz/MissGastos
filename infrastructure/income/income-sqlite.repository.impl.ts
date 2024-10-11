@@ -45,19 +45,15 @@ export class IncomeSqliteRepositoryImpl implements IncomeRepository {
             values.push(expense.concept);
           }
         
-          // Si no hay campos para actualizar, lanzar un error o retornar un mensaje
           if (updates.length === 0) {
             throw new Error("No fields to update.");
           }
         
-          // Construcción de la consulta `UPDATE` y ejecución con los valores correspondientes
           const updateQuery = `UPDATE Income SET ${updates.join(", ")} WHERE id = ?`;
-          values.push(id); // Agregar el ID al final de `values`
+          values.push(id); 
           
-          // Ejecutar la consulta `UPDATE` directamente
-            
+          await this.db.runAsync(updateQuery, ...values);
         
-          // Obtener y devolver el ingreso actualizado
           const updatedIncome = await this.db.getFirstAsync<Income>("SELECT * FROM Income WHERE id = ?", [id]);
         
           if (!updatedIncome) {
