@@ -2,7 +2,7 @@ import { Avatar, Button, Icon, Input, Layout } from "@ui-kitten/components";
 import { Size } from "@ui-kitten/components/devsupport";
 import { StyleSheet } from "react-native";
 
-export default function profile() {
+export default function Profile() {
   return (
     <Layout style={style.mainContainer}>
       <Layout>
