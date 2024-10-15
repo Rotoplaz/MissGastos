@@ -32,6 +32,8 @@ CREATE TABLE Card (
     lastFourDigits TEXT NOT NULL,
     debt REAL NOT NULL,
     cardType TEXT CHECK(cardType IN ('credit', 'debit')), -- Defines whether it is a credit or debit card
+    limitDebit REAL, -- Only for debit cards
+    dueDate DATE, -- Only for credit cards
     creditLimit REAL,   -- Only for credit cards
     currentBalance REAL -- Only for debit cards
 );
