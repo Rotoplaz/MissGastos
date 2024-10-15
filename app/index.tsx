@@ -7,9 +7,10 @@ import AddCard from "./addCard";
 import WatchCard from "./watchCard";
 import EditCard from "./editCard";
 import History from "./history";
+import GeneratePDF from "@/user-cases/generatePDF";
 
 export default function Index() {
   const [counter, setCounter] = useState(0);
 
-  return <History />;
+  return <GeneratePDF />;
 }
