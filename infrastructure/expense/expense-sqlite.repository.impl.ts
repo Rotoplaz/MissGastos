@@ -13,14 +13,21 @@ export class ExpenseSqliteRepositoryImpl implements ExpenseRepository{
   constructor() {
     migrateDbIfNeeded(this.db);
   }
+    async getExpensesGroupByCategory(): Promise<{type:string, totalExpense: number}[]> {
+        const expensesGroupByCategory = await this.db.getAllAsync<{type:string, totalExpense: number}>(`SELECT c.type, SUM(e.amount) AS totalExpense 
+            FROM Expense e
+            JOIN Category c ON e.categoryId = c.id
+            GROUP BY c.type;`);
+        return expensesGroupByCategory;
+    }
     
     async getExpenseById(id: number): Promise<Expense | null> {
-        const Expense = await this.db.getFirstAsync<Expense>("SELECT * FROM Expense WHERE id = ?", [id]);
-        if (!Expense) {
+        const expense = await this.db.getFirstAsync<Expense>("SELECT * FROM Expense WHERE id = ?", [id]);
+        if (!expense) {
             return null;
           }
       
-          return Expense;
+          return expense;
     }
     async createExpense(expense: Omit<Expense, "id">): Promise<Expense> {
         const { amount, concept, category } = expense;

@@ -8,4 +8,5 @@ export interface ExpenseRepository {
     deleteExpense(id: number): Promise<void>;
     getAllExpenses(): Promise<Expense[]>;
     getExpensesByCategory?(category: Category): Promise<Expense[]>;
+    getExpensesGroupByCategory(): Promise<{type:string, totalExpense: number}[]>;
 }
