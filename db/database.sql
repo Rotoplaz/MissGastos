@@ -20,6 +20,8 @@ CREATE TABLE Card (
     lastFourDigits TEXT NOT NULL,
     debt REAL NOT NULL,
     cardType TEXT CHECK(cardType IN ('credit', 'debit')), -- Defines whether it is a credit or debit card
+    limitDebit REAL, -- Only for debit cards
+    dueDate DATE, -- Only for credit cards
     creditLimit REAL,   -- Only for credit cards
     currentBalance REAL -- Only for debit cards
 );
@@ -64,10 +66,9 @@ INSERT INTO Category (type, icon) VALUES
 ('Salud', '💊');
 
 -- Insert cards
-INSERT INTO Card (name, lastFourDigits, debt, cardType, creditLimit, currentBalance) VALUES 
-('Visa Classic', '1234', 1500.00, 'credit', 5000.00, NULL),
-('MasterCard Platinum', '5678', 200.00, 'debit', NULL, 1200.00),
-('American Express', '9012', 500.00, 'credit', 7000.00, NULL);
+INSERT INTO Card (name, lastFourDigits, debt, cardType, limitDebit, currentBalance) VALUES 
+('Debit Card Bank A', '1234', 0.00, 'debit', 5000.00, 1000.00),
+('Credit Card Bank B', '5678', 200.00, 'credit', '2024-11-01', 10000.00);
 
 -- Insert expenses
 INSERT INTO Expense (amount, concept, categoryId, paymentMethod, cardId) VALUES 

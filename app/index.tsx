@@ -6,9 +6,11 @@ import YourCards from "./yourCards";
 import AddCard from "./addCard";
 import WatchCard from "./watchCard";
 import EditCard from "./editCard";
+import History from "./history";
+import GeneratePDF from "@/presentation/screens/pdf-generator/generatePDF";
 
 export default function Index() {
   const [counter, setCounter] = useState(0);
 
-  return <EditCard />;
+  return <GeneratePDF />;
 }
