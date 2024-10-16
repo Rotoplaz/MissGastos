@@ -55,8 +55,7 @@ CREATE TABLE Income (
 
 -- Insert user
 INSERT INTO User (name, profilePictureUrl, globalLimitBudget) VALUES 
-('Juan Pérez', 'http://example.com/jperez.jpg', 5000.00),
-
+('Juan Pérez', 'http://example.com/jperez.jpg', 5000.00);
 -- Insert categories
 INSERT INTO Category (type, icon) VALUES 
 ('Comida', '🍔'),
