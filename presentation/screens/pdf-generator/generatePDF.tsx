@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View } from "react-native";
 import { Button } from "@ui-kitten/components";
-import { generatePDF } from "../../../application/use-cases/generate-pdf.use-case";
+import { generatePDF } from "../../../application/use-cases/reports/generate-pdf.use-case";
 import { getPDFLayout } from "@/presentation/pdf-layout/get-PDF-layout";
 
 export default function GeneratePDF() {
