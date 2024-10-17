@@ -1,4 +1,4 @@
-import { migrateDbIfNeeded } from "@/db/migration";
+import { migrateDbIfNeeded } from "@/infrastructure/db/migration";
 import { Category } from "@/domain/entities/category.entity";
 import { Expense } from "@/domain/entities/expense.entity";
 import { ExpenseRepository } from "@/domain/repositories/expense.repository";
