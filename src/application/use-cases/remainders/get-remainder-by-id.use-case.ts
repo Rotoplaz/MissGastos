@@ -4,11 +4,11 @@ import { RemaindersRepository } from "@/src/domain/repositories/remainders.repos
 
 export class GetRemainderByIdUseCase {
     constructor(
-        private readonly remainderRepository: RemaindersRepository
+        private readonly remaindersRepository: RemaindersRepository
     ){}
 
     async execute(id:number): Promise<Remainder | null>{
-        const remainder = await this.remainderRepository.getRemainderById(id);
+        const remainder = await this.remaindersRepository.getRemainderById(id);
 
         return remainder;
     }
