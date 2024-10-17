@@ -1,9 +1,9 @@
-import { migrateDbIfNeeded } from "@/infrastructure/db/migration";
-import { Category } from "@/domain/entities/category.entity";
-import { Expense } from "@/domain/entities/expense.entity";
-import { ExpenseRepository } from "@/domain/repositories/expense.repository";
-import { router } from "expo-router";
+
+import { Category } from "@/src/domain/entities/category.entity";
+import { Expense } from "@/src/domain/entities/expense.entity";
+import { ExpenseRepository } from "@/src/domain/repositories/expense.repository";
 import * as SQLite from "expo-sqlite";
+import { migrateDbIfNeeded } from "../db/migration";
 
 export class ExpenseSqliteRepositoryImpl implements ExpenseRepository{
     
