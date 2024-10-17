@@ -1,4 +1,4 @@
-import { ExpenseRepository } from "@/domain/repositories/expense.repository";
+import { ExpenseRepository } from "@/src/domain/repositories/expense.repository";
 
 
 
