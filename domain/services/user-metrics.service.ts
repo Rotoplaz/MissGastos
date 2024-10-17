@@ -1,23 +1,15 @@
-import { ExpenseRepository } from "../repositories/expense.repository";
-import { UserRepository } from "../repositories/user.repository";
-import { CreditCardRepository } from "../repositories/credit-cards.repository";
-import { DebitCardRepository } from "../repositories/debit-cards.repository";
-
-interface AtributesOptions {
-    expenseRepository:ExpenseRepository;
-    userRepository:UserRepository;
-    creditRepository:CreditCardRepository;
-    debitRepository:DebitCardRepository;
-}
+import { DebitCard } from "../entities/payment-methods.entity";
+import { User } from "../entities/user.entity";
 
 export class UserMetricsService {
-    constructor(
-        private readonly atributesOptions:AtributesOptions
-    ){}
-    async getExpenseMetrics(){
-        const allExpenseGroupByCategory = await this.atributesOptions.expenseRepository.getExpensesGroupByCategory();
-        const totalSum = allExpenseGroupByCategory.reduce((acc, item) => acc + item.totalExpense, 0);
-        const totalExpensePercentages = allExpenseGroupByCategory.map(item =>{
+    
+    async getExpenseMetrics(expense:{
+        type: string;
+        totalExpense: number;
+        }[]
+    ){
+        const totalSum = expense.reduce((acc, item) => acc + item.totalExpense, 0);
+        const totalExpensePercentages = expense.map(item =>{
             return{
                 type:item.type,
                 porcentage: (item.totalExpense / totalSum) * 100
@@ -25,24 +17,23 @@ export class UserMetricsService {
         });
 
         return {
-            allExpenseGroupByCategory, totalSum, totalExpensePercentages
+            expense, totalSum, totalExpensePercentages
         };
     }
 
-    async isDebitCardLimitExede(id:number):Promise<boolean>{
-        const debitCard = await this.atributesOptions.debitRepository.getDebitCardById(id);
-        if (debitCard === null) throw new Error ("Card not found");
-
+    async isDebitCardLimitExede(debitCard: DebitCard):Promise<boolean>{
         if (debitCard.debt > debitCard.limit){
             return true;
         }
         return false;
     }
 
-    async globalMetrics():Promise<number> {
-        const user = await this.atributesOptions.userRepository.getUser()
-        const allExpenseGroupByCategory = await this.atributesOptions.expenseRepository.getExpensesGroupByCategory();
-        const totalSum = allExpenseGroupByCategory.reduce((acc, item) => acc + item.totalExpense, 0);
+    async globalMetrics(user: User, expense:{
+        type: string;
+        totalExpense: number;
+        }[],
+    ):Promise<number> {
+        const totalSum = expense.reduce((acc, item) => acc + item.totalExpense, 0);
         
         if (user === null){
             throw new Error ("User not found");
