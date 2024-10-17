@@ -32,18 +32,18 @@ export class IncomeSqliteRepositoryImpl implements IncomeRepository {
         };
     }
 
-    async updateIncome(id: number, expense: Partial<Income>): Promise<Income> {
+    async updateIncome(id: number, income: Partial<Income>): Promise<Income> {
         const updates: string[] = [];
         const values: (string | number)[] = [];
         
-        if (expense.amount !== undefined) {
+        if (income.amount !== undefined) {
             updates.push("amount = ?");
-            values.push(expense.amount);
+            values.push(income.amount);
           }
         
-          if (expense.concept !== undefined) {
+          if (income.concept !== undefined) {
             updates.push("concept = ?");
-            values.push(expense.concept);
+            values.push(income.concept);
           }
         
           if (updates.length === 0) {
