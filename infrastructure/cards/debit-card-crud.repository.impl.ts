@@ -1,4 +1,4 @@
-import { migrateDbIfNeeded } from "@/db/migration";
+import { migrateDbIfNeeded } from "@/infrastructure/db/migration";
 import { DebitCard } from "@/domain/entities/payment-methods.entity";
 import { DebitCardRepository } from "@/domain/repositories/debit-cards.repository";
 import * as SQLite from "expo-sqlite";

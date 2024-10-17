@@ -1,4 +1,4 @@
-import { migrateDbIfNeeded } from "@/db/migration";
+import { migrateDbIfNeeded } from "@/infrastructure/db/migration";
 import { Income } from "@/domain/entities/income.entity";
 import { IncomeRepository } from "@/domain/repositories/income.repository";
 import * as SQLite from "expo-sqlite";

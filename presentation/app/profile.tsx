@@ -9,7 +9,7 @@ export default function Profile() {
         <Avatar
           size="giant"
           style={{ width: 150, height: 150 }}
-          source={require("../presentation/assets/avatar.png")}
+          source={require("../assets/avatar.png")}
         />
         <Button
           style={style.button}

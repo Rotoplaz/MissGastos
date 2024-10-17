@@ -1,5 +1,3 @@
-import { Button, Icon, Layout, Text } from "@ui-kitten/components";
-import { useState } from "react";
 import Profile from "./profile";
 import InitialScreen from "./initial";
 import YourCards from "./yourCards";
@@ -10,7 +8,6 @@ import History from "./history";
 import GeneratePDF from "@/presentation/screens/pdf-generator/generatePDF";
 
 export default function Index() {
-  const [counter, setCounter] = useState(0);
 
-  return <GeneratePDF />;
+  return <WatchCard />;
 }
