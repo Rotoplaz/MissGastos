@@ -1,7 +1,8 @@
-import { migrateDbIfNeeded } from "@/infrastructure/db/migration";
-import { Income } from "@/domain/entities/income.entity";
-import { IncomeRepository } from "@/domain/repositories/income.repository";
+
+import { Income } from "@/src/domain/entities/income.entity";
+import { IncomeRepository } from "@/src/domain/repositories/income.repository";
 import * as SQLite from "expo-sqlite";
+import { migrateDbIfNeeded } from "../db/migration";
 
 export class IncomeSqliteRepositoryImpl implements IncomeRepository {
 

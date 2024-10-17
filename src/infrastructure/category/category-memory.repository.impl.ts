@@ -1,6 +1,5 @@
-import { Category } from "@/domain/entities/category.entity";
-import { CategoryRepository } from "@/domain/repositories/category.repository";
-
+import { Category } from "@/src/domain/entities/category.entity";
+import { CategoryRepository } from "@/src/domain/repositories/category.repository";
 
 export class CategoryMemoryImpl implements CategoryRepository {
 

@@ -1,6 +1,5 @@
-import { Expense } from "@/domain/entities/expense.entity";
-import { ExpenseRepository } from "@/domain/repositories/expense.repository";
-
+import { Expense } from "@/src/domain/entities/expense.entity";
+import { ExpenseRepository } from "@/src/domain/repositories/expense.repository";
 
 export class GetAllExpenseUseCase {
 

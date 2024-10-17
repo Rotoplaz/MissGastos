@@ -1,7 +1,8 @@
-import { migrateDbIfNeeded } from "@/infrastructure/db/migration";
-import { User } from "@/domain/entities/user.entity";
-import { UserRepository } from "@/domain/repositories/user.repository";
+
+import { User } from "@/src/domain/entities/user.entity";
+import { UserRepository } from "@/src/domain/repositories/user.repository";
 import * as SQLite from "expo-sqlite";
+import { migrateDbIfNeeded } from "../db/migration";
 
 export class UserRepositorySqliteImpl implements UserRepository {
   private db: SQLite.SQLiteDatabase =

@@ -1,7 +1,8 @@
-import { migrateDbIfNeeded } from "@/infrastructure/db/migration";
-import { CreditCard } from "@/domain/entities/payment-methods.entity";
-import { CreditCardRepository } from "@/domain/repositories/credit-cards.repository";
+
+import { CreditCard } from "@/src/domain/entities/payment-methods.entity";
+import { CreditCardRepository } from "@/src/domain/repositories/credit-cards.repository";
 import * as SQLite from "expo-sqlite";
+import { migrateDbIfNeeded } from "../db/migration";
 
 export class CreditCardCrudRepository implements CreditCardRepository {
   private db: SQLite.SQLiteDatabase =

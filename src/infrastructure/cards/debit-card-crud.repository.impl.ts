@@ -1,7 +1,8 @@
-import { migrateDbIfNeeded } from "@/infrastructure/db/migration";
-import { DebitCard } from "@/domain/entities/payment-methods.entity";
-import { DebitCardRepository } from "@/domain/repositories/debit-cards.repository";
+
+import { DebitCard } from "@/src/domain/entities/payment-methods.entity";
+import { DebitCardRepository } from "@/src/domain/repositories/debit-cards.repository";
 import * as SQLite from "expo-sqlite";
+import { migrateDbIfNeeded } from "../db/migration";
 
 export class DebitCardRepositoryImpl implements DebitCardRepository {
   private db: SQLite.SQLiteDatabase =
