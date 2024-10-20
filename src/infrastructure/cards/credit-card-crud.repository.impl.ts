@@ -1,4 +1,3 @@
-
 import { CreditCard } from "@/src/domain/entities/payment-methods.entity";
 import { CreditCardRepository } from "@/src/domain/repositories/credit-cards.repository";
 import * as SQLite from "expo-sqlite";
@@ -14,7 +13,7 @@ export class CreditCardCrudRepository implements CreditCardRepository {
 
   async getCreditCardById(id: number): Promise<CreditCard | null> {
     const creditCard = await this.db.getFirstAsync<CreditCard>(
-      "SELECT * FROM Income WHERE id = ?",
+      "SELECT * FROM Card WHERE id = ?",
       [id]
     );
     if (!creditCard) {
