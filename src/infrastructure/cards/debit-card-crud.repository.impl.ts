@@ -1,4 +1,3 @@
-
 import { DebitCard } from "@/src/domain/entities/payment-methods.entity";
 import { DebitCardRepository } from "@/src/domain/repositories/debit-cards.repository";
 import * as SQLite from "expo-sqlite";
@@ -14,7 +13,7 @@ export class DebitCardRepositoryImpl implements DebitCardRepository {
 
   async getDebitCardById(id: number): Promise<DebitCard | null> {
     const debitCard = await this.db.getFirstAsync<DebitCard>(
-      "SELECT * FROM Income WHERE id = ?",
+      "SELECT * FROM Card WHERE id = ?",
       [id]
     );
     if (!debitCard) {
