@@ -1,13 +1,13 @@
 import { Category } from "@/src/domain/entities/category.entity";
 import { CategoryRepository } from "@/src/domain/repositories/category.repository";
 
-export class GetCategoryByIdUseCase {
+export class GetAllCategoriesUseCase {
     constructor(
         private readonly categoryRepository:CategoryRepository
     ){}
 
-    async execute(id:number): Promise<Category | null>{
-        const category = await this.categoryRepository.getCategoryById(id);
+    async execute(): Promise<Category[]>{
+        const category = await this.categoryRepository.getAllCategories();
         return category;
     }
 }
