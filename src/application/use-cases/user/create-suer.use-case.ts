@@ -4,7 +4,7 @@ import { UserRepository } from "@/src/domain/repositories/user.repository";
 export class CreateUserUseCase {
   constructor(private readonly userRepository: UserRepository) {}
 
-  async execute(user: User): Promise<User> {
+  async execute(user: Omit<User, "id">): Promise<User> {
     const newUser = await this.userRepository.createUser(user);
     return newUser;
   }

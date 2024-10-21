@@ -22,7 +22,7 @@ export class UserRepositorySqliteImpl implements UserRepository {
     return user;
   }
 
-  async createUser(user: User): Promise<User> {
+  async createUser(user: Omit<User, "id">): Promise<User> {
     const { name, globalLimitBudget, profilePictureUrl } = user;
     const result = await this.db.runAsync(
       "INSERT INTO User (name, profilePictureUrl, globalLimitBudget) VALUES (?, ?, ?)",
@@ -31,7 +31,7 @@ export class UserRepositorySqliteImpl implements UserRepository {
       globalLimitBudget
     );
 
-    return { ...user };
+    return { ...user, id: result.lastInsertRowId };
   }
 
   async updateUser(user: Partial<User>): Promise<User> {
