@@ -7,4 +7,5 @@ export interface Expense {
     concept?: string;
     category: Category;
     paymentMethod: CreditCard | Cash | DebitCard;
+    date: Date;
 }
