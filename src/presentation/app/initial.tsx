@@ -4,8 +4,12 @@ import { StyleSheet } from "react-native";
 export default function InitialScreen() {
   return (
     <Layout style={style.mainContainer}>
-      <Button>Crear Perfil</Button>
-      <Button>Salir</Button>
+      <Button style={style.button} status="danger">
+        Crear Perfil
+      </Button>
+      <Button style={style.button} status="warning">
+        Salir
+      </Button>
     </Layout>
   );
 }
@@ -16,5 +20,8 @@ const style = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     gap: 10,
+  },
+  button: {
+    margin: 4,
   },
 });
