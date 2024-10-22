@@ -16,7 +16,7 @@ export default function Index() {
 
   const userRepository = useRef(new UserRepositorySqliteImpl());
   const setUserStore = useUserStore(state=>state.setUser);
-
+  
   useEffect(()=>{
 
     const getUser = async () => {
@@ -24,12 +24,12 @@ export default function Index() {
       const user = await new GetUserUseCase(
         userRepository.current
       ).execute();
-
+      
       if (!user) {
         return;
       }
-      // TODO: Change route to home screen
-      router.replace("/profile")
+      
+      router.replace("/home")
       setUserStore(user);
     }
 

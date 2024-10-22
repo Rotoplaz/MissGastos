@@ -18,7 +18,7 @@ export class UserRepositorySqliteImpl implements UserRepository {
     if (!user) {
       return null;
     }
-
+    await this.db.closeAsync();
     return user;
   }
 
@@ -30,7 +30,7 @@ export class UserRepositorySqliteImpl implements UserRepository {
       profilePictureUrl,
       globalLimitBudget
     );
-
+    await this.db.closeAsync();
     return { ...user, id: result.lastInsertRowId };
   }
 
@@ -70,7 +70,7 @@ export class UserRepositorySqliteImpl implements UserRepository {
       profilePictureUrl: user.profilePictureUrl ?? "",
       globalLimitBudget: user.globalLimitBudget ?? 0,
     };
-
+    await this.db.closeAsync();
     return updatedUser;
   }
 }
