@@ -167,7 +167,7 @@ export default function EditCard() {
 
         <Button
           style={style.submitButton}
-          status="warning"
+          status="danger"
           onPress={handleSubmit}
         >
           Guardar

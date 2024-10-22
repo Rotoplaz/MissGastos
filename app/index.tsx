@@ -7,9 +7,10 @@ import AddCard from "./addCard";
 import WatchCard from "./watchCard";
 import EditCard from "./editCard";
 import History from "./history";
+import Home from "./home";
 
 export default function Index() {
   const [counter, setCounter] = useState(0);
 
-  return <History />;
+  return <Home />;
 }

@@ -244,7 +244,7 @@ export default function AddCard() {
 
         <Button
           style={style.submitButton}
-          status="warning"
+          status="danger"
           onPress={handleSubmit}
         >
           Enviar
