@@ -7,13 +7,13 @@ export default function Home() {
 
   const getAvatarSource = () => {
     if (totalMoney <= 5000) {
-      return require("../presentation/assets/verylittlemoney.png");
+      return require("../assets/verylittlemoney.png");
     } else if (totalMoney >= 5001 && totalMoney <= 9999) {
-      return require("../presentation/assets/littlemoney.png");
+      return require("../assets/littlemoney.png");
     } else if (totalMoney >= 10000 && totalMoney <= 20000) {
-      return require("../presentation/assets/goodmoney.png");
+      return require("../assets/goodmoney.png");
     } else {
-      return require("../presentation/assets/bigmoney.jpg");
+      return require("../assets/bigmoney.jpg");
     }
   };
 
