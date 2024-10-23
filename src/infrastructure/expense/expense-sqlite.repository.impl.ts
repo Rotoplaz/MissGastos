@@ -30,18 +30,19 @@ export class ExpenseSqliteRepositoryImpl implements ExpenseRepository{
           return expense;
     }
     async createExpense(expense: Omit<Expense, "id">): Promise<Expense> {
-        const { amount, concept, category } = expense;
+        const { amount, concept, category, date } = expense;
     
 
         switch ( expense.paymentMethod.type ) {
             case "credit": {
                 const infoDatabse = await this.db.runAsync(
-                    "INSERT INTO Expense (amount, concept, categoryId, paymentMethod, cardId) VALUES ",
+                    "INSERT INTO Expense (amount, concept, categoryId, paymentMethod, cardId, date) VALUES ",
                     amount, 
                     concept ? concept : null,
                     category.id,
                     expense.paymentMethod.type,
-                    expense.paymentMethod.id
+                    expense.paymentMethod.id,
+                    date.toISOString().split('T')[0]
                 );
                 
                 return {
@@ -49,7 +50,8 @@ export class ExpenseSqliteRepositoryImpl implements ExpenseRepository{
                     amount,
                     category,
                     paymentMethod: expense.paymentMethod,
-                    concept
+                    concept,
+                    date
                 }
             }
             case "cash": {
@@ -59,7 +61,8 @@ export class ExpenseSqliteRepositoryImpl implements ExpenseRepository{
                 concept ? concept : null,
                 category.id,
                 expense.paymentMethod.type,
-                null
+                null,
+                date.toISOString().split('T')[0]
                 );
 
                 return {
@@ -67,7 +70,8 @@ export class ExpenseSqliteRepositoryImpl implements ExpenseRepository{
                     amount,
                     category,
                     paymentMethod: expense.paymentMethod,
-                    concept
+                    concept,
+                    date
                 }
             }
             case "debit":{
@@ -77,7 +81,8 @@ export class ExpenseSqliteRepositoryImpl implements ExpenseRepository{
                 concept ? concept : null,
                 category.id,
                 expense.paymentMethod.type,
-                expense.paymentMethod.id
+                expense.paymentMethod.id,
+                date.toISOString().split('T')[0]
                 );
 
                 return {
@@ -85,7 +90,8 @@ export class ExpenseSqliteRepositoryImpl implements ExpenseRepository{
                     amount,
                     category,
                     paymentMethod: expense.paymentMethod,
-                    concept
+                    concept,
+                    date
                 }
                 
 
@@ -126,6 +132,10 @@ export class ExpenseSqliteRepositoryImpl implements ExpenseRepository{
                     updates.push("cardId = ?");
                     values.push(expense.paymentMethod.id);
                 }
+                if (expense.date !== undefined) {
+                    updates.push("date = ?");
+                    values.push(expense.date.toISOString().split('T')[0]);
+                }
                 
                 const updateQuery = `UPDATE Expense SET ${updates.join(", ")} WHERE id = ?`;
                 values.push(id); 
@@ -155,6 +165,10 @@ export class ExpenseSqliteRepositoryImpl implements ExpenseRepository{
                 if (expense.paymentMethod.type!== undefined) {
                     updates.push("paymentMethod = ?");
                     values.push(expense.paymentMethod.type);
+                }
+                if (expense.date !== undefined) {
+                    updates.push("date = ?");
+                    values.push(expense.date.toISOString().split('T')[0]);
                 }
                 
                 updates.push("cardId = ?");
@@ -194,6 +208,10 @@ export class ExpenseSqliteRepositoryImpl implements ExpenseRepository{
                 if (expense.paymentMethod.id !== undefined) {
                     updates.push("cardId = ?");
                     values.push(expense.paymentMethod.id);
+                }
+                if (expense.date !== undefined) {
+                    updates.push("date = ?");
+                    values.push(expense.date.toISOString().split('T')[0]);
                 }
                 
                 const updateQuery = `UPDATE Expense SET ${updates.join(", ")} WHERE id = ?`;
