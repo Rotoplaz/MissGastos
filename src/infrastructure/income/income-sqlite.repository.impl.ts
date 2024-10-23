@@ -24,8 +24,8 @@ export class IncomeSqliteRepositoryImpl implements IncomeRepository {
     }
 
     async createIncome(income: Omit<Income, "id">): Promise<Income> {
-        const {amount, concept} = income
-        const newIncome = await this.db.runAsync("INSERT INTO Income (amount, concept) VALUES (?, ?)", amount, concept?concept:null);
+        const {amount, concept, date} = income
+        const newIncome = await this.db.runAsync("INSERT INTO Income (amount, concept, date) VALUES (?, ?, ?)", amount, concept?concept:null, date.toISOString().split('T')[0]);
         return {
             id: newIncome.lastInsertRowId,
             ...income
@@ -44,6 +44,11 @@ export class IncomeSqliteRepositoryImpl implements IncomeRepository {
           if (income.concept !== undefined) {
             updates.push("concept = ?");
             values.push(income.concept);
+          }
+
+          if (income.date !== undefined) {
+            updates.push("concept = ?");
+            values.push(income.date.toISOString().split('T')[0]);
           }
         
           if (updates.length === 0) {
