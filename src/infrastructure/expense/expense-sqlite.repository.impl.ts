@@ -32,7 +32,7 @@ export class ExpenseSqliteRepositoryImpl implements ExpenseRepository {
     if (!expense) {
       return null;
     }
-
+    
     return expense;
   }
   async createExpense(expense: Omit<Expense, "id">): Promise<Expense> {

@@ -3,7 +3,7 @@ import { User } from "../entities/user.entity";
 
 export class UserMetricsService {
     
-    async getExpenseMetrics(expense:{
+    getExpenseMetrics(expense:{
         type: string;
         totalExpense: number;
         }[]
@@ -21,18 +21,18 @@ export class UserMetricsService {
         };
     }
 
-    async isDebitCardLimitExede(debitCard: DebitCard):Promise<boolean>{
+    isDebitCardLimitExede(debitCard: DebitCard):boolean{
         if (debitCard.debt > debitCard.limit){
             return true;
         }
         return false;
     }
 
-    async globalMetrics(user: User, expense:{
+    globalMetrics(user: User, expense:{
         type: string;
         totalExpense: number;
         }[],
-    ):Promise<number> {
+    ):number {
         const totalSum = expense.reduce((acc, item) => acc + item.totalExpense, 0);
         
         if (user === null){

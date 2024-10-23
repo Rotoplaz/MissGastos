@@ -25,7 +25,7 @@ export class ReminderSqliteRepositoryImpl implements RemindersRepository {
         const { title, description, dueDate, isItPaid} = reminder;
         const newReminder = await this.db.runAsync(
             "INSERT INTO Reminder (title, description, dueDate, isItPaid) VALUES (?,?,?,?)",
-            title, description, dueDate.toISOString(), isItPaid);
+            title, description, dueDate.toISOString().split('T')[0], isItPaid);
         return {
             id:newReminder.lastInsertRowId,
             ...reminder,
@@ -49,7 +49,7 @@ export class ReminderSqliteRepositoryImpl implements RemindersRepository {
 
         if (reminder.dueDate != undefined){
             updates.push("dueDate = ?");
-            values.push(reminder.dueDate.toISOString());
+            values.push(reminder.dueDate.toISOString().split('T')[0]);
         }
         
         if (reminder.isItPaid != undefined){
