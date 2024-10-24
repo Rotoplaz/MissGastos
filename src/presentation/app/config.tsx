@@ -3,15 +3,13 @@ import { router } from 'expo-router'
 import * as SqliteDatabase from 'expo-sqlite'
 import React from 'react'
 import { useUserStore } from '../store/useUserStore'
-import { TopNavigationGeneric } from '../navigation/TopNavigationGeneric'
-import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import { LayoutWithTopNavigation } from '../layouts/LayoutWithTopNavigation'
 
 export const config = () => {
   const setUser = useUserStore(state => state.setUser);
-  const {top} = useSafeAreaInsets()
+
   return (
-    <Layout style={{flex: 1, paddingTop: top}}>
-      <TopNavigationGeneric TitleScreen='Configuración' />
+    <LayoutWithTopNavigation TitleScreen="Configuración">
       <Layout style={{flex: 1, justifyContent: "center", alignItems: "center"}}>
           <Button onPress={async()=> {
             try {
@@ -25,7 +23,7 @@ export const config = () => {
             }
           }} status='danger'>Borrar Base de datos</Button>
       </Layout>
-    </Layout>
+    </LayoutWithTopNavigation>
   )
 }
 

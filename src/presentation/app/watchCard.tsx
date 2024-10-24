@@ -4,6 +4,7 @@ import { StyleSheet, View, Alert } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { TopNavigationGeneric } from "../navigation/TopNavigationGeneric";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { LayoutWithTopNavigation } from "../layouts/LayoutWithTopNavigation";
 
 export default function WatchCard() {
   
@@ -36,8 +37,8 @@ export default function WatchCard() {
   };
 
   return (
-    <Layout style={{flex: 1, paddingTop: top}}>
-      <TopNavigationGeneric TitleScreen={cardData.name} />
+    <LayoutWithTopNavigation TitleScreen={cardData.name}>
+
       <Layout style={style.mainContainer}>
         
 
@@ -95,7 +96,7 @@ export default function WatchCard() {
         </View>
       </Layout>
 
-    </Layout>
+    </LayoutWithTopNavigation>
   );
 }
 
