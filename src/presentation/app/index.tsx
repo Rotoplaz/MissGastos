@@ -6,8 +6,8 @@ import WatchCard from "./watchCard";
 import EditCard from "./editCard";
 import History from "./history";
 import PreventSS from "../screens/prevent-screenshot/screenshotblock";
-import GeneratePDF from "../screens/pdf-generator/generatePDF";
+import Home from "./home";
 
 export default function Index() {
-  return <GeneratePDF />;
+  return <Home />;
 }
