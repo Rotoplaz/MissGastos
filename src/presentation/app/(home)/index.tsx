@@ -5,8 +5,6 @@ import {
   Text,
   Icon,
   Avatar,
-  BottomNavigation,
-  BottomNavigationTab,
 } from "@ui-kitten/components";
 import { StyleSheet, View, TouchableOpacity } from "react-native";
 import { PieChart } from "react-native-gifted-charts";
@@ -56,29 +54,29 @@ export default function index() {
       </Text>
       <Text style={style.subText}>Este es en lo que más gastas: Comida</Text>
 
-      <Layout style={style.chartContainer}>
-        <PieChart data={data} radius={70} />
+      <Layout style={{width: "100%"}}>
+        <Layout style={style.chartContainer}>
+          <PieChart data={data} radius={90}  />
+          <Layout style={{alignSelf: "center"}}>
+            <Text>Comida</Text>
+            <Text>Educación</Text>
+            <Text>Video Juegos</Text>
+          </Layout>
+        </Layout>
+        <Layout style={{width: "60%", marginTop: 20, paddingLeft: 35}}>
+          <Button size="large">Generar Reporte</Button>
+        </Layout>
       </Layout>
 
-      {/* Button to generate report */}
-      <Button style={style.reportButton}>Generar Reporte</Button>
 
       {/* Floating button to add entry/exit */}
-      <TouchableOpacity style={style.fabButton}>
-        <Icon
+      <Button style={style.fabButton} accessoryLeft={<Icon
           name="plus-outline"
           fill="white"
           style={{ width: 24, height: 24 }}
-        />
-      </TouchableOpacity>
+        />}>
 
-      <TouchableOpacity style={style.fabButton}>
-        <Icon
-          name="plus-outline"
-          fill="white"
-          style={{ width: 24, height: 24 }}
-        />
-      </TouchableOpacity>
+      </Button>
 
 
     </Layout>
@@ -90,7 +88,8 @@ const style = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    padding: 20,
+    padding: 10,
+    width: "100%"
   },
   welcomeText: {
     color: "white",
@@ -111,36 +110,20 @@ const style = StyleSheet.create({
     marginBottom: 20,
     color: "white",
   },
-  reportButton: {
-    marginBottom: 20,
-    backgroundColor: "#006666",
-    borderRadius: 50,
-    width: 140,
-    alignSelf: "center",
-    borderWidth: 0,
-    right: 60,
-  },
   fabButton: {
     position: "absolute",
-    right: 20,
-    bottom: 100,
-    backgroundColor: "#004C99",
+    right: 15,
+    bottom: 30,
     borderRadius: 50,
-    padding: 15,
+    padding: 20,
+    height: 60
   },
-  bottomNav: {
-    width: "100%",
-    position: "absolute",
-    bottom: 0,
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-  },
+
   chartContainer: {
-    width: 0,
-    height: 200,
+    marginTop: 20,
+    display: "flex",
+    flexDirection: "row",
     justifyContent: "center",
-    alignItems: "center",
-    marginVertical: 0,
-    transform: [{ translateX: -60 }],
+    gap: 30
   },
 });
