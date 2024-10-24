@@ -29,7 +29,7 @@ export default function Profile() {
         globalLimitBudget: Number(form.globalLimitBudget)
       });
       setUser(user);
-      return router.replace("/home");
+      return router.replace("/(home)");
     }
 
   }

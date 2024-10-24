@@ -14,21 +14,21 @@ export default function RootLayout() {
       : theme["color-basic-100"];
 
   return (
-    <ApplicationProvider {...eva} theme={theme}>
-      <IconRegistry icons={EvaIconsPack} />
-      <ThemeProvider
-        value={{
-          dark: colorScheme === "dark",
-          colors: {
-            primary: theme["color-primary-500"],
-            background: backgroundColor,
-            card: theme["color-basic-100"],
-            text: theme["text-basic-color"],
-            border: theme["color-basic-800"],
-            notification: theme["color-primary-500"],
-          },
-        }}
-      >
+    <ThemeProvider
+      value={{
+        dark: colorScheme === "dark",
+        colors: {
+          primary: theme["color-primary-500"],
+          background: backgroundColor,
+          card: theme["color-basic-100"],
+          text: theme["text-basic-color"],
+          border: theme["color-basic-800"],
+          notification: theme["color-primary-500"],
+        },
+      }}
+    >
+      <ApplicationProvider {...eva} theme={theme}>
+        <IconRegistry icons={EvaIconsPack} />
         <Stack
           screenOptions={{
             headerShown: false,
@@ -37,7 +37,7 @@ export default function RootLayout() {
           <Stack.Screen name="(home)" />
           <Stack.Screen name="profile" />
         </Stack>
-      </ThemeProvider>
-    </ApplicationProvider>
+      </ApplicationProvider>
+    </ThemeProvider>
   );
 }
