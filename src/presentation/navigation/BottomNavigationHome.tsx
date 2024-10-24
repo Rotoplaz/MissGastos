@@ -26,14 +26,11 @@ export const BottomNavigationHome = ({ navigation, state }: any) => {
         title="Movimientos"
         icon={(props) => <Icon {...props} name="file-text-outline" />}
       />
-      {/* <BottomNavigationTab
+      <BottomNavigationTab
         title="Recordatorios"
         icon={(props) => <Icon {...props} name="calendar-outline" />}
-      /> */}
-      {/* <BottomNavigationTab
-        title="Configuracion"
-        icon={(props) => <Icon {...props} name="settings" />}
-      /> */}
+      />
+
     </BottomNavigation>
   );
 };
