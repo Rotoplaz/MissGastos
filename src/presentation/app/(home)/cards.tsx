@@ -8,8 +8,9 @@ import {
   TopNavigation,
   TopNavigationAction,
 } from "@ui-kitten/components";
-import { StyleSheet, TouchableOpacity } from "react-native";
+import { StyleSheet} from "react-native";
 import React from "react";
+import { router } from "expo-router";
 
 interface IListItem {
   title: string;
@@ -17,9 +18,6 @@ interface IListItem {
 }
 
 export default function YourCards() {
-  const renderBackAction = (): React.ReactElement => (
-    <TopNavigationAction icon={<Icon name="arrow-back" />} />
-  );
 
   const handleAddCard = () => {
     //Agregar tarjeta
@@ -27,7 +25,7 @@ export default function YourCards() {
 
   //Que funcione el boton de cada tarjeta
   const handleCardPress = (index: number) => {
-    console.log(`Tarjeta ${index + 1} clicada`);
+    router.push("/watchCard");
   };
 
   const renderItem = ({
@@ -37,16 +35,17 @@ export default function YourCards() {
     item: IListItem;
     index: number;
   }): React.ReactElement => (
-    <TouchableOpacity onPress={() => handleCardPress(index)}>
+    
       <ListItem
         title={`${item.title} ${index + 1}`}
         description={`${item.description} ${index + 1}`}
         accessoryLeft={<Icon name="credit-card-outline" />}
+        onPress={()=>handleCardPress(index)}
       />
-    </TouchableOpacity>
+    
   );
 
-  const data = new Array(30).fill({
+  const data = new Array(10).fill({
     title: "Tarjeta",
     card: "Numero de tarjeta",
   });
