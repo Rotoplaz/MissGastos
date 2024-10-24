@@ -20,4 +20,7 @@ const style = StyleSheet.create({
     alignItems: "center",
     gap: 10,
   },
+  button: {
+    margin: 4,
+  },
 });

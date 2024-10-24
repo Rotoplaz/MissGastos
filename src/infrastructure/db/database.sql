@@ -34,6 +34,7 @@ CREATE TABLE Expense (
     categoryId INTEGER NOT NULL,
     paymentMethod TEXT CHECK(paymentMethod IN ('cash', 'credit', 'debit')), 
     cardId INTEGER,  -- This field is null if paymentMethod is "cash"
+    date DATE NOT NULL,  -- Add date field
     FOREIGN KEY (categoryId) REFERENCES Category(id),
     FOREIGN KEY (cardId) REFERENCES Card(id)
 );
@@ -51,6 +52,7 @@ CREATE TABLE Reminder (
 CREATE TABLE Income (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     amount REAL NOT NULL,
+    date DATE NOT NULL,  -- Add date field
     concept TEXT
 );
 

@@ -20,13 +20,17 @@ export default function History() {
           <Button
             style={style.itemButton}
             appearance="ghost"
-            accessoryLeft={<Icon name="image-outline" fill="white" s />}
+            accessoryLeft={() => (
+              <View style={style.iconContainer}>
+                <Icon name="image-outline" fill="white" style={style.icon} />
+              </View>
+            )}
           >
             {() => (
-              <>
+              <View style={style.itemContent}>
                 <Text style={style.itemTitle}>Arte</Text>
                 <Text style={[style.itemAmount, style.expense]}>2000$</Text>
-              </>
+              </View>
             )}
           </Button>
         </View>
@@ -35,13 +39,21 @@ export default function History() {
           <Button
             style={style.itemButton}
             appearance="ghost"
-            accessoryLeft={<Icon name="briefcase-outline" fill="white" />}
+            accessoryLeft={() => (
+              <View style={style.iconContainer}>
+                <Icon
+                  name="briefcase-outline"
+                  fill="white"
+                  style={style.icon}
+                />
+              </View>
+            )}
           >
             {() => (
-              <>
+              <View style={style.itemContent}>
                 <Text style={style.itemTitle}>Trabajo</Text>
                 <Text style={[style.itemAmount, style.income]}>12000$</Text>
-              </>
+              </View>
             )}
           </Button>
         </View>
@@ -50,13 +62,21 @@ export default function History() {
           <Button
             style={style.itemButton}
             appearance="ghost"
-            accessoryLeft={<Icon name="shopping-cart-outline" fill="white" />}
+            accessoryLeft={() => (
+              <View style={style.iconContainer}>
+                <Icon
+                  name="shopping-cart-outline"
+                  fill="white"
+                  style={style.icon}
+                />
+              </View>
+            )}
           >
             {() => (
-              <>
+              <View style={style.itemContent}>
                 <Text style={style.itemTitle}>Comida</Text>
                 <Text style={[style.itemAmount, style.expense]}>200$</Text>
-              </>
+              </View>
             )}
           </Button>
         </View>
@@ -65,13 +85,17 @@ export default function History() {
           <Button
             style={style.itemButton}
             appearance="ghost"
-            accessoryLeft={<Icon name="star-outline" fill="white" />}
+            accessoryLeft={() => (
+              <View style={style.iconContainer}>
+                <Icon name="star-outline" fill="white" style={style.icon} />
+              </View>
+            )}
           >
             {() => (
-              <>
+              <View style={style.itemContent}>
                 <Text style={style.itemTitle}>Loteria</Text>
                 <Text style={[style.itemAmount, style.income]}>1000000$</Text>
-              </>
+              </View>
             )}
           </Button>
         </View>
@@ -100,7 +124,6 @@ const style = StyleSheet.create({
   },
   itemContainer: {
     flexDirection: "row",
-    alignItems: "center",
     paddingVertical: 15,
     paddingHorizontal: 20,
     borderBottomWidth: 1,
@@ -112,11 +135,20 @@ const style = StyleSheet.create({
     justifyContent: "space-between",
     width: "100%",
   },
+  itemContent: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    width: "80%",
+  },
   itemTitle: {
     color: "white",
+    flex: 1,
+    fontWeight: "bold",
   },
   itemAmount: {
     fontWeight: "bold",
+    flex: 1,
+    textAlign: "right",
   },
   income: {
     color: "#80FF80",
@@ -126,6 +158,21 @@ const style = StyleSheet.create({
   },
   title: {
     fontWeight: "bold",
-    fontSize: 24,
+    fontSize: 30,
+  },
+  iconContainer: {
+    width: 40, // Ancho del círculo
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: "#1F1F1F",
+    justifyContent: "center",
+    alignItems: "center",
+    borderWidth: 3,
+    borderColor: "black",
+    marginRight: 15,
+  },
+  icon: {
+    width: 25,
+    height: 25,
   },
 });
