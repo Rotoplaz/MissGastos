@@ -10,6 +10,9 @@ import {
 } from "@ui-kitten/components";
 import { StyleSheet, View, TouchableOpacity } from "react-native";
 import { PieChart } from "react-native-gifted-charts";
+import { useUserStore } from "../../store/useUserStore";
+
+
 
 const data = [
   { value: 70, color: "#f5b7b1" },
@@ -18,26 +21,27 @@ const data = [
   { value: 30, color: "#d2b4de" },
 ];
 
-export default function Home() {
+export default function index() {
+  const user = useUserStore(state => state.user);
   const [totalMoney] = useState(50000);
-  const [selectedIndex, setSelectedIndex] = useState(0);
+  
 
   const getAvatarSource = () => {
     if (totalMoney <= 5000) {
-      return require("../assets/verylittlemoney.png");
+      return require("../../assets/verylittlemoney.png");
     } else if (totalMoney >= 5001 && totalMoney <= 9999) {
-      return require("../assets/littlemoney.png");
+      return require("../../assets/littlemoney.png");
     } else if (totalMoney >= 10000 && totalMoney <= 20000) {
-      return require("../assets/goodmoney.png");
+      return require("../../assets/goodmoney.png");
     } else {
-      return require("../assets/bigmoney.jpg");
+      return require("../../assets/bigmoney.jpg");
     }
   };
 
   return (
     <Layout style={style.mainContainer}>
       <Text category="h1" style={style.welcomeText}>
-        Hola Leonel bienvenido
+        Hola {user?.name} bienvenido
       </Text>
 
       <Avatar
@@ -76,29 +80,7 @@ export default function Home() {
         />
       </TouchableOpacity>
 
-      <Layout style={style.bottomNav}>
-        <BottomNavigation
-          selectedIndex={selectedIndex}
-          onSelect={(index) => setSelectedIndex(index)}
-        >
-          <BottomNavigationTab
-            title="Inicio"
-            icon={(props) => <Icon {...props} name="home-outline" />}
-          />
-          <BottomNavigationTab
-            title="Tarjetas"
-            icon={(props) => <Icon {...props} name="credit-card-outline" />}
-          />
-          <BottomNavigationTab
-            title="Movimientos"
-            icon={(props) => <Icon {...props} name="file-text-outline" />}
-          />
-          <BottomNavigationTab
-            title="Recordatorios"
-            icon={(props) => <Icon {...props} name="calendar-outline" />}
-          />
-        </BottomNavigation>
-      </Layout>
+
     </Layout>
   );
 }
