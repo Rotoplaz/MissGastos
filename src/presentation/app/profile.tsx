@@ -32,6 +32,7 @@ export default function Profile() {
       return router.replace("/(home)");
     }
 
+    
   }
   return (
     <Layout style={style.mainContainer}>

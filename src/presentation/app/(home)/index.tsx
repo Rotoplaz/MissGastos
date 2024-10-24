@@ -1,18 +1,14 @@
 import React, { useState } from "react";
-import {
-  Button,
-  Layout,
-  Text,
-  Icon,
-  Avatar,
-} from "@ui-kitten/components";
+import { Button, Layout, Text, Icon, Avatar } from "@ui-kitten/components";
 import { StyleSheet } from "react-native";
 import { PieChart } from "react-native-gifted-charts";
 import { useUserStore } from "../../store/useUserStore";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { TopNavigationHome } from "../../navigation/TopNavigationHome";
-
-
+import { GeneratePDFUseCase } from "@/src/application/use-cases/reports/generate-pdf.use-case";
+import { getPDFLayout } from "../../pdf-layout/get-PDF-layout";
+import { FullLoaderScreen } from "../../screens/loaders/FullLoaderScreen";
+import { router } from "expo-router";
 
 const data = [
   { value: 70, color: "#f5b7b1" },
@@ -22,9 +18,9 @@ const data = [
 ];
 
 export default function index() {
-  const user = useUserStore(state => state.user);
+  const user = useUserStore((state) => state.user);
   const [totalMoney] = useState(50000);
-  const {top} = useSafeAreaInsets()
+  const { top } = useSafeAreaInsets();
 
   const getAvatarSource = () => {
     if (totalMoney <= 5000) {
@@ -39,12 +35,12 @@ export default function index() {
   };
 
   return (
-    <Layout style={{flex:1, paddingTop:top}}>
+    <Layout style={{ flex: 1, paddingTop: top }}>
       <TopNavigationHome />
 
       <Layout style={style.mainContainer}>
         <Text category="h1" style={style.welcomeText}>
-          Hola {user?.name} bienvenido
+          Hola {!user ? "": user.name} bienvenido
         </Text>
 
         <Avatar
@@ -59,31 +55,38 @@ export default function index() {
         </Text>
         <Text style={style.subText}>Este es en lo que más gastas: Comida</Text>
 
-        <Layout style={{width: "100%"}}>
+        <Layout style={{ width: "100%" }}>
           <Layout style={style.chartContainer}>
-            <PieChart data={data} radius={90}  />
-            <Layout style={{alignSelf: "center"}}>
+            <PieChart data={data} radius={90} />
+            <Layout style={{ alignSelf: "center" }}>
               <Text>Comida</Text>
               <Text>Educación</Text>
               <Text>Video Juegos</Text>
             </Layout>
           </Layout>
-          <Layout style={{width: "60%", marginTop: 20, paddingLeft: 35}}>
-            <Button size="large">Generar Reporte</Button>
+          <Layout style={{ width: "60%", marginTop: 20, paddingLeft: 35 }}>
+            <Button
+              size="large"
+              onPress={() =>
+                new GeneratePDFUseCase().execute(getPDFLayout([], [], user!))
+              }
+            >
+              Generar Reporte
+            </Button>
           </Layout>
         </Layout>
 
-
         {/* Floating button to add entry/exit */}
-        <Button style={style.fabButton} accessoryLeft={<Icon
-            name="plus-outline"
-            fill="white"
-            style={{ width: 24, height: 24 }}
-          />}>
-
-        </Button>
-
-
+        <Button
+          style={style.fabButton}
+          accessoryLeft={
+            <Icon
+              name="plus-outline"
+              fill="white"
+              style={{ width: 24, height: 24 }}
+            />
+          }
+        ></Button>
       </Layout>
     </Layout>
   );
@@ -123,7 +126,7 @@ const style = StyleSheet.create({
     bottom: 30,
     borderRadius: 50,
     padding: 20,
-    height: 60
+    height: 60,
   },
 
   chartContainer: {
@@ -131,6 +134,6 @@ const style = StyleSheet.create({
     display: "flex",
     flexDirection: "row",
     justifyContent: "center",
-    gap: 30
+    gap: 30,
   },
 });
