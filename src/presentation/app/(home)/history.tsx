@@ -1,19 +1,12 @@
 import { Button, Icon, Layout, Text } from "@ui-kitten/components";
 import { StyleSheet, View, ScrollView } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function History() {
+  const { top } = useSafeAreaInsets()
   return (
-    <Layout style={style.mainContainer}>
-      <View style={style.header}>
-        <Button
-          style={style.exit}
-          appearance="ghost"
-          accessoryLeft={<Icon name="arrow-back-outline" fill="white" />}
-        />
-        <Text category="h5" style={style.title}>
-          Historial
-        </Text>
-      </View>
+    <Layout style={[style.mainContainer, {paddingTop: top}]}>
+
 
       <ScrollView style={style.scrollContainer}>
         <View style={style.itemContainer}>

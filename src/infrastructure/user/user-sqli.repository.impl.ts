@@ -18,11 +18,11 @@ export class UserRepositorySqliteImpl implements UserRepository {
     if (!user) {
       return null;
     }
-
+    await this.db.closeAsync();
     return user;
   }
 
-  async createUser(user: User): Promise<User> {
+  async createUser(user: Omit<User, "id">): Promise<User> {
     const { name, globalLimitBudget, profilePictureUrl } = user;
     const result = await this.db.runAsync(
       "INSERT INTO User (name, profilePictureUrl, globalLimitBudget) VALUES (?, ?, ?)",
@@ -30,8 +30,8 @@ export class UserRepositorySqliteImpl implements UserRepository {
       profilePictureUrl,
       globalLimitBudget
     );
-
-    return { ...user };
+    await this.db.closeAsync();
+    return { ...user, id: result.lastInsertRowId };
   }
 
   async updateUser(user: Partial<User>): Promise<User> {
@@ -70,7 +70,7 @@ export class UserRepositorySqliteImpl implements UserRepository {
       profilePictureUrl: user.profilePictureUrl ?? "",
       globalLimitBudget: user.globalLimitBudget ?? 0,
     };
-
+    await this.db.closeAsync();
     return updatedUser;
   }
 }

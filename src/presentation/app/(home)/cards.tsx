@@ -53,7 +53,7 @@ export default function YourCards() {
 
   return (
     <Layout style={style.mainContainer}>
-      <TopNavigation title="Mis Tarjetas" accessoryLeft={renderBackAction} />
+      
       <Divider />
       <Button
         style={style.button}
