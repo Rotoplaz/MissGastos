@@ -6,7 +6,8 @@ import WatchCard from "./watchCard";
 import EditCard from "./editCard";
 import History from "./history";
 import PreventSS from "../screens/prevent-screenshot/screenshotblock";
+import Home from "./home";
 
 export default function Index() {
-  return <PreventSS />;
+  return <Home />;
 }
