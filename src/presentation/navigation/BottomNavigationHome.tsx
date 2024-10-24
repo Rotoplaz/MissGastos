@@ -30,10 +30,10 @@ export const BottomNavigationHome = ({ navigation, state }: any) => {
         title="Recordatorios"
         icon={(props) => <Icon {...props} name="calendar-outline" />}
       /> */}
-      <BottomNavigationTab
+      {/* <BottomNavigationTab
         title="Configuracion"
         icon={(props) => <Icon {...props} name="settings" />}
-      />
+      /> */}
     </BottomNavigation>
   );
 };

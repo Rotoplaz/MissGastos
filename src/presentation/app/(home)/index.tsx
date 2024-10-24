@@ -6,9 +6,11 @@ import {
   Icon,
   Avatar,
 } from "@ui-kitten/components";
-import { StyleSheet, View, TouchableOpacity } from "react-native";
+import { StyleSheet } from "react-native";
 import { PieChart } from "react-native-gifted-charts";
 import { useUserStore } from "../../store/useUserStore";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { TopNavigationHome } from "../../navigation/TopNavigationHome";
 
 
 
@@ -22,7 +24,7 @@ const data = [
 export default function index() {
   const user = useUserStore(state => state.user);
   const [totalMoney] = useState(50000);
-  
+  const {top} = useSafeAreaInsets()
 
   const getAvatarSource = () => {
     if (totalMoney <= 5000) {
@@ -37,48 +39,52 @@ export default function index() {
   };
 
   return (
-    <Layout style={style.mainContainer}>
-      <Text category="h1" style={style.welcomeText}>
-        Hola {user?.name} bienvenido
-      </Text>
+    <Layout style={{flex:1, paddingTop:top}}>
+      <TopNavigationHome />
 
-      <Avatar
-        size="giant"
-        style={{ width: 150, height: 150, marginBottom: 20 }}
-        source={getAvatarSource()}
-      />
+      <Layout style={style.mainContainer}>
+        <Text category="h1" style={style.welcomeText}>
+          Hola {user?.name} bienvenido
+        </Text>
 
-      <Text style={style.totalMoney}>Dinero Total:</Text>
-      <Text category="h2" style={style.money}>
-        ${totalMoney}
-      </Text>
-      <Text style={style.subText}>Este es en lo que más gastas: Comida</Text>
+        <Avatar
+          size="giant"
+          style={{ width: 150, height: 150, marginBottom: 20 }}
+          source={getAvatarSource()}
+        />
 
-      <Layout style={{width: "100%"}}>
-        <Layout style={style.chartContainer}>
-          <PieChart data={data} radius={90}  />
-          <Layout style={{alignSelf: "center"}}>
-            <Text>Comida</Text>
-            <Text>Educación</Text>
-            <Text>Video Juegos</Text>
+        <Text style={style.totalMoney}>Dinero Total:</Text>
+        <Text category="h2" style={style.money}>
+          ${totalMoney}
+        </Text>
+        <Text style={style.subText}>Este es en lo que más gastas: Comida</Text>
+
+        <Layout style={{width: "100%"}}>
+          <Layout style={style.chartContainer}>
+            <PieChart data={data} radius={90}  />
+            <Layout style={{alignSelf: "center"}}>
+              <Text>Comida</Text>
+              <Text>Educación</Text>
+              <Text>Video Juegos</Text>
+            </Layout>
+          </Layout>
+          <Layout style={{width: "60%", marginTop: 20, paddingLeft: 35}}>
+            <Button size="large">Generar Reporte</Button>
           </Layout>
         </Layout>
-        <Layout style={{width: "60%", marginTop: 20, paddingLeft: 35}}>
-          <Button size="large">Generar Reporte</Button>
-        </Layout>
+
+
+        {/* Floating button to add entry/exit */}
+        <Button style={style.fabButton} accessoryLeft={<Icon
+            name="plus-outline"
+            fill="white"
+            style={{ width: 24, height: 24 }}
+          />}>
+
+        </Button>
+
+
       </Layout>
-
-
-      {/* Floating button to add entry/exit */}
-      <Button style={style.fabButton} accessoryLeft={<Icon
-          name="plus-outline"
-          fill="white"
-          style={{ width: 24, height: 24 }}
-        />}>
-
-      </Button>
-
-
     </Layout>
   );
 }
@@ -86,10 +92,11 @@ export default function index() {
 const style = StyleSheet.create({
   mainContainer: {
     flex: 1,
-    justifyContent: "center",
+    marginTop: 10,
     alignItems: "center",
-    padding: 10,
-    width: "100%"
+    paddingHorizontal: 10,
+    width: "100%",
+    // backgroundColor: "red"
   },
   welcomeText: {
     color: "white",

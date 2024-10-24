@@ -7,19 +7,19 @@ import { useTheme } from "@react-navigation/native";
 export default function RootLayout() {
   const theme = useTheme()
   return (
-    <Layout style={{flex: 1, backgroundColor: theme.colors.background}}>
-      <Tabs
-        tabBar={(props) => <BottomNavigationHome {...props} />}
-        screenOptions={{
-          headerShown: false,
-          
-        }}
-      >
-        <Tabs.Screen name="index" />
-        <Tabs.Screen name="cards" />
-        <Tabs.Screen name="history" /> 
-        <Tabs.Screen name="config" /> 
-      </Tabs>
-    </Layout>
+    
+    <Tabs
+      tabBar={(props) => <BottomNavigationHome {...props} />}
+      screenOptions={{
+        headerShown: false,
+        
+      }}
+    >
+      <Tabs.Screen name="index" />
+      <Tabs.Screen name="cards" />
+      <Tabs.Screen name="history" /> 
+      {/* <Tabs.Screen name="config" />  */}
+    </Tabs>
+  
   );
 }
