@@ -64,13 +64,10 @@ export class UserRepositorySqliteImpl implements UserRepository {
     
     await this.db.runAsync(query, ...values);
 
-    const updatedUser: User = {
-      id: currentUser.id,
-      name: user.name ?? "",
-      profilePictureUrl: user.profilePictureUrl ?? "",
-      globalLimitBudget: user.globalLimitBudget ?? 0,
-    };
+    const userUpdated = await this.getUser();
     
-    return updatedUser;
+    if( ! userUpdated ) throw new Error("Usuario no encontrado");
+
+    return userUpdated;
   }
 }

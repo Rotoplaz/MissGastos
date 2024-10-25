@@ -10,14 +10,14 @@ import { FullLoaderScreen } from "../screens/loaders/FullLoaderScreen";
 
 export default function Index() {
   const [isLoadingUser, setIsLoadingUser] = useState<boolean>(true);
-  const userRepository = useRef(new UserRepositorySqliteImpl());
   const setUserStore = useUserStore((state) => state.setUser);
   const router = useRouter();
+  
   useEffect(() => {
     const getUser = async () => {
-
+      const userRepository = new UserRepositorySqliteImpl();
       const user = await new GetUserUseCase(
-        userRepository.current
+        userRepository
       ).execute();
       
       setIsLoadingUser(false);

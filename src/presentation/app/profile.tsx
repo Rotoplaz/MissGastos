@@ -1,5 +1,5 @@
 import { Avatar, Button, Icon, Input, Layout } from "@ui-kitten/components";
-import { StyleSheet } from "react-native";
+import { Image, StyleSheet } from "react-native";
 import { useUserStore } from "../store/useUserStore";
 import { CreateUserUseCase } from "@/src/application/use-cases/user/create-suer.use-case";
 import { UserRepositorySqliteImpl } from "@/src/infrastructure/user/user-sqli.repository.impl";
@@ -7,12 +7,13 @@ import { useRef, useState } from 'react';
 import { router } from "expo-router";
 import { LayoutWithTopNavigation } from "../layouts/LayoutWithTopNavigation";
 import { UpdateUserUseCase } from "@/src/application/use-cases/user/update-user.user-case";
+import { PickImageUseCase } from "@/src/application/use-cases/profilePicture/profile-picture.use-case";
 
 
 export default function Profile() {
   const user = useUserStore(state=>state.user);
   const setUser = useUserStore(state=>state.setUser);
-   
+  
   const [form, setForm] = useState({
     globalLimitBudget: user?.globalLimitBudget?.toString() || "",
     name: user?.name || "",
@@ -47,20 +48,37 @@ export default function Profile() {
     
     return;
   }
+
+  const handlePickImage = async () => {
+    const image = await new PickImageUseCase().execute();
+    if(!image) {
+      return;
+    }
+    const userRepository =new UserRepositorySqliteImpl();
+    const user = await new UpdateUserUseCase(userRepository).execute({
+      profilePictureUrl: image
+    });
+    
+    setUser(user);
+  }
   return (
     <LayoutWithTopNavigation TitleScreen="Perfil">
 
       <Layout style={style.mainContainer}>
         <Layout>
-          <Avatar
-            size="giant"
-            style={{ width: 150, height: 150 }}
-            source={user?.profilePictureUrl || require("../assets/avatar.png")}
+        <Image
+            style={{ width: 150, height: 150, borderRadius: 100 }}
+            source={
+              user?.profilePictureUrl
+                ? { uri: user.profilePictureUrl }
+                : require("../assets/avatar.png")  
+            }
           />
           <Button
             style={style.button}
             status="danger"
             accessoryLeft={<Icon name="camera-outline" />}
+            onPress={handlePickImage}
           />
         </Layout>
         
