@@ -106,7 +106,6 @@ const style = StyleSheet.create({
     alignItems: "center",
     justifyContent: "flex-start",
     paddingTop: "10%",
-    backgroundColor: "#1a1a1a",
   },
   title: {
     color: "white",

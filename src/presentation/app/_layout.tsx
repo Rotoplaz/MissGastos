@@ -38,7 +38,7 @@ export default function RootLayout() {
           >
             <Stack.Screen name="(home)" />
             <Stack.Screen name="profile"  />
-            <Stack.Screen name="config" />
+            <Stack.Screen name="settings" />
             
           </Stack>
         </Layout>

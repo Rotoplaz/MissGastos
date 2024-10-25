@@ -18,7 +18,7 @@ export class UserRepositorySqliteImpl implements UserRepository {
     if (!user) {
       return null;
     }
-    await this.db.closeAsync();
+    
     return user;
   }
 
@@ -30,7 +30,7 @@ export class UserRepositorySqliteImpl implements UserRepository {
       profilePictureUrl,
       globalLimitBudget
     );
-    await this.db.closeAsync();
+    
     return { ...user, id: result.lastInsertRowId };
   }
 
@@ -61,7 +61,7 @@ export class UserRepositorySqliteImpl implements UserRepository {
     values.push(currentUser.id);
 
     const query = `UPDATE User SET ${updates.join(", ")} WHERE id = ?`;
-
+    
     await this.db.runAsync(query, ...values);
 
     const updatedUser: User = {
@@ -70,7 +70,7 @@ export class UserRepositorySqliteImpl implements UserRepository {
       profilePictureUrl: user.profilePictureUrl ?? "",
       globalLimitBudget: user.globalLimitBudget ?? 0,
     };
-    await this.db.closeAsync();
+    
     return updatedUser;
   }
 }

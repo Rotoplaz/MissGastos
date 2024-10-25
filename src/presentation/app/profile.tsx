@@ -5,6 +5,8 @@ import { CreateUserUseCase } from "@/src/application/use-cases/user/create-suer.
 import { UserRepositorySqliteImpl } from "@/src/infrastructure/user/user-sqli.repository.impl";
 import { useRef, useState } from 'react';
 import { router } from "expo-router";
+import { LayoutWithTopNavigation } from "../layouts/LayoutWithTopNavigation";
+import { UpdateUserUseCase } from "@/src/application/use-cases/user/update-user.user-case";
 
 
 export default function Profile() {
@@ -16,15 +18,15 @@ export default function Profile() {
     name: user?.name || "",
     profilePictureUrl: user?.profilePictureUrl || ""
   });
-
-  const userRepository = useRef(new UserRepositorySqliteImpl());
- 
+  
+  
   const handleSaveUser = async () => {
+    const userRepository =new UserRepositorySqliteImpl();
     if(form.name === ''||form.globalLimitBudget=== '') {
       return;
     }
     if (!user){
-      const user = await new CreateUserUseCase(userRepository.current).execute({
+      const user = await new CreateUserUseCase(userRepository).execute({
         ...form,
         globalLimitBudget: Number(form.globalLimitBudget)
       });
@@ -32,42 +34,56 @@ export default function Profile() {
       return router.replace("/(home)");
     }
 
+    try {
+      const user = await new UpdateUserUseCase(userRepository).execute({
+        name: form.name,
+        globalLimitBudget: Number(form.globalLimitBudget),
+        profilePictureUrl: form.profilePictureUrl
+      });
+      setUser(user);
+    } catch (error) {
+      console.log(error)
+    }
     
+    return;
   }
   return (
-    <Layout style={style.mainContainer}>
-      <Layout>
-        <Avatar
-          size="giant"
-          style={{ width: 150, height: 150 }}
-          source={user?.profilePictureUrl || require("../assets/avatar.png")}
+    <LayoutWithTopNavigation TitleScreen="Perfil">
+
+      <Layout style={style.mainContainer}>
+        <Layout>
+          <Avatar
+            size="giant"
+            style={{ width: 150, height: 150 }}
+            source={user?.profilePictureUrl || require("../assets/avatar.png")}
+          />
+          <Button
+            style={style.button}
+            status="danger"
+            accessoryLeft={<Icon name="camera-outline" />}
+          />
+        </Layout>
+        
+        <Input
+          style={style.input}
+          status="basic"
+          placeholder="Escribe tu nombre"
+          value={form.name}
+          onChangeText={(text)=>{setForm({...form, name: text})}}
         />
-        <Button
-          style={style.button}
-          status="danger"
-          accessoryLeft={<Icon name="camera-outline" />}
+
+        <Input
+          style={style.input}
+          keyboardType="numeric"
+          status="basic"
+          placeholder="Limite de gastos"
+          value={form.globalLimitBudget}
+          onChangeText={(text)=>setForm({...form,globalLimitBudget: text})}
         />
+
+        <Button style={{marginTop: 10}} onPress={handleSaveUser}>Guardar</Button>
       </Layout>
-      
-      <Input
-        style={style.input}
-        status="basic"
-        placeholder="Escribe tu nombre"
-        value={form.name}
-        onChangeText={(text)=>{setForm({...form, name: text})}}
-      />
-
-      <Input
-        style={style.input}
-        keyboardType="numeric"
-        status="basic"
-        placeholder="Limite de gastos"
-        value={form.globalLimitBudget}
-        onChangeText={(text)=>setForm({...form,globalLimitBudget: text})}
-      />
-
-      <Button style={{marginTop: 10}} onPress={handleSaveUser}>Guardar</Button>
-    </Layout>
+    </LayoutWithTopNavigation>
   );
 }
 
