@@ -18,7 +18,7 @@ interface IListItem {
 export default function YourCards() {
   const theme = useTheme();
   const handleAddCard = () => {
-    //Agregar tarjeta
+    router.push("/addCard");
   };
 
   //Que funcione el boton de cada tarjeta
@@ -58,7 +58,7 @@ export default function YourCards() {
         status="primary"
         size="large"
         accessoryLeft={<Icon name="plus-outline" />}
-        //onPress={handleAddCard}
+        onPress={handleAddCard}
       >
         Crear tarjeta
       </Button>

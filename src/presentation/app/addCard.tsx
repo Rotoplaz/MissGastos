@@ -10,6 +10,7 @@ import {
 } from "@ui-kitten/components";
 import React, { useState } from "react";
 import { StyleSheet, Alert } from "react-native";
+import { LayoutWithTopNavigation } from "../layouts/LayoutWithTopNavigation";
 
 export default function AddCard() {
   const [selectedIndex, setSelectedIndex] = useState<IndexPath>(
@@ -212,45 +213,37 @@ export default function AddCard() {
   };
 
   return (
-    <Layout style={style.mainContainer}>
-      <Layout>
-        <Text style={style.title} category="H1">
-          Tipo de tarjeta
-        </Text>
-        <Button
-          style={style.exit}
-          appearance="ghost"
-          accessoryLeft={<Icon name="arrow-back-outline" />}
-        />
-      </Layout>
-      <Layout style={style.container} level="1">
-        <Layout style={style.rowContainer}>
-          <Text style={style.text} category="H1">
-            Tipo
-          </Text>
-          <Select
-            selectedIndex={selectedIndex}
-            value={options[selectedIndex.row]}
-            onSelect={(index) => setSelectedIndex(index as IndexPath)}
-            style={style.select}
+    <LayoutWithTopNavigation TitleScreen="Añadir Tarjeta">
+      <Layout style={style.mainContainer}>
+        <Layout style={style.container} level="1">
+          <Layout style={style.rowContainer}>
+            <Text style={style.text} category="h1">
+              Tipo
+            </Text>
+            <Select
+              selectedIndex={selectedIndex}
+              value={options[selectedIndex.row]}
+              onSelect={(index) => setSelectedIndex(index as IndexPath)}
+              style={style.select}
+            >
+              {options.map((option, index) => (
+                <SelectItem key={index} title={option} />
+              ))}
+            </Select>
+          </Layout>
+
+          {renderForm()}
+
+          <Button
+            style={style.submitButton}
+            status="danger"
+            onPress={handleSubmit}
           >
-            {options.map((option, index) => (
-              <SelectItem key={index} title={option} />
-            ))}
-          </Select>
+            Enviar
+          </Button>
         </Layout>
-
-        {renderForm()}
-
-        <Button
-          style={style.submitButton}
-          status="danger"
-          onPress={handleSubmit}
-        >
-          Enviar
-        </Button>
       </Layout>
-    </Layout>
+    </LayoutWithTopNavigation>
   );
 }
 
@@ -259,7 +252,7 @@ const style = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "flex-start",
-    paddingTop: "20%",
+    paddingTop: 20,
   },
   title: {
     color: "white",
