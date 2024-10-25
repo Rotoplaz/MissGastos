@@ -3,6 +3,7 @@ import { User } from "@/src/domain/entities/user.entity";
 import { UserRepository } from "@/src/domain/repositories/user.repository";
 import * as SQLite from "expo-sqlite";
 import { migrateDbIfNeeded } from "../db/migration";
+import { CreateUserDto } from "@/src/application/dtos/create-user.dto";
 
 export class UserRepositorySqliteImpl implements UserRepository {
   private db: SQLite.SQLiteDatabase =
@@ -22,16 +23,16 @@ export class UserRepositorySqliteImpl implements UserRepository {
     return user;
   }
 
-  async createUser(user: Omit<User, "id">): Promise<User> {
+  async createUser(user: CreateUserDto): Promise<User> {
     const { name, globalLimitBudget, profilePictureUrl } = user;
     const result = await this.db.runAsync(
       "INSERT INTO User (name, profilePictureUrl, globalLimitBudget) VALUES (?, ?, ?)",
       name,
-      profilePictureUrl,
+      profilePictureUrl || "",
       globalLimitBudget
     );
     
-    return { ...user, id: result.lastInsertRowId };
+    return { ...user,profilePictureUrl: user.profilePictureUrl || "", id: result.lastInsertRowId };
   }
 
   async updateUser(user: Partial<User>): Promise<User> {

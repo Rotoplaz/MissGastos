@@ -1,4 +1,4 @@
-import { Avatar, Button, Icon, Input, Layout } from "@ui-kitten/components";
+import { Button, Icon, Input, Layout } from "@ui-kitten/components";
 import { Image, StyleSheet } from "react-native";
 import { useUserStore } from "../store/useUserStore";
 import { CreateUserUseCase } from "@/src/application/use-cases/user/create-suer.use-case";
@@ -13,53 +13,65 @@ import { PickImageUseCase } from "@/src/application/use-cases/profilePicture/pro
 export default function Profile() {
   const user = useUserStore(state=>state.user);
   const setUser = useUserStore(state=>state.setUser);
-  
+  const isNewUser = useRef(!user);
   const [form, setForm] = useState({
     globalLimitBudget: user?.globalLimitBudget?.toString() || "",
     name: user?.name || "",
-    profilePictureUrl: user?.profilePictureUrl || ""
   });
   
+  console.log(isNewUser)
   
   const handleSaveUser = async () => {
-    const userRepository =new UserRepositorySqliteImpl();
     if(form.name === ''||form.globalLimitBudget=== '') {
       return;
     }
+    const userRepository =new UserRepositorySqliteImpl();
     if (!user){
       const user = await new CreateUserUseCase(userRepository).execute({
         ...form,
         globalLimitBudget: Number(form.globalLimitBudget)
       });
       setUser(user);
-      return router.replace("/(home)");
+
     }
 
     try {
       const user = await new UpdateUserUseCase(userRepository).execute({
         name: form.name,
         globalLimitBudget: Number(form.globalLimitBudget),
-        profilePictureUrl: form.profilePictureUrl
       });
       setUser(user);
     } catch (error) {
       console.log(error)
     }
-    
+    if( isNewUser.current ){
+      return router.replace("/(home)");
+    }
+
     return;
   }
 
   const handlePickImage = async () => {
+
+    if (!user){
+      const userRepository =new UserRepositorySqliteImpl();
+      const user = await new CreateUserUseCase(userRepository).execute({
+        ...form,
+        globalLimitBudget: Number(form.globalLimitBudget)
+      });
+      setUser(user);
+    }
+
     const image = await new PickImageUseCase().execute();
     if(!image) {
       return;
     }
     const userRepository =new UserRepositorySqliteImpl();
-    const user = await new UpdateUserUseCase(userRepository).execute({
+    const userWithImage = await new UpdateUserUseCase(userRepository).execute({
       profilePictureUrl: image
     });
     
-    setUser(user);
+    setUser(userWithImage);
   }
   return (
     <LayoutWithTopNavigation TitleScreen="Perfil">
@@ -67,7 +79,7 @@ export default function Profile() {
       <Layout style={style.mainContainer}>
         <Layout>
         <Image
-            style={{ width: 150, height: 150, borderRadius: 100 }}
+            style={{ width: 200, height: 200, borderRadius: 100 }}
             source={
               user?.profilePictureUrl
                 ? { uri: user.profilePictureUrl }
@@ -108,9 +120,10 @@ export default function Profile() {
 const style = StyleSheet.create({
   mainContainer: {
     flex: 1,
-    justifyContent: "center",
+    justifyContent: "flex-start",
     alignItems: "center",
     gap: 10,
+    marginTop: 100
   },
   input: {
     width: "80%",
