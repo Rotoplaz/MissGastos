@@ -22,7 +22,7 @@ export default function History() {
             appearance="ghost"
             accessoryLeft={() => (
               <View style={style.iconContainer}>
-                <Icon name="image-outline" fill="white" style={style.icon} />
+                <Icon name="image-outline" style={style.icon} />
               </View>
             )}
           >
@@ -41,11 +41,7 @@ export default function History() {
             appearance="ghost"
             accessoryLeft={() => (
               <View style={style.iconContainer}>
-                <Icon
-                  name="briefcase-outline"
-                  fill="white"
-                  style={style.icon}
-                />
+                <Icon name="briefcase-outline" style={style.icon} />
               </View>
             )}
           >
@@ -64,11 +60,7 @@ export default function History() {
             appearance="ghost"
             accessoryLeft={() => (
               <View style={style.iconContainer}>
-                <Icon
-                  name="shopping-cart-outline"
-                  fill="white"
-                  style={style.icon}
-                />
+                <Icon name="shopping-cart-outline" style={style.icon} />
               </View>
             )}
           >
@@ -87,7 +79,7 @@ export default function History() {
             appearance="ghost"
             accessoryLeft={() => (
               <View style={style.iconContainer}>
-                <Icon name="star-outline" fill="white" style={style.icon} />
+                <Icon name="star-outline" style={style.icon} />
               </View>
             )}
           >
@@ -112,7 +104,7 @@ const style = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     width: "68%",
-    paddingHorizontal: 20,
+    paddingHorizontal: 15,
     paddingVertical: 50,
     justifyContent: "space-between",
   },
@@ -127,7 +119,6 @@ const style = StyleSheet.create({
     paddingVertical: 15,
     paddingHorizontal: 20,
     borderBottomWidth: 1,
-    borderBottomColor: "#3D3D3D",
   },
   itemButton: {
     flexDirection: "row",
@@ -141,7 +132,6 @@ const style = StyleSheet.create({
     width: "80%",
   },
   itemTitle: {
-    color: "white",
     flex: 1,
     fontWeight: "bold",
   },
@@ -161,14 +151,12 @@ const style = StyleSheet.create({
     fontSize: 30,
   },
   iconContainer: {
-    width: 40, // Ancho del círculo
+    width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: "#1F1F1F",
     justifyContent: "center",
     alignItems: "center",
-    borderWidth: 3,
-    borderColor: "black",
+    borderWidth: 1,
     marginRight: 15,
   },
   icon: {
