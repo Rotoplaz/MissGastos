@@ -2,9 +2,12 @@ import React from "react";
 import { Button, Icon, Layout, Text } from "@ui-kitten/components";
 import { StyleSheet, View, Alert } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import { TopNavigationGeneric } from "../common/navigation/TopNavigationGeneric";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { LayoutWithTopNavigation } from "../common/layouts/LayoutWithTopNavigation";
 
 export default function WatchCard() {
-  const navigation = useNavigation();
+  
 
   // Datos fijos simulados
   const cardData = {
@@ -33,72 +36,66 @@ export default function WatchCard() {
   };
 
   return (
-    <Layout style={style.mainContainer}>
-      <View style={style.header}>
-        <Button
-          style={style.exit}
-          appearance="ghost"
-          accessoryLeft={<Icon name="arrow-back-outline" fill="white" />}
-          onPress={() => navigation.goBack()}
-        />
-        <Text style={style.title} category="H1">
-          {cardData.name}
-        </Text>
-      </View>
+    <LayoutWithTopNavigation TitleScreen={cardData.name}>
 
-      <View style={style.cardContainer}>
-        <View style={style.card}>
-          <Text style={style.cardText}>
-            **** **** **** {cardData.last4Digits}
-          </Text>
-        </View>
+      <Layout style={style.mainContainer}>
+        
 
-        <View style={style.detailsContainer}>
-          <Text style={style.detail}>
-            Nombre: {cardData.name} {"\n"}
-          </Text>
-          <Text style={style.detail}>
-            Últimos 4 dígitos: {cardData.last4Digits} {"\n"}
-          </Text>
-          <Text style={style.detail}>
-            Deuda: ${cardData.debt} {"\n"}
-          </Text>
-          <Text style={style.detail}>
-            Límite de crédito: ${cardData.creditLimit} {"\n"}
-          </Text>
-          <Text style={style.detail}>
-            Fecha de corte: {cardData.cutOffDate}
-          </Text>
-        </View>
+        <View style={style.cardContainer}>
+          <View style={style.card}>
+            <Text style={style.cardText}>
+              **** **** **** {cardData.last4Digits}
+            </Text>
+          </View>
 
-        <View style={style.actionsContainer}>
-          <Button
-            style={style.exit}
-            appearance="ghost"
-            accessoryLeft={<Icon name="trash-2-outline" fill="white" />}
-            onPress={() =>
-              Alert.alert(
-                "Confirmar Eliminación",
-                "¿Estás seguro de que quieres eliminar esta tarjeta?",
-                [
-                  { text: "Cancelar", style: "cancel" },
-                  {
-                    text: "Confirmar",
-                    onPress: () => console.log("Tarjeta eliminada"),
-                  },
-                ]
-              )
-            }
-          />
-          <Button
-            style={style.exit}
-            appearance="ghost"
-            accessoryLeft={<Icon name="edit-outline" fill="white" />}
-            onPress={confirmEdit}
-          />
+          <View style={style.detailsContainer}>
+            <Text style={style.detail}>
+              Nombre: {cardData.name} {"\n"}
+            </Text>
+            <Text style={style.detail}>
+              Últimos 4 dígitos: {cardData.last4Digits} {"\n"}
+            </Text>
+            <Text style={style.detail}>
+              Deuda: ${cardData.debt} {"\n"}
+            </Text>
+            <Text style={style.detail}>
+              Límite de crédito: ${cardData.creditLimit} {"\n"}
+            </Text>
+            <Text style={style.detail}>
+              Fecha de corte: {cardData.cutOffDate}
+            </Text>
+          </View>
+
+          <View style={style.actionsContainer}>
+            <Button
+              style={style.exit}
+              appearance="ghost"
+              accessoryLeft={<Icon name="trash-2-outline" fill="white" />}
+              onPress={() =>
+                Alert.alert(
+                  "Confirmar Eliminación",
+                  "¿Estás seguro de que quieres eliminar esta tarjeta?",
+                  [
+                    { text: "Cancelar", style: "cancel" },
+                    {
+                      text: "Confirmar",
+                      onPress: () => console.log("Tarjeta eliminada"),
+                    },
+                  ]
+                )
+              }
+            />
+            <Button
+              style={style.exit}
+              appearance="ghost"
+              accessoryLeft={<Icon name="edit-outline" fill="white" />}
+              onPress={confirmEdit}
+            />
+          </View>
         </View>
-      </View>
-    </Layout>
+      </Layout>
+
+    </LayoutWithTopNavigation>
   );
 }
 
@@ -108,14 +105,6 @@ const style = StyleSheet.create({
     alignItems: "center",
     justifyContent: "flex-start",
     paddingTop: "10%",
-    backgroundColor: "#1a1a1a",
-  },
-  header: {
-    flexDirection: "row",
-    alignItems: "center",
-    width: "100%",
-    paddingHorizontal: 20,
-    justifyContent: "space-between",
   },
   title: {
     color: "white",

@@ -1,86 +1,128 @@
-import { Avatar, Button, Icon, Input, Layout } from "@ui-kitten/components";
-import { StyleSheet } from "react-native";
+import { Button, Icon, Input, Layout } from "@ui-kitten/components";
+import { Image, StyleSheet } from "react-native";
 import { useUserStore } from "../store/useUserStore";
-import { CreateUserUseCase } from "@/src/application/use-cases/user/create-suer.use-case";
-import { UserRepositorySqliteImpl } from "@/src/infrastructure/user/user-sqli.repository.impl";
-import { useRef, useState } from 'react';
+import { useRef, useState, useCallback } from 'react';
 import { router } from "expo-router";
-
+import { PickImageUseCase } from "@/src/application/use-cases/profilePicture/profile-picture.use-case";
+import { UserRepositorySqliteImpl } from "@/src/infrastructure/user/user-sqli.repository.impl";
+import { UpdateUserUseCase } from "@/src/application/use-cases/user/update-user.user-case";
+import { CreateUserUseCase } from "@/src/application/use-cases/user/create-suer.use-case";
+import { LayoutWithTopNavigation } from "../common/layouts/LayoutWithTopNavigation";
 
 export default function Profile() {
-  const user = useUserStore(state=>state.user);
-  const setUser = useUserStore(state=>state.setUser);
-   
+  const user = useUserStore((state) => state.user);
+  const setUser = useUserStore((state) => state.setUser);
+  const isNewUser = useRef(!user);
   const [form, setForm] = useState({
     globalLimitBudget: user?.globalLimitBudget?.toString() || "",
     name: user?.name || "",
-    profilePictureUrl: user?.profilePictureUrl || ""
   });
 
-  const userRepository = useRef(new UserRepositorySqliteImpl());
- 
-  const handleSaveUser = async () => {
-    if(form.name === ''||form.globalLimitBudget=== '') {
-      return;
-    }
-    if (!user){
-      const user = await new CreateUserUseCase(userRepository.current).execute({
-        ...form,
-        globalLimitBudget: Number(form.globalLimitBudget)
-      });
-      setUser(user);
-      return router.replace("/(home)");
-    }
+  const userRepository = useRef(new UserRepositorySqliteImpl()).current;
 
-  }
-  return (
-    <Layout style={style.mainContainer}>
-      <Layout>
-        <Avatar
-          size="giant"
-          style={{ width: 150, height: 150 }}
-          source={user?.profilePictureUrl || require("../assets/avatar.png")}
-        />
-        <Button
-          style={style.button}
-          status="danger"
-          accessoryLeft={<Icon name="camera-outline" />}
-        />
-      </Layout>
+  const handleSaveUser = useCallback(async () => {
+    if (form.name.trim() === "" || form.globalLimitBudget.trim() === "") return;
+
+    try {
+      const userUpdated = user
+        ? await new UpdateUserUseCase(userRepository).execute({
+            name: form.name,
+            globalLimitBudget: Number(form.globalLimitBudget),
+          })
+        : await new CreateUserUseCase(userRepository).execute({
+            ...form,
+            globalLimitBudget: Number(form.globalLimitBudget),
+          });
       
-      <Input
-        style={style.input}
-        status="basic"
-        placeholder="Escribe tu nombre"
-        value={form.name}
-        onChangeText={(text)=>{setForm({...form, name: text})}}
-      />
+      setUser(userUpdated);
+      
+      router.replace("/(home)");
+    } catch (error) {
+      console.error("Error al guardar el usuario:", error);
+    }
+  }, [form, user, setUser, userRepository]);
 
-      <Input
-        style={style.input}
-        keyboardType="numeric"
-        status="basic"
-        placeholder="Limite de gastos"
-        value={form.globalLimitBudget}
-        onChangeText={(text)=>setForm({...form,globalLimitBudget: text})}
-      />
+  const handlePickImage = useCallback(async () => {
+    const newUser = !user
+      ? await new CreateUserUseCase(userRepository).execute({
+          ...form,
+          globalLimitBudget: Number(form.globalLimitBudget),
+        })
+      : user;
 
-      <Button style={{marginTop: 10}} onPress={handleSaveUser}>Guardar</Button>
-    </Layout>
+    if (!user) setUser(newUser);
+
+    const image = await new PickImageUseCase().execute();
+    if (!image) return;
+
+    try {
+      const userWithImage = await new UpdateUserUseCase(userRepository).execute({
+        profilePictureUrl: image,
+      });
+      setUser(userWithImage);
+    } catch (error) {
+      console.error("Error al actualizar la imagen de perfil:", error);
+    }
+  }, [user, form, setUser, userRepository]);
+
+  return (
+    <LayoutWithTopNavigation TitleScreen="Perfil">
+      <Layout style={styles.mainContainer}>
+        <Layout style={styles.avatarContainer}>
+          <Image
+            style={styles.avatar}
+            source={user?.profilePictureUrl ? { uri: user.profilePictureUrl } : require("../assets/avatar.png")}
+          />
+          <Button
+            style={styles.cameraButton}
+            status="danger"
+            accessoryLeft={<Icon name="camera-outline" />}
+            onPress={handlePickImage}
+          />
+        </Layout>
+        
+        <Input
+          style={styles.input}
+          status="basic"
+          placeholder="Escribe tu nombre"
+          value={form.name}
+          onChangeText={(text) => setForm((prev) => ({ ...prev, name: text }))}
+        />
+
+        <Input
+          style={styles.input}
+          keyboardType="numeric"
+          status="basic"
+          placeholder="Limite de gastos"
+          value={form.globalLimitBudget}
+          onChangeText={(text) => setForm((prev) => ({ ...prev, globalLimitBudget: text }))}
+        />
+
+        <Button style={styles.saveButton} onPress={handleSaveUser}>
+          Guardar
+        </Button>
+      </Layout>
+    </LayoutWithTopNavigation>
   );
 }
 
-const style = StyleSheet.create({
+const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
-    justifyContent: "center",
+    justifyContent: "flex-start",
     alignItems: "center",
     gap: 10,
+    marginTop: 100,
   },
-  input: {
-    width: "80%",
+  avatarContainer: {
+    position: "relative",
   },
-  button: {
+  avatar: {
+    width: 200,
+    height: 200,
+    borderRadius: 100,
+  },
+  cameraButton: {
     borderRadius: 200,
     width: 10,
     height: 10,
@@ -88,7 +130,10 @@ const style = StyleSheet.create({
     right: 5,
     bottom: 0,
   },
-  avatarContainer: {
-    position: "relative",
+  input: {
+    width: "80%",
+  },
+  saveButton: {
+    marginTop: 10,
   },
 });

@@ -1,18 +1,26 @@
-import { Button, Layout, Text } from '@ui-kitten/components'
+import { Button, Icon, Layout, Menu, MenuItem, Text } from '@ui-kitten/components'
 import { router } from 'expo-router'
 import * as SqliteDatabase from 'expo-sqlite'
 import React from 'react'
 import { useUserStore } from '../store/useUserStore'
-import { TopNavigationGeneric } from '../navigation/TopNavigationGeneric'
-import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import { useTheme } from '@react-navigation/native'
+import { LayoutWithTopNavigation } from '../common/layouts/LayoutWithTopNavigation'
 
 export const config = () => {
   const setUser = useUserStore(state => state.setUser);
-  const {top} = useSafeAreaInsets()
+  const theme = useTheme();
+
   return (
-    <Layout style={{flex: 1, paddingTop: top}}>
-      <TopNavigationGeneric TitleScreen='Configuración' />
-      <Layout style={{flex: 1, justifyContent: "center", alignItems: "center"}}>
+    <LayoutWithTopNavigation TitleScreen="Configuración">
+      <Layout style={{paddingHorizontal: 10, flex: 1, gap: 10,paddingBottom: 15}} >
+
+
+        <Menu style={{ backgroundColor: theme.colors.background}}>
+          <MenuItem title='Usuario' accessoryLeft={<Icon name="person" />} onPress={()=>router.push("/profile")}/>
+
+        </Menu>
+
+
           <Button onPress={async()=> {
             try {
               const database = await SqliteDatabase.openDatabaseAsync("MissGastosDataBase");
@@ -25,7 +33,7 @@ export const config = () => {
             }
           }} status='danger'>Borrar Base de datos</Button>
       </Layout>
-    </Layout>
+    </LayoutWithTopNavigation>
   )
 }
 

@@ -3,6 +3,7 @@ import { User } from "@/src/domain/entities/user.entity";
 import { UserRepository } from "@/src/domain/repositories/user.repository";
 import * as SQLite from "expo-sqlite";
 import { migrateDbIfNeeded } from "../db/migration";
+import { CreateUserDto } from "@/src/application/dtos/create-user.dto";
 
 export class UserRepositorySqliteImpl implements UserRepository {
   private db: SQLite.SQLiteDatabase =
@@ -18,20 +19,20 @@ export class UserRepositorySqliteImpl implements UserRepository {
     if (!user) {
       return null;
     }
-    await this.db.closeAsync();
+    
     return user;
   }
 
-  async createUser(user: Omit<User, "id">): Promise<User> {
+  async createUser(user: CreateUserDto): Promise<User> {
     const { name, globalLimitBudget, profilePictureUrl } = user;
     const result = await this.db.runAsync(
       "INSERT INTO User (name, profilePictureUrl, globalLimitBudget) VALUES (?, ?, ?)",
       name,
-      profilePictureUrl,
+      profilePictureUrl || "",
       globalLimitBudget
     );
-    await this.db.closeAsync();
-    return { ...user, id: result.lastInsertRowId };
+    
+    return { ...user,profilePictureUrl: user.profilePictureUrl || "", id: result.lastInsertRowId };
   }
 
   async updateUser(user: Partial<User>): Promise<User> {
@@ -61,16 +62,13 @@ export class UserRepositorySqliteImpl implements UserRepository {
     values.push(currentUser.id);
 
     const query = `UPDATE User SET ${updates.join(", ")} WHERE id = ?`;
-
+    
     await this.db.runAsync(query, ...values);
 
-    const updatedUser: User = {
-      id: currentUser.id,
-      name: user.name ?? "",
-      profilePictureUrl: user.profilePictureUrl ?? "",
-      globalLimitBudget: user.globalLimitBudget ?? 0,
-    };
-    await this.db.closeAsync();
-    return updatedUser;
+    const userUpdated = await this.getUser();
+    
+    if( ! userUpdated ) throw new Error("Usuario no encontrado");
+
+    return userUpdated;
   }
 }

@@ -5,15 +5,22 @@ import { GetUserUseCase } from "@/src/application/use-cases/user/get-user.use-ca
 import React from "react";
 import { useUserStore } from "../store/useUserStore";
 import { useRouter } from "expo-router";
+import { FullLoaderScreen } from "../common/screens/loaders/FullLoaderScreen";
 
 export default function Index() {
-  const userRepository = useRef(new UserRepositorySqliteImpl());
+  const [isLoadingUser, setIsLoadingUser] = useState<boolean>(true);
   const setUserStore = useUserStore((state) => state.setUser);
   const router = useRouter();
+  
   useEffect(() => {
     const getUser = async () => {
-      const user = await new GetUserUseCase(userRepository.current).execute();
-
+      const userRepository = new UserRepositorySqliteImpl();
+      const user = await new GetUserUseCase(
+        userRepository
+      ).execute();
+      
+      setIsLoadingUser(false);
+      
       if (!user) {
         return;
       }
@@ -27,7 +34,10 @@ export default function Index() {
 
   return (
     <>
-      <InitialScreen />
+      {
+        isLoadingUser ? <FullLoaderScreen/> : <InitialScreen />
+      }
+      
     </>
   );
 }

@@ -14,7 +14,7 @@ export const TopNavigationHome = (): React.ReactElement => {
 
   const renderRightActions:(() => React.ReactElement) = (): React.ReactElement => (
     <>
-      <TopNavigationAction icon={ <Icon name='settings'/>} onPress={()=>router.push("/config")}/>
+      <TopNavigationAction icon={ <Icon name='settings'/>} onPress={()=>router.push("/settings")}/>
 
     </>
   );

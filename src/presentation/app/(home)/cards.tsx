@@ -2,32 +2,28 @@ import {
   Button,
   Icon,
   Layout,
-  Divider,
   List,
   ListItem,
-  TopNavigation,
-  TopNavigationAction,
 } from "@ui-kitten/components";
-import { StyleSheet, TouchableOpacity } from "react-native";
+import { StyleSheet} from "react-native";
 import React from "react";
+import { router } from "expo-router";
+import { useTheme } from "@react-navigation/native";
 
 interface IListItem {
   title: string;
-  description: string;
+  lastFourDigits: string;
 }
 
 export default function YourCards() {
-  const renderBackAction = (): React.ReactElement => (
-    <TopNavigationAction icon={<Icon name="arrow-back" />} />
-  );
-
+  const theme = useTheme();
   const handleAddCard = () => {
-    //Agregar tarjeta
+    router.push("/addCard");
   };
 
   //Que funcione el boton de cada tarjeta
   const handleCardPress = (index: number) => {
-    console.log(`Tarjeta ${index + 1} clicada`);
+    router.push("/watchCard");
   };
 
   const renderItem = ({
@@ -37,35 +33,36 @@ export default function YourCards() {
     item: IListItem;
     index: number;
   }): React.ReactElement => (
-    <TouchableOpacity onPress={() => handleCardPress(index)}>
+    
       <ListItem
         title={`${item.title} ${index + 1}`}
-        description={`${item.description} ${index + 1}`}
+        description={`**** **** **** ${item.lastFourDigits}`}
         accessoryLeft={<Icon name="credit-card-outline" />}
+        onPress={()=>handleCardPress(index)}
       />
-    </TouchableOpacity>
+    
   );
 
-  const data = new Array(30).fill({
+  const data = new Array(10).fill({
     title: "Tarjeta",
     card: "Numero de tarjeta",
+    lastFourDigits: "3489"
   });
 
   return (
     <Layout style={style.mainContainer}>
       
-      <Divider />
       <Button
         style={style.button}
         appearance="ghost"
         status="primary"
         size="large"
         accessoryLeft={<Icon name="plus-outline" />}
-        //onPress={handleAddCard}
+        onPress={handleAddCard}
       >
         Crear tarjeta
       </Button>
-      <List style={style.container} data={data} renderItem={renderItem} />
+      <List style={{backgroundColor: theme.colors.background}} data={data} renderItem={renderItem} />
     </Layout>
   );
 }
@@ -73,8 +70,6 @@ export default function YourCards() {
 const style = StyleSheet.create({
   mainContainer: {
     flex: 1,
-    flexDirection: "column",
-    alignItems: "flex-start",
     paddingTop: 50,
     paddingHorizontal: 20,
   },
@@ -94,9 +89,5 @@ const style = StyleSheet.create({
     position: "static",
     right: 8,
     bottom: 40,
-  },
-  container: {
-    flex: 1,
-    width: "100%",
   },
 });

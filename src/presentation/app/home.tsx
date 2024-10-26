@@ -1,11 +1,9 @@
 import React from "react";
 import {
-  Button,
   Icon,
   Layout,
   Tab,
   TabBar,
-  IconElement,
   TabBarProps,
 } from "@ui-kitten/components";
 import { StyleSheet } from "react-native";
