@@ -25,6 +25,7 @@ CREATE TABLE User (
 CREATE TABLE Category (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     type TEXT NOT NULL,
+    color TEXT,
     icon TEXT
 );
 
