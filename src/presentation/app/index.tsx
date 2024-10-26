@@ -5,8 +5,7 @@ import { GetUserUseCase } from "@/src/application/use-cases/user/get-user.use-ca
 import React from "react";
 import { useUserStore } from "../store/useUserStore";
 import { useRouter } from "expo-router";
-import { User } from "@/src/domain/entities/user.entity";
-import { FullLoaderScreen } from "../screens/loaders/FullLoaderScreen";
+import { FullLoaderScreen } from "../common/screens/loaders/FullLoaderScreen";
 
 export default function Index() {
   const [isLoadingUser, setIsLoadingUser] = useState<boolean>(true);

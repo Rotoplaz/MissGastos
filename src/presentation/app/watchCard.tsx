@@ -2,13 +2,12 @@ import React from "react";
 import { Button, Icon, Layout, Text } from "@ui-kitten/components";
 import { StyleSheet, View, Alert } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { TopNavigationGeneric } from "../navigation/TopNavigationGeneric";
+import { TopNavigationGeneric } from "../common/navigation/TopNavigationGeneric";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { LayoutWithTopNavigation } from "../layouts/LayoutWithTopNavigation";
+import { LayoutWithTopNavigation } from "../common/layouts/LayoutWithTopNavigation";
 
 export default function WatchCard() {
   
-  const {top} = useSafeAreaInsets()
 
   // Datos fijos simulados
   const cardData = {

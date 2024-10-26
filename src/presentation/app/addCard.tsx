@@ -10,7 +10,7 @@ import {
 } from "@ui-kitten/components";
 import React, { useState } from "react";
 import { StyleSheet, Alert } from "react-native";
-import { LayoutWithTopNavigation } from "../layouts/LayoutWithTopNavigation";
+import { LayoutWithTopNavigation } from "../common/layouts/LayoutWithTopNavigation";
 
 export default function AddCard() {
   const [selectedIndex, setSelectedIndex] = useState<IndexPath>(

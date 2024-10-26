@@ -3,11 +3,11 @@ import { Image, StyleSheet } from "react-native";
 import { useUserStore } from "../store/useUserStore";
 import { useRef, useState, useCallback } from 'react';
 import { router } from "expo-router";
-import { LayoutWithTopNavigation } from "../layouts/LayoutWithTopNavigation";
 import { PickImageUseCase } from "@/src/application/use-cases/profilePicture/profile-picture.use-case";
 import { UserRepositorySqliteImpl } from "@/src/infrastructure/user/user-sqli.repository.impl";
 import { UpdateUserUseCase } from "@/src/application/use-cases/user/update-user.user-case";
 import { CreateUserUseCase } from "@/src/application/use-cases/user/create-suer.use-case";
+import { LayoutWithTopNavigation } from "../common/layouts/LayoutWithTopNavigation";
 
 export default function Profile() {
   const user = useUserStore((state) => state.user);
@@ -36,7 +36,7 @@ export default function Profile() {
       
       setUser(userUpdated);
       
-      if (isNewUser.current) router.replace("/(home)");
+      router.replace("/(home)");
     } catch (error) {
       console.error("Error al guardar el usuario:", error);
     }

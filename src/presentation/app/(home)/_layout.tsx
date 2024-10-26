@@ -1,5 +1,5 @@
 import { Tabs } from "expo-router";
-import { BottomNavigationHome } from "../../navigation/BottomNavigationHome";
+import { BottomNavigationHome } from "../../common/navigation/BottomNavigationHome";
 import { Layout } from "@ui-kitten/components";
 import { useTheme } from "@react-navigation/native";
 

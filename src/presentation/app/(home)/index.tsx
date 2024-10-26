@@ -4,9 +4,9 @@ import { StyleSheet } from "react-native";
 import { PieChart } from "react-native-gifted-charts";
 import { useUserStore } from "../../store/useUserStore";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { TopNavigationHome } from "../../navigation/TopNavigationHome";
+import { TopNavigationHome } from "../../common/navigation/TopNavigationHome";
 import { GeneratePDFUseCase } from "@/src/application/use-cases/reports/generate-pdf.use-case";
-import { getPDFLayout } from "../../pdf-layout/get-PDF-layout";
+import { getPDFLayout } from "../../common/pdf-layout/get-PDF-layout";
 import { FullLoaderScreen } from "../../screens/loaders/FullLoaderScreen";
 import { router } from "expo-router";
 

@@ -3,8 +3,8 @@ import { router } from 'expo-router'
 import * as SqliteDatabase from 'expo-sqlite'
 import React from 'react'
 import { useUserStore } from '../store/useUserStore'
-import { LayoutWithTopNavigation } from '../layouts/LayoutWithTopNavigation'
 import { useTheme } from '@react-navigation/native'
+import { LayoutWithTopNavigation } from '../common/layouts/LayoutWithTopNavigation'
 
 export const config = () => {
   const setUser = useUserStore(state => state.setUser);
