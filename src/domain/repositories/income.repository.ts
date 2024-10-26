@@ -7,4 +7,5 @@ export interface IncomeRepository {
     updateIncome(id: number, expense: Partial<Income>): Promise<Income>;
     deleteIncome(id: number): Promise<void>;
     getAllIncome(): Promise<Income[]>;
+    getIncomesByDateRange(startDate: string, endDate: string): Promise<Income[]>;
 }
