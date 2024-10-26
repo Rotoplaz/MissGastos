@@ -7,6 +7,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { TopNavigationHome } from "../../common/navigation/TopNavigationHome";
 import { GeneratePDFUseCase } from "@/src/application/use-cases/reports/generate-pdf.use-case";
 import { getPDFLayout } from "../../common/pdf-layout/get-PDF-layout";
+import { router } from "expo-router";
 
 const data = [
   { value: 70, color: "#f5b7b1" },
@@ -76,6 +77,7 @@ export default function index() {
 
         {/* Floating button to add entry/exit */}
         <Button
+          onPress={()=>router.push("/createTransaction")}
           style={style.fabButton}
           accessoryLeft={
             <Icon
