@@ -11,6 +11,7 @@ export class ExpenseSqliteRepositoryImpl implements ExpenseRepository {
   constructor() {
     migrateDbIfNeeded(this.db);
   }
+
   async getExpensesGroupByCategory(): Promise<
     { type: string; totalExpense: number }[]
   > {
@@ -136,7 +137,9 @@ export class ExpenseSqliteRepositoryImpl implements ExpenseRepository {
           values.push(expense.date.toISOString().split("T")[0]);
         }
 
-        const updateQuery = `UPDATE Expense SET ${updates.join(", ")} WHERE id = ?`;
+        const updateQuery = `UPDATE Expense SET ${updates.join(
+          ", "
+        )} WHERE id = ?`;
         values.push(id);
         await this.db.runAsync(updateQuery, ...values);
 
@@ -176,7 +179,9 @@ export class ExpenseSqliteRepositoryImpl implements ExpenseRepository {
         updates.push("cardId = ?");
         values.push(null);
 
-        const updateQuery = `UPDATE Expense SET ${updates.join(", ")} WHERE id = ?`;
+        const updateQuery = `UPDATE Expense SET ${updates.join(
+          ", "
+        )} WHERE id = ?`;
         values.push(id);
         await this.db.runAsync(updateQuery, ...values);
 
@@ -217,7 +222,9 @@ export class ExpenseSqliteRepositoryImpl implements ExpenseRepository {
           values.push(expense.date.toISOString().split("T")[0]);
         }
 
-        const updateQuery = `UPDATE Expense SET ${updates.join(", ")} WHERE id = ?`;
+        const updateQuery = `UPDATE Expense SET ${updates.join(
+          ", "
+        )} WHERE id = ?`;
         values.push(id);
         await this.db.runAsync(updateQuery, ...values);
 
@@ -251,5 +258,18 @@ export class ExpenseSqliteRepositoryImpl implements ExpenseRepository {
       [category.id]
     );
     return allExpense;
+  }
+
+  async getExpensesByDateRange(
+    startDate: Date,
+    endDate: Date
+  ): Promise<Expense[]> {
+    const formattedStartDate = startDate.toISOString().split("T")[0];
+    const formattedEndDate = endDate.toISOString().split("T")[0];
+    const dateExpenses = await this.db.getAllAsync<Expense>(
+      "SELECT * FROM Expense WHERE date BETWEEN ? AND ? ORDER BY date",
+      [formattedStartDate, formattedEndDate]
+    );
+    return dateExpenses;
   }
 }

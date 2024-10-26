@@ -9,4 +9,5 @@ export interface ExpenseRepository {
     getAllExpenses(): Promise<Expense[]>;
     getExpensesByCategory?(category: Category): Promise<Expense[]>;
     getExpensesGroupByCategory(): Promise<{type:string, totalExpense: number}[]>;
+    getExpensesByDateRange(startDate: Date, endDate: Date): Promise<Expense[]>;
 }
