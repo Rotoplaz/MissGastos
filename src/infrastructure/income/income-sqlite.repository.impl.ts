@@ -88,4 +88,17 @@ export class IncomeSqliteRepositoryImpl implements IncomeRepository {
     );
     return allIncomes;
   }
+
+  async getIncomesByDateRange(
+    startDate: Date,
+    endDate: Date
+  ): Promise<Income[]> {
+    const formattedStartDate = startDate.toISOString().split("T")[0];
+    const formattedEndDate = endDate.toISOString().split("T")[0];
+    const dateIncomes = await this.db.getAllAsync<Income>(
+      "SELECT * FROM Income WHERE date BETWEEN ? AND ? ORDER BY date",
+      [formattedStartDate, formattedEndDate]
+    );
+    return dateIncomes;
+  }
 }
