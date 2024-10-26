@@ -13,60 +13,64 @@ export function migrateDbIfNeeded(db: SQLiteDatabase) {
     if (userVersion!.user_version === 0) {
       db.execSync(`
     PRAGMA journal_mode = 'wal';
-    CREATE TABLE User (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      name TEXT NOT NULL,
-      profilePictureUrl TEXT,
-      globalLimitBudget REAL
-  );
-  
-  -- Create categories table
-  CREATE TABLE Category (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      type TEXT NOT NULL,
-      icon TEXT
-  );
-  
-  -- Create cards table (combined for credit and debit)
-  CREATE TABLE Card (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      name TEXT NOT NULL,
-      lastFourDigits TEXT NOT NULL,
-      debt REAL NOT NULL,
-      cardType TEXT CHECK(cardType IN ('credit', 'debit')), -- Defines whether it is a credit or debit card
-      limitDebit REAL, -- Only for debit cards
-      dueDate DATE, -- Only for credit cards
-      creditLimit REAL,   -- Only for credit cards
-      currentBalance REAL -- Only for debit cards
-  );
-  
-  -- Create expenses table
-  CREATE TABLE Expense (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      amount REAL NOT NULL,
-      concept TEXT,
-      categoryId INTEGER NOT NULL,
-      paymentMethod TEXT CHECK(paymentMethod IN ('cash', 'credit', 'debit')), 
-      cardId INTEGER,  -- This field is null if paymentMethod is "cash"
-      FOREIGN KEY (categoryId) REFERENCES Category(id),
-      FOREIGN KEY (cardId) REFERENCES Card(id)
-  );
-  
-  -- Create reminders table
-  CREATE TABLE Reminder (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      title TEXT NOT NULL,
-      description TEXT,
-      dueDate DATE NOT NULL,
-      isItPaid BOOLEAN NOT NULL
-  );
-  
-  -- Create income table
-  CREATE TABLE Income (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      amount REAL NOT NULL,
-      concept TEXT
-  );`);
+-- Create users table
+CREATE TABLE User (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
+    profilePictureUrl TEXT,
+    globalLimitBudget REAL
+);
+
+-- Create categories table
+CREATE TABLE Category (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    type TEXT NOT NULL,
+    icon TEXT
+);
+
+-- Create cards table (combined for credit and debit)
+CREATE TABLE Card (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
+    lastFourDigits TEXT NOT NULL,
+    debt REAL NOT NULL,
+    cardType TEXT CHECK(cardType IN ('credit', 'debit')), -- Defines whether it is a credit or debit card
+    limitDebit REAL, -- Only for debit cards
+    dueDate DATE, -- Only for credit cards
+    creditLimit REAL,   -- Only for credit cards
+    currentBalance REAL -- Only for debit cards
+);
+
+-- Create expenses table
+CREATE TABLE Expense (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    amount REAL NOT NULL,
+    concept TEXT,
+    categoryId INTEGER NOT NULL,
+    paymentMethod TEXT CHECK(paymentMethod IN ('cash', 'credit', 'debit')), 
+    cardId INTEGER,  -- This field is null if paymentMethod is "cash"
+    date DATE NOT NULL,  -- Add date field
+    FOREIGN KEY (categoryId) REFERENCES Category(id),
+    FOREIGN KEY (cardId) REFERENCES Card(id)
+);
+
+-- Create reminders table
+CREATE TABLE Reminder (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    title TEXT NOT NULL,
+    description TEXT,
+    dueDate DATE NOT NULL,
+    isItPaid BOOLEAN NOT NULL
+);
+
+-- Create income table
+CREATE TABLE Income (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    amount REAL NOT NULL,
+    date DATE NOT NULL,  -- Add date field
+    concept TEXT
+);
+  `);
   
       userVersion!.user_version = 1;
     }
