@@ -10,6 +10,7 @@ CREATE TABLE User (
 CREATE TABLE Category (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     type TEXT NOT NULL,
+    color TEXT,
     icon TEXT
 );
 
@@ -60,12 +61,15 @@ CREATE TABLE Income (
 -- Insert user
 INSERT INTO User (name, profilePictureUrl, globalLimitBudget) VALUES 
 ('Juan Pérez', 'http://example.com/jperez.jpg', 5000.00);
+
 -- Insert categories
-INSERT INTO Category (type, icon) VALUES 
-('Comida', '🍔'),
-('Transporte', '🚗'),
-('Entretenimiento', '🎉'),
-('Salud', '💊');
+INSERT INTO Category (type, color, icon) VALUES 
+('Comida', '#FF5733', '🍔'),          
+('Transporte', '#3498DB', '🚗'),       
+('Entretenimiento', '#F1C40F', '🎉'),  
+('Salud', '#2ECC71', '💊'),            
+('Educación', '#8E44AD', '📚'),        
+('Ropa', '#E67E22', '👗');            
 
 -- Insert cards
 INSERT INTO Card (name, lastFourDigits, debt, cardType, limitDebit, currentBalance) VALUES 
