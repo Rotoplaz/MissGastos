@@ -24,11 +24,12 @@ export class CategoryRepositoryImpl implements CategoryRepository {
   }
 
   async createCategory(category: Omit<Category, "id">): Promise<Category> {
-    const { type, icon } = category;
+    const { type, icon, color } = category;
     const newCategory = await this.db.runAsync(
-      "INSERT INTO Category (type, icon) VALUES (?,?)",
+      "INSERT INTO Category (type, icon, color) VALUES (?,?,?)",
       type,
-      icon
+      icon,
+      color
     );
     return {
       id: newCategory.lastInsertRowId,
@@ -46,6 +47,11 @@ export class CategoryRepositoryImpl implements CategoryRepository {
     if (category.type !== undefined) {
       fieldsToUpdate.push("type = ?");
       values.push(category.type);
+    }
+
+    if (category.color !== undefined) {
+      fieldsToUpdate.push("color = ?");
+      values.push(category.color);
     }
 
     if (category.icon !== undefined) {
