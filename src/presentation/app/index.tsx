@@ -1,10 +1,4 @@
-import Profile from "./profile";
 import InitialScreen from "./initial";
-import YourCards from "./(home)/cards";
-import AddCard from "./addCard";
-import WatchCard from "./watchCard";
-import EditCard from "./editCard";
-import History from "./(home)/history";
 import { useEffect, useRef, useState } from "react";
 import { UserRepositorySqliteImpl } from "../../infrastructure/user/user-sqli.repository.impl";
 import { GetUserUseCase } from "@/src/application/use-cases/user/get-user.use-case";
