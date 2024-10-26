@@ -6,18 +6,20 @@ export class UserMetricsService {
     getExpenseMetrics(expense:{
         type: string;
         totalExpense: number;
+        color: string;
         }[]
     ){
         const totalSum = expense.reduce((acc, item) => acc + item.totalExpense, 0);
         const totalExpensePercentages = expense.map(item =>{
             return{
                 type:item.type,
-                porcentage: (item.totalExpense / totalSum) * 100
+                porcentage: (item.totalExpense / totalSum) * 100,
+                color: item.color
             };
         });
 
         return {
-            expense, totalSum, totalExpensePercentages
+            totalSum, totalExpensePercentages
         };
     }
 

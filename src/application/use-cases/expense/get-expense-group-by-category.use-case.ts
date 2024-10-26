@@ -10,6 +10,7 @@ export class GetExpensesGroupByCategoryUseCase {
     async execute(): Promise<{
         type: string;
         totalExpense: number;
+        color: string;
     }[]> {
         const expense = await this.expenseRepository.getExpensesGroupByCategory();
         return expense;

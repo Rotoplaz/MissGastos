@@ -13,12 +13,13 @@ export class ExpenseSqliteRepositoryImpl implements ExpenseRepository {
   }
 
   async getExpensesGroupByCategory(): Promise<
-    { type: string; totalExpense: number }[]
+    { type: string; totalExpense: number, color: string; }[]
   > {
     const expensesGroupByCategory = await this.db.getAllAsync<{
       type: string;
       totalExpense: number;
-    }>(`SELECT c.type, SUM(e.amount) AS totalExpense 
+      color: string;
+    }>(`SELECT  c.color, c.type, SUM(e.amount) AS totalExpense 
             FROM Expense e
             JOIN Category c ON e.categoryId = c.id
             GROUP BY c.type;`);
