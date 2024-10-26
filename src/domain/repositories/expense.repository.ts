@@ -1,3 +1,4 @@
+import { ExpenseChartDto } from "@/src/application/dtos/expense-chart.dto";
 import { Category } from "../entities/category.entity";
 import { Expense } from "../entities/expense.entity";
 
@@ -8,6 +9,6 @@ export interface ExpenseRepository {
     deleteExpense(id: number): Promise<void>;
     getAllExpenses(): Promise<Expense[]>;
     getExpensesByCategory?(category: Category): Promise<Expense[]>;
-    getExpensesGroupByCategory(): Promise<{type:string, totalExpense: number, color: string}[]>;
+    getExpensesGroupByCategory(): Promise<ExpenseChartDto[]>;
     getExpensesByDateRange(startDate: Date, endDate: Date): Promise<Expense[]>;
 }

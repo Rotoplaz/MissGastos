@@ -1,4 +1,5 @@
 import { ExpenseRepository } from "@/src/domain/repositories/expense.repository";
+import { ExpenseChartDto } from "../../dtos/expense-chart.dto";
 
 
 
@@ -7,11 +8,7 @@ export class GetExpensesGroupByCategoryUseCase {
         private readonly expenseRepository: ExpenseRepository
     ){}
 
-    async execute(): Promise<{
-        type: string;
-        totalExpense: number;
-        color: string;
-    }[]> {
+    async execute(): Promise<ExpenseChartDto[]> {
         const expense = await this.expenseRepository.getExpensesGroupByCategory();
         return expense;
     }

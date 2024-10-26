@@ -1,7 +1,6 @@
 import { GetExpensesGroupByCategoryUseCase } from "@/src/application/use-cases/expense/get-expense-group-by-category.use-case";
 import { UserMetricsService } from "@/src/domain/services/user-metrics.service";
 import { ExpenseSqliteRepositoryImpl } from "@/src/infrastructure/expense/expense-sqlite.repository.impl";
-import { useUserStore } from "@/src/presentation/store/useUserStore";
 import { Layout, Text } from "@ui-kitten/components";
 import React, { useEffect, useState } from "react";
 import { StyleSheet } from "react-native";
@@ -9,7 +8,6 @@ import { PieChart, pieDataItem } from "react-native-gifted-charts";
 
 export const ChartPieHome = () => {
   const [data, setData] = useState<pieDataItem[]>([]);
-  const user = useUserStore((state) => state.user);
   useEffect(() => {
     const getCategories = async () => {
       const expenseRepository = new ExpenseSqliteRepositoryImpl();
