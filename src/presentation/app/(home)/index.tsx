@@ -7,8 +7,6 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { TopNavigationHome } from "../../common/navigation/TopNavigationHome";
 import { GeneratePDFUseCase } from "@/src/application/use-cases/reports/generate-pdf.use-case";
 import { getPDFLayout } from "../../common/pdf-layout/get-PDF-layout";
-import { FullLoaderScreen } from "../../screens/loaders/FullLoaderScreen";
-import { router } from "expo-router";
 
 const data = [
   { value: 70, color: "#f5b7b1" },
@@ -102,7 +100,6 @@ const style = StyleSheet.create({
     // backgroundColor: "red"
   },
   welcomeText: {
-    color: "white",
     marginBottom: 10,
     fontSize: 30,
   },
