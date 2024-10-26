@@ -73,11 +73,13 @@ INSERT INTO Card (name, lastFourDigits, debt, cardType, limitDebit, currentBalan
 ('Credit Card Bank B', '5678', 200.00, 'credit', '2024-11-01', 10000.00);
 
 -- Insert expenses
-INSERT INTO Expense (amount, concept, categoryId, paymentMethod, cardId) VALUES 
-(50.00, 'Almuerzo', 1, 'debit', 2),
-(100.00, 'Cine', 3, 'credit', 1),
-(30.00, 'Medicamentos', 4, 'cash', NULL),
-(200.00, 'Gasolina', 2, 'debit', 2);
+INSERT INTO Expense (amount, concept, categoryId, paymentMethod, cardId, date)
+VALUES 
+    (50.00, 'Groceries at Walmart', 1, 'debit', 2, '2024-10-01'),
+    (15.00, 'Uber ride', 2, 'credit', 1, '2024-10-03'),
+    (80.00, 'Movie night', 3, 'cash', NULL, '2024-10-05'),
+    (100.00, 'Electricity bill', 4, 'credit', 3, '2024-10-07');
+
 
 -- Insert reminders
 INSERT INTO Reminder (title, description, dueDate, isItPaid) VALUES 
@@ -85,11 +87,12 @@ INSERT INTO Reminder (title, description, dueDate, isItPaid) VALUES
 ('Consulta médica', 'No olvidar la consulta médica de la próxima semana.', '2024-10-07', 1);
 
 -- Insert income
-INSERT INTO Income (amount, concept) VALUES 
-(3000.00, 'Salario de octubre'),
-(150.00, 'Freelance'),
-(1200.00, 'Venta de artículos usados');
-
+INSERT INTO Income (amount, date, concept)
+VALUES 
+    (1500.00, '2024-10-01', 'Salary'),
+    (200.00, '2024-10-03', 'Freelance project'),
+    (100.00, '2024-10-05', 'Gift from family');
+    
 -- Get all users
 SELECT * FROM User;
 
@@ -118,3 +121,31 @@ GROUP BY c.type;
 SELECT * FROM Card WHERE cardType = 'credit' ORDER BY creditLimit DESC LIMIT 1;
 
 
+-- This query selects all expenses made within a specified date range.
+SELECT 
+    id,                 
+    amount,              
+    concept,              
+    categoryId,          
+    paymentMethod,        
+    cardId,              
+    date                
+FROM 
+    Expense
+WHERE 
+    date BETWEEN '2024-10-01' AND '2024-10-31'
+ORDER BY 
+    date;                
+
+-- This query selects all incomes recorded within a specified date range.
+SELECT 
+    id,                   
+    amount,               
+    concept,             
+    date                 
+FROM 
+    Income
+WHERE 
+    date BETWEEN '2024-10-01' AND '2024-10-31'
+ORDER BY 
+    date;
