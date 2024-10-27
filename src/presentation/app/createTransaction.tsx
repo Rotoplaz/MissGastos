@@ -4,8 +4,6 @@ import {
   Tab,
   TabBar,
   Icon,
-  TopNavigation,
-  TopNavigationAction,
   Button,
   Input,
   Text,
@@ -24,7 +22,6 @@ export const TabBarAccessoriesShowcase = () => {
   const bottomState = useTabBarState();
   const [selectedIcon, setSelectedIcon] = React.useState<number | null>(null);
   const [expenseValue, setExpenseValue] = React.useState("");
-  const [incomeValue, setIncomeValue] = React.useState("");
   const [paymentMethod, setPaymentMethod] = React.useState<string | null>(null);
   const [visible, setVisible] = React.useState(false);
   const [selectedCardIndex, setSelectedCardIndex] = React.useState<
@@ -36,13 +33,6 @@ export const TabBarAccessoriesShowcase = () => {
     { name: "BBVA", lastFour: "**5678" },
     { name: "Banamex", lastFour: "**9012" },
   ];
-
-  const renderBackAction = () => (
-    <TopNavigationAction
-      icon={(props) => <Icon {...props} name="arrow-back" />}
-      onPress={() => console.log("Back pressed")}
-    />
-  );
 
   const handleIconPress = (index: number) => {
     setSelectedIcon(index);

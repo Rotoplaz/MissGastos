@@ -6,7 +6,7 @@ import {
   Text,
 } from "@ui-kitten/components";
 import React, { useState } from "react";
-import { StyleSheet, Alert } from "react-native";
+import { StyleSheet } from "react-native";
 import { LayoutWithTopNavigation } from "../common/layouts/LayoutWithTopNavigation";
 import { DebitCardForm } from "../addCard/components/DebitCardForm";
 import { CreditCardForm } from "../addCard/components/CreditCardForm";

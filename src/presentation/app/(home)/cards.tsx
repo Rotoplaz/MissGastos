@@ -6,48 +6,70 @@ import {
   ListItem,
 } from "@ui-kitten/components";
 import { StyleSheet} from "react-native";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { router } from "expo-router";
 import { useTheme } from "@react-navigation/native";
+import { GetAllDebitCardsUseCase } from "@/src/application/use-cases/debitCard/get-all-debit-cards.use-case";
+import { DebitCardRepositoryImpl } from "@/src/infrastructure/cards/debit-card-crud.repository.impl";
+import { CreditCardCrudRepository } from "@/src/infrastructure/cards/credit-card-crud.repository.impl";
+import { GetAllCreditsCardsUseCase } from "@/src/application/use-cases/creditCard/get-all-credit-cards.user-case";
 
 interface IListItem {
-  title: string;
+  id: number;
+  name: string;
   lastFourDigits: string;
 }
 
 export default function YourCards() {
+  
+  const [cards, setCards] = useState<IListItem[]>([]);
+
   const theme = useTheme();
   const handleAddCard = () => {
     router.push("/addCard");
   };
 
-  //Que funcione el boton de cada tarjeta
-  const handleCardPress = (index: number) => {
+  const handleCardPress = () => {
     router.push("/watchCard");
   };
 
-  const renderItem = ({
-    item,
-    index,
-  }: {
-    item: IListItem;
-    index: number;
-  }): React.ReactElement => (
+  const renderItem = (card: IListItem): React.ReactElement => (
     
       <ListItem
-        title={`${item.title} ${index + 1}`}
-        description={`**** **** **** ${item.lastFourDigits}`}
+        title={`${card.name}`}
+        description={`**** **** **** ${card.lastFourDigits}`}
         accessoryLeft={<Icon name="credit-card-outline" />}
-        onPress={()=>handleCardPress(index)}
+        onPress={()=>handleCardPress()}
       />
     
   );
 
-  const data = new Array(10).fill({
-    title: "Tarjeta",
-    card: "Numero de tarjeta",
-    lastFourDigits: "3489"
-  });
+
+  useEffect(() => {
+    
+    const getCards = async () => {
+      const debitCardsRepository = new DebitCardRepositoryImpl();
+      const creditCardsRepository = new CreditCardCrudRepository();
+      const debitCards = await new GetAllDebitCardsUseCase(debitCardsRepository).execute();
+      const creditCards = await new GetAllCreditsCardsUseCase(creditCardsRepository).execute();
+      
+      setCards([
+        ...debitCards.map(({name, id, lastFourDigits}) => ({
+          id,
+          name,
+          lastFourDigits,
+        })),
+        ...creditCards.map(({name, id, lastFourDigits}) => ({
+          id,
+          name,
+          lastFourDigits,
+        })),
+      ]);
+
+    }
+    getCards();
+  }, [])
+  
 
   return (
     <Layout style={style.mainContainer}>
@@ -62,7 +84,7 @@ export default function YourCards() {
       >
         Crear tarjeta
       </Button>
-      <List style={{backgroundColor: theme.colors.background}} data={data} renderItem={renderItem} />
+      <List style={{backgroundColor: theme.colors.background}} data={cards} renderItem={({item})=>renderItem(item)} />
     </Layout>
   );
 }
