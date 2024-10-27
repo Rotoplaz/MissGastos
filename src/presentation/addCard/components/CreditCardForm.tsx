@@ -1,3 +1,5 @@
+import { CreateCreditCardUseCase } from "@/src/application/use-cases/creditCard/create-credit-card.user-case";
+import { CreditCardCrudRepository } from "@/src/infrastructure/cards/credit-card-crud.repository.impl";
 import { Button, Input, Layout, Text } from "@ui-kitten/components";
 import React, { useState } from "react";
 import { Alert, StyleSheet } from "react-native";
@@ -43,6 +45,15 @@ export const CreditCardForm = () => {
   const handleSubmit = () => {
     if (validateForm()) {
       Alert.alert("Éxito", "Formulario enviado correctamente.");
+      const repository = new CreditCardCrudRepository();
+      const newCard = new CreateCreditCardUseCase(repository).execute({
+        creditLimit: Number(creditLimit),
+        debt: Number(debt),
+        dueDate: new Date("2029-10-10"),
+        lastFourDigits,
+        name,
+        type: "credit"
+      })
       resetForm();
     }
   };

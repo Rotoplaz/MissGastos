@@ -96,7 +96,7 @@ export class CreditCardCrudRepository implements CreditCardRepository {
   }
   async getAllCreditCards(): Promise<CreditCard[]> {
     const allCreditCards = await this.db.getAllAsync<CreditCard>(
-      "SELECT * FROM Card"
+      "SELECT * FROM Card WHERE cardType = 'credit'"
     );
     return allCreditCards;
   }

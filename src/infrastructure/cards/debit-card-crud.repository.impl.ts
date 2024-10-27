@@ -99,7 +99,7 @@ export class DebitCardRepositoryImpl implements DebitCardRepository {
 
   async getAllDebitCards(): Promise<DebitCard[]> {
     const allDebitCards = await this.db.getAllAsync<DebitCard>(
-      "SELECT * FROM Card"
+      "SELECT * FROM Card WHERE cardType = 'debit'"
     );
     return allDebitCards;
   }
