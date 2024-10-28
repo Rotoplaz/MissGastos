@@ -19,19 +19,19 @@ export class CreditCardCrudRepository implements CreditCardRepository {
     if (!creditCard) {
       return null;
     }
-
-    return creditCard;
+    return {...creditCard, dueDate: new Date(creditCard.dueDate) };
   }
 
   async createCreditCard(card: Omit<CreditCard, "id">): Promise<CreditCard> {
-    const { name, lastFourDigits, debt, creditLimit, type } = card;
+    const { name, lastFourDigits, debt, creditLimit, type, dueDate } = card;
     const creditCard = await this.db.runAsync(
-      "INSERT INTO Card (name, lastFourDigits, debt, cardType, creditLimit) VALUES (?,?,?,?,?)",
+      "INSERT INTO Card (name, lastFourDigits, debt, cardType, creditLimit, dueDate) VALUES (?,?,?,?,?,?)",
       name,
       lastFourDigits,
       debt,
       type,
-      creditLimit
+      creditLimit,
+      dueDate.toISOString().split("T")[0]
     );
     return {
       id: creditCard.lastInsertRowId,

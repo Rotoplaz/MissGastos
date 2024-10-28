@@ -42,7 +42,7 @@ export default function RootLayout() {
             <Stack.Screen name="profile"  />
             <Stack.Screen name="settings" />
             <Stack.Screen name="initial" />
-            <Stack.Screen name="createTransaction" />
+            <Stack.Screen name="creditCard" />
             
           </Stack>
         </Layout>

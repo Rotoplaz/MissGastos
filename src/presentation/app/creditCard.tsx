@@ -1,22 +1,30 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Button, Icon, Layout, Text } from "@ui-kitten/components";
 import { StyleSheet, View, Alert } from "react-native";
-import { useNavigation } from "@react-navigation/native";
-import { TopNavigationGeneric } from "../common/navigation/TopNavigationGeneric";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { LayoutWithTopNavigation } from "../common/layouts/LayoutWithTopNavigation";
+import { CreditCard } from "@/src/domain/entities/payment-methods.entity";
+import { FullLoaderScreen } from "../common/screens/loaders/FullLoaderScreen";
+import { GetCreditCardByIdUseCase } from "@/src/application/use-cases/creditCard/get-credit-card-by-id.user-cases";
+import { CreditCardCrudRepository } from "@/src/infrastructure/cards/credit-card-crud.repository.impl";
+import { CardInformation } from "../credit-card/components/CardInformation";
+import { useLocalSearchParams } from "expo-router";
+import { Card } from "../credit-card/components/Card";
 
-export default function WatchCard() {
-  
+export default function CreditCardScreen() {
+  const params = useLocalSearchParams<{ id: string }>();
 
-  // Datos fijos simulados
-  const cardData = {
-    name: "NU",
-    last4Digits: "5443",
-    debt: 10000,
-    creditLimit: 50000,
-    cutOffDate: "10/10/2024",
-  };
+  const [creditCard, setCreditCard] = useState<CreditCard | null>(null);
+
+  useEffect(() => {
+    const getCreditCard = async () => {
+      const creditCardRepository = new CreditCardCrudRepository();
+      const card = await new GetCreditCardByIdUseCase(
+        creditCardRepository
+      ).execute(+params.id);
+      setCreditCard(card);
+    };
+    getCreditCard();
+  }, []);
 
   const confirmEdit = () => {
     Alert.alert(
@@ -35,38 +43,17 @@ export default function WatchCard() {
     );
   };
 
+  if (!creditCard) {
+    return <FullLoaderScreen />;
+  }
+
   return (
-    <LayoutWithTopNavigation TitleScreen={cardData.name}>
-
+    <LayoutWithTopNavigation TitleScreen={creditCard.name}>
       <Layout style={style.mainContainer}>
-        
-
-        <View style={style.cardContainer}>
-          <View style={style.card}>
-            <Text style={style.cardText}>
-              **** **** **** {cardData.last4Digits}
-            </Text>
-          </View>
-
-          <View style={style.detailsContainer}>
-            <Text style={style.detail}>
-              Nombre: {cardData.name} {"\n"}
-            </Text>
-            <Text style={style.detail}>
-              Últimos 4 dígitos: {cardData.last4Digits} {"\n"}
-            </Text>
-            <Text style={style.detail}>
-              Deuda: ${cardData.debt} {"\n"}
-            </Text>
-            <Text style={style.detail}>
-              Límite de crédito: ${cardData.creditLimit} {"\n"}
-            </Text>
-            <Text style={style.detail}>
-              Fecha de corte: {cardData.cutOffDate}
-            </Text>
-          </View>
-
-          <View style={style.actionsContainer}>
+        <Layout style={style.cardContainer}>
+          <Card creditCard={creditCard} />
+          <CardInformation creditCard={creditCard} />
+          <Layout style={style.actionsContainer}>
             <Button
               style={style.exit}
               appearance="ghost"
@@ -91,10 +78,9 @@ export default function WatchCard() {
               accessoryLeft={<Icon name="edit-outline" fill="white" />}
               onPress={confirmEdit}
             />
-          </View>
-        </View>
+          </Layout>
+        </Layout>
       </Layout>
-
     </LayoutWithTopNavigation>
   );
 }

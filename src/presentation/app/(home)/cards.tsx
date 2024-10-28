@@ -29,8 +29,8 @@ export default function YourCards() {
     router.push("/addCard");
   };
 
-  const handleCardPress = () => {
-    router.push("/watchCard");
+  const handleCardPress = (id:number) => {
+    router.push({pathname: "/creditCard", params: {id}});
   };
 
   const renderItem = (card: IListItem): React.ReactElement => (
@@ -39,7 +39,7 @@ export default function YourCards() {
         title={`${card.name}`}
         description={`**** **** **** ${card.lastFourDigits}`}
         accessoryLeft={<Icon name="credit-card-outline" />}
-        onPress={()=>handleCardPress()}
+        onPress={()=>handleCardPress(card.id)}
       />
     
   );

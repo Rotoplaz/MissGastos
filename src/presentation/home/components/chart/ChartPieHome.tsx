@@ -19,7 +19,7 @@ export const ChartPieHome = () => {
 
       const data =
         metrics.totalExpensePercentages.length === 0
-          ? [{ value: 100, color: "#717171", text: "Sin Gastos" }]
+          ? [{ value: 100, color: "#d8d8d8", text: "Sin Gastos" }]
           : metrics.totalExpensePercentages.map((expense) => ({
               value: expense.porcentage,
               color: expense.color,
