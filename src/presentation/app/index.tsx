@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { UserRepositorySqliteImpl } from "../../infrastructure/user/user-sqli.repository.impl";
 import { GetUserUseCase } from "@/src/application/use-cases/user/get-user.use-case";
 import React from "react";
-import { useUserStore } from "../store/useUserStore";
+import { useUserStore } from "../store/user/useUserStore";
 import { useRouter } from "expo-router";
 import { FullLoaderScreen } from "../common/screens/loaders/FullLoaderScreen";
 

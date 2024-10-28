@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Button, Layout, Text, Icon, Avatar } from "@ui-kitten/components";
 import { StyleSheet } from "react-native";
 import { PieChart } from "react-native-gifted-charts";
-import { useUserStore } from "../../store/useUserStore";
+import { useUserStore } from "../../store/user/useUserStore";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { TopNavigationHome } from "../../common/navigation/TopNavigationHome";
 import { GeneratePDFUseCase } from "@/src/application/use-cases/reports/generate-pdf.use-case";

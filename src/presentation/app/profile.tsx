@@ -1,6 +1,6 @@
 import { Button, Icon, Input, Layout } from "@ui-kitten/components";
 import { Image, StyleSheet } from "react-native";
-import { useUserStore } from "../store/useUserStore";
+import { useUserStore } from "../store/user/useUserStore";
 import { useRef, useState, useCallback } from 'react';
 import { router } from "expo-router";
 import { PickImageUseCase } from "@/src/application/use-cases/profilePicture/profile-picture.use-case";

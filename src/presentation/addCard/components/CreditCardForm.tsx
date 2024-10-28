@@ -3,6 +3,7 @@ import { CreditCardCrudRepository } from "@/src/infrastructure/cards/credit-card
 import { Button, Input, Layout, Text } from "@ui-kitten/components";
 import React, { useState } from "react";
 import { Alert, StyleSheet } from "react-native";
+import { useCreditCardsStore } from "../../store/credit-cards/useCreditCardsStore";
 
 export const CreditCardForm = () => {
 
@@ -11,6 +12,7 @@ export const CreditCardForm = () => {
   const [debt, setDebt] = useState("");
   const [creditLimit, setCreditLimit] = useState("");
   const [dueDate, setDueDate] = useState("");
+  const addCreditCard = useCreditCardsStore(state => state.addCreditCard);
 
   const resetForm = () => {
     setName("");
@@ -42,18 +44,19 @@ export const CreditCardForm = () => {
     
     return true;
   };
-  const handleSubmit = () => {
+  const handleSubmit = async() => {
     if (validateForm()) {
       Alert.alert("Éxito", "Formulario enviado correctamente.");
       const repository = new CreditCardCrudRepository();
-      const newCard = new CreateCreditCardUseCase(repository).execute({
+      const newCard = await new CreateCreditCardUseCase(repository).execute({
         creditLimit: Number(creditLimit),
         debt: Number(debt),
         dueDate: new Date("2029-10-10"),
         lastFourDigits,
         name,
         type: "credit"
-      })
+      });
+      addCreditCard(newCard);
       resetForm();
     }
   };
