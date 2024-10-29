@@ -17,7 +17,7 @@ export const CreateCardScreen = () => {
   return (
     <LayoutWithTopNavigation TitleScreen="Añadir Tarjeta">
       <Layout style={style.mainContainer}>
-        <Layout style={style.container} level="1">
+        <Layout style={style.container}>
           <Layout style={style.rowContainer}>
             <Text style={style.text} category="h1">
               Tipo
@@ -33,7 +33,7 @@ export const CreateCardScreen = () => {
               ))}
             </Select>
           </Layout>
-          <Layout style={{flex: 1}}>
+          
             {
               options[selectedIndex.row] === "Débito" ? (
                 <DebitCardForm />
@@ -41,7 +41,6 @@ export const CreateCardScreen = () => {
                 <CreditCardForm />
               )
             }
-          </Layout>
 
         </Layout>
       </Layout>
@@ -54,8 +53,6 @@ const style = StyleSheet.create({
     mainContainer: {
       flex: 1,
       alignItems: "center",
-      justifyContent: "flex-start",
-      paddingTop: 20,
     },
     title: {
       color: "white",
@@ -64,19 +61,10 @@ const style = StyleSheet.create({
       fontSize: 30,
       right: 20,
     },
-    exit: {
-      width: 1,
-      margin: 0,
-      borderRadius: 300,
-      position: "static",
-      right: 70,
-      top: "-11%",
-    },
     container: {
       width: "90%",
-      alignSelf: "center",
-      marginTop: 20,
-      flex: 1
+      flex: 1, 
+      justifyContent: "space-evenly"
     },
     rowContainer: {
       flexDirection: "row",
@@ -93,13 +81,7 @@ const style = StyleSheet.create({
       flex: 1,
       marginLeft: 130,
     },
-    formContainer: {
-      marginTop: 20,
-      padding: 10,
-      backgroundColor: "transparent",
-      borderRadius: 10,
-      width: "100%",
-    },
+
     label: {
       color: "white",
       fontSize: 18,
@@ -110,7 +92,6 @@ const style = StyleSheet.create({
       borderRadius: 8,
     },
     submitButton: {
-      marginTop: 0,
       width: "30%",
       marginLeft: "35%",
     },
