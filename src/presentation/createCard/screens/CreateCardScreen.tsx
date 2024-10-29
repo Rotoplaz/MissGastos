@@ -1,18 +1,21 @@
-
-
-import React, { useState } from 'react'
-import { LayoutWithTopNavigation } from '../../common/layouts/LayoutWithTopNavigation'
-import { IndexPath, Layout, Select, SelectItem, Text } from '@ui-kitten/components'
-import { StyleSheet } from 'react-native'
-import { DebitCardForm } from '../components/DebitCardForm'
-import { CreditCardForm } from '../components/CreditCardForm'
+import React, { useState } from "react";
+import { LayoutWithTopNavigation } from "../../common/layouts/LayoutWithTopNavigation";
+import {
+  IndexPath,
+  Layout,
+  Select,
+  SelectItem,
+  Text,
+} from "@ui-kitten/components";
+import { StyleSheet } from "react-native";
+import { DebitCardForm } from "../components/DebitCardForm";
+import { CreditCardForm } from "../components/CreditCardForm";
 
 export const CreateCardScreen = () => {
-    const [selectedIndex, setSelectedIndex] = useState<IndexPath>(
-        new IndexPath(0)
-      );
-      const options = ["Crédito", "Débito"];
-    
+  const [selectedIndex, setSelectedIndex] = useState<IndexPath>(
+    new IndexPath(0)
+  );
+  const options = ["Crédito", "Débito"];
 
   return (
     <LayoutWithTopNavigation TitleScreen="Añadir Tarjeta">
@@ -45,9 +48,8 @@ export const CreateCardScreen = () => {
         </Layout>
       </Layout>
     </LayoutWithTopNavigation>
-  )
-}
-
+  );
+};
 
 const style = StyleSheet.create({
     mainContainer: {

@@ -143,4 +143,9 @@ const style = StyleSheet.create({
     width: "30%",
     marginLeft: "35%",
   },
+  calendar: {
+    marginVertical: 15,
+    marginHorizontal: "5%",
+    width: "90%",
+  },
 });
