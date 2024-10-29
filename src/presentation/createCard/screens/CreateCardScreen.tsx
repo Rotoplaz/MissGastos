@@ -33,15 +33,15 @@ export const CreateCardScreen = () => {
               ))}
             </Select>
           </Layout>
-
-          {
-            options[selectedIndex.row] === "Débito" ? (
-              <DebitCardForm />
-            ) : (
-              <CreditCardForm />
-            )
-          }
-
+          <Layout style={{flex: 1}}>
+            {
+              options[selectedIndex.row] === "Débito" ? (
+                <DebitCardForm />
+              ) : (
+                <CreditCardForm />
+              )
+            }
+          </Layout>
 
         </Layout>
       </Layout>
@@ -76,12 +76,12 @@ const style = StyleSheet.create({
       width: "90%",
       alignSelf: "center",
       marginTop: 20,
+      flex: 1
     },
     rowContainer: {
       flexDirection: "row",
       justifyContent: "space-between",
       alignItems: "center",
-      marginBottom: 20,
     },
     text: {
       color: "white",

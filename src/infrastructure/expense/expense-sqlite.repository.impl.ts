@@ -2,16 +2,11 @@ import { Category } from "@/src/domain/entities/category.entity";
 import { Expense } from "@/src/domain/entities/expense.entity";
 import { ExpenseRepository } from "@/src/domain/repositories/expense.repository";
 import * as SQLite from "expo-sqlite";
-import { migrateDbIfNeeded } from "../db/migration";
 import { ExpenseChartDto } from "@/src/application/dtos/expense-chart.dto";
 
 export class ExpenseSqliteRepositoryImpl implements ExpenseRepository {
   private db: SQLite.SQLiteDatabase =
     SQLite.openDatabaseSync("MissGastosDataBase");
-
-  constructor() {
-    migrateDbIfNeeded(this.db);
-  }
 
   async getExpensesGroupByCategory(): Promise<ExpenseChartDto[]> {
     const expensesGroupByCategory = await this.db.getAllAsync<{

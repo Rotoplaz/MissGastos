@@ -1,15 +1,10 @@
 import { Category } from "@/src/domain/entities/category.entity";
 import { CategoryRepository } from "@/src/domain/repositories/category.repository";
 import * as SQLite from "expo-sqlite";
-import { migrateDbIfNeeded } from "../db/migration";
 
 export class CategoryRepositoryImpl implements CategoryRepository {
   private db: SQLite.SQLiteDatabase =
     SQLite.openDatabaseSync("MissGastosDataBase");
-
-  constructor() {
-    migrateDbIfNeeded(this.db);
-  }
 
   async getCategoryById(id: number): Promise<Category | null> {
     const category = await this.db.getFirstAsync<Category>(

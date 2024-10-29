@@ -2,7 +2,7 @@ import { CreateCreditCardUseCase } from "@/src/application/use-cases/creditCard/
 import { CreditCardCrudRepository } from "@/src/infrastructure/cards/credit-card-crud.repository.impl";
 import { Button, Input, Layout, Text } from "@ui-kitten/components";
 import React, { useState } from "react";
-import { Alert, StyleSheet } from "react-native";
+import { Alert, ScrollView, StyleSheet } from "react-native";
 import { useCreditCardsStore } from "../../store/credit-cards/useCreditCardsStore";
 import { router } from "expo-router";
 
@@ -63,6 +63,7 @@ export const CreditCardForm = () => {
     }
   };
   return (
+    
     <Layout style={style.formContainer}>
       <Text style={style.label}>Nombre</Text>
       <Input
@@ -127,6 +128,7 @@ export const CreditCardForm = () => {
           }
         }}
       />
+
       <Button style={style.submitButton} status="danger" onPress={handleSubmit}>
         Enviar
       </Button>
@@ -135,11 +137,13 @@ export const CreditCardForm = () => {
 };
 
 const style = StyleSheet.create({
+
   formContainer: {
+    flex: 1,
+    justifyContent: "flex-start",
+    alignItems: "flex-start",
     marginTop: 20,
     padding: 10,
-    backgroundColor: "transparent",
-    borderRadius: 10,
     width: "100%",
   },
   label: {

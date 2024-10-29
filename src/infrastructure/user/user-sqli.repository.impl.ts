@@ -2,16 +2,11 @@
 import { User } from "@/src/domain/entities/user.entity";
 import { UserRepository } from "@/src/domain/repositories/user.repository";
 import * as SQLite from "expo-sqlite";
-import { migrateDbIfNeeded } from "../db/migration";
 import { CreateUserDto } from "@/src/application/dtos/create-user.dto";
 
 export class UserRepositorySqliteImpl implements UserRepository {
   private db: SQLite.SQLiteDatabase =
     SQLite.openDatabaseSync("MissGastosDataBase");
-
-  constructor() {
-    migrateDbIfNeeded(this.db);
-  }
 
   async getUser(): Promise<User | null> {
     const user = await this.db.getFirstAsync<User>("SELECT * FROM User");

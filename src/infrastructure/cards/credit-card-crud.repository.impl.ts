@@ -1,15 +1,10 @@
 import { CreditCard } from "@/src/domain/entities/payment-methods.entity";
 import { CreditCardRepository } from "@/src/domain/repositories/credit-cards.repository";
 import * as SQLite from "expo-sqlite";
-import { migrateDbIfNeeded } from "../db/migration";
 
 export class CreditCardCrudRepository implements CreditCardRepository {
   private db: SQLite.SQLiteDatabase =
     SQLite.openDatabaseSync("MissGastosDataBase");
-
-  constructor() {
-    migrateDbIfNeeded(this.db);
-  }
 
   async getCreditCardById(id: number): Promise<CreditCard | null> {
     const creditCard = await this.db.getFirstAsync<CreditCard>(

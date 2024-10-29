@@ -1,15 +1,10 @@
 import { DebitCard } from "@/src/domain/entities/payment-methods.entity";
 import { DebitCardRepository } from "@/src/domain/repositories/debit-cards.repository";
 import * as SQLite from "expo-sqlite";
-import { migrateDbIfNeeded } from "../db/migration";
 
 export class DebitCardRepositoryImpl implements DebitCardRepository {
   private db: SQLite.SQLiteDatabase =
     SQLite.openDatabaseSync("MissGastosDataBase");
-
-  constructor() {
-    migrateDbIfNeeded(this.db);
-  }
 
   async getDebitCardById(id: number): Promise<DebitCard | null> {
     const debitCard = await this.db.getFirstAsync<DebitCard>(
