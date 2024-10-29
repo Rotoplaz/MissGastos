@@ -18,6 +18,8 @@ const useTabBarState = (initialState = 0) => {
   return { selectedIndex, onSelect: setSelectedIndex };
 };
 
+const circleColors = ["#e67e22", "#229954", "#d4ac0d", "#884ea0"];
+
 export const TabBarAccessoriesShowcase = () => {
   const bottomState = useTabBarState();
   const [selectedIcon, setSelectedIcon] = React.useState<number | null>(null);
@@ -56,25 +58,16 @@ export const TabBarAccessoriesShowcase = () => {
 
   return (
     <LayoutWithTopNavigation TitleScreen="Crear Transacción">
-
       <Layout style={styles.mainContainer}>
-
         <TabBar {...bottomState}>
-          <Tab
-            title="Gasto"
-            icon={() => (
-              <Icon name="person-remove-outline" style={styles.iconBar} />
-            )}
-          />
-          <Tab
-            title="Ingreso"
-            icon={() => <Icon name="person-add-outline" style={styles.iconBar} />}
-          />
+          <Tab title="Gasto" />
+          <Tab title="Ingreso" />
         </TabBar>
 
         {bottomState.selectedIndex === 0 ? (
           <>
             <Layout style={styles.amountContainer}>
+              <Text style={styles.dollarSign}>$</Text>
               <Input
                 placeholder="Cantidad"
                 style={styles.input}
@@ -85,7 +78,6 @@ export const TabBarAccessoriesShowcase = () => {
                   setExpenseValue(numericText);
                 }}
               />
-              <Text style={styles.dollarSign}>$</Text>
             </Layout>
 
             <Text style={styles.sectionTitle}>Tipo de gasto:</Text>
@@ -100,13 +92,15 @@ export const TabBarAccessoriesShowcase = () => {
                   key={index}
                   appearance="ghost"
                   accessoryLeft={() => (
-                    <Icon
-                      name={iconName}
+                    <Layout
                       style={[
-                        styles.iconButton,
-                        selectedIcon === index && styles.selectedIcon,
+                        styles.iconCircle,
+                        { backgroundColor: circleColors[index] },
+                        selectedIcon === index && styles.selectedIconBackground,
                       ]}
-                    />
+                    >
+                      <Icon name={iconName} style={styles.iconInsideCircle} />
+                    </Layout>
                   )}
                   onPress={() => handleIconPress(index)}
                 />
@@ -115,9 +109,9 @@ export const TabBarAccessoriesShowcase = () => {
 
             <Text style={styles.sectionTitle}>Concepto:</Text>
             <Input
-              placeholder="Hasta 15 caracteres"
+              placeholder="Hasta 25 caracteres"
               style={styles.input}
-              maxLength={15}
+              maxLength={25}
             />
             <Text style={styles.sectionTitle}>Método de pago</Text>
             <Layout style={styles.container}>
@@ -177,6 +171,7 @@ export const TabBarAccessoriesShowcase = () => {
         ) : (
           <>
             <Layout style={styles.amountContainer}>
+              <Text style={styles.dollarSign}>$</Text>
               <Input
                 placeholder="Cantidad"
                 style={styles.input}
@@ -187,10 +182,13 @@ export const TabBarAccessoriesShowcase = () => {
                   setExpenseValue(numericText);
                 }}
               />
-              <Text style={styles.dollarSign}>$</Text>
             </Layout>
             <Text style={styles.sectionTitle}>Concepto:</Text>
-            <Input placeholder="Hasta 15 carácteres" style={styles.input} />
+            <Input
+              placeholder="Hasta 25 carácteres"
+              style={styles.input}
+              maxLength={25}
+            />
             <Text style={styles.sectionTitle}>Método de pago</Text>
             <Layout style={styles.container}>
               <Button
@@ -243,7 +241,7 @@ export const TabBarAccessoriesShowcase = () => {
                 </OverflowMenu>
               </>
             )}
-            <Button style={styles.createButton}>Registrar</Button>
+            <Button style={styles.registerButton}>Crear</Button>
           </>
         )}
       </Layout>
@@ -254,7 +252,7 @@ export const TabBarAccessoriesShowcase = () => {
 const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
-    paddingTop: 40,
+    paddingTop: 20,
     paddingHorizontal: 20,
   },
   iconBar: {
@@ -273,6 +271,7 @@ const styles = StyleSheet.create({
   input: {
     marginVertical: 10,
     width: "70%",
+    paddingTop: 20,
   },
   iconRow: {
     flexDirection: "row",
@@ -291,17 +290,29 @@ const styles = StyleSheet.create({
     marginVertical: 10,
   },
   createButton: {
-    marginTop: 40,
-    width: "40%",
+    position: "absolute",
+    bottom: 0,
+    width: "120%",
     alignSelf: "center",
+    marginBottom: 0,
+  },
+  registerButton: {
+    position: "absolute",
+    bottom: 0,
+    width: "120%",
+    alignSelf: "center",
+    marginBottom: 0,
   },
   dollarSign: {
     fontSize: 18,
-    marginLeft: 10,
+    marginLeft: -20,
+    marginHorizontal: 20,
+    marginTop: 20,
   },
   amountContainer: {
     flexDirection: "row",
     alignItems: "center",
+    justifyContent: "center",
     marginVertical: 10,
   },
   container: {
@@ -315,7 +326,9 @@ const styles = StyleSheet.create({
     marginVertical: 10,
   },
   paymentButton: {
-    marginHorizontal: 5,
+    marginHorizontal: 8,
+    width: "42%",
+    marginTop: 20,
   },
   selectedPaymentButton: {
     borderWidth: 2,
@@ -330,6 +343,22 @@ const styles = StyleSheet.create({
   },
   cardLastFour: {
     fontSize: 12,
+  },
+  iconCircle: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    backgroundColor: "#3366FF",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  iconInsideCircle: {
+    width: 24,
+    height: 24,
+    tintColor: "#FFFFFF",
+  },
+  selectedIconBackground: {
+    backgroundColor: "#154360",
   },
 });
 
