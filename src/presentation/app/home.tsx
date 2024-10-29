@@ -1,11 +1,5 @@
 import React from "react";
-import {
-  Icon,
-  Layout,
-  Tab,
-  TabBar,
-  TabBarProps,
-} from "@ui-kitten/components";
+import { Icon, Layout, Tab, TabBar, TabBarProps } from "@ui-kitten/components";
 import { StyleSheet } from "react-native";
 
 const useTabBarState = (initialState = 0): Partial<TabBarProps> => {
@@ -59,7 +53,7 @@ export default TabBarAccessoriesShowcase;
 const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
-    paddingTop: 20, // Ajusta el margen superior si es necesario
+    paddingTop: 20,
   },
   button: {
     margin: 4,

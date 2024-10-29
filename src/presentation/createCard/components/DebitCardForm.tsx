@@ -3,15 +3,14 @@ import React, { useState } from "react";
 import { Alert, StyleSheet } from "react-native";
 
 export const DebitCardForm = () => {
-
-  const [name, setName] = useState("");
+  const [alias, setAlias] = useState("");
   const [lastFourDigits, setLastFourDigits] = useState("");
   const [debt, setDebt] = useState("");
   const [limit, setLimit] = useState("");
   const [currentbalance, setCurrentbalance] = useState("");
 
   const resetForm = () => {
-    setName("");
+    setAlias("");
     setLastFourDigits("");
     setDebt("");
     setLimit("");
@@ -21,7 +20,7 @@ export const DebitCardForm = () => {
   // Función de validación de campos
   const validateForm = () => {
     if (
-      name.trim() === "" ||
+      alias.trim() === "" ||
       lastFourDigits.length !== 4 ||
       debt.trim() === ""
     ) {
@@ -47,9 +46,9 @@ export const DebitCardForm = () => {
       <Text style={style.label}>Nombre</Text>
       <Input
         style={style.input}
-        placeholder="Nombres y apellidos"
-        value={name}
-        onChangeText={(nextValue) => setName(nextValue)}
+        placeholder="Alias de la tarjeta"
+        value={alias}
+        onChangeText={(nextValue) => setAlias(nextValue)}
       />
 
       <Text style={style.label}>Últimos 4 dígitos</Text>
@@ -65,11 +64,11 @@ export const DebitCardForm = () => {
         }}
       />
 
-      <Text style={style.label}>Número</Text>
+      <Text style={style.label}>Deuda</Text>
       <Input
         style={style.input}
         value={debt}
-        placeholder="16 dígitos"
+        placeholder="Cantidad"
         keyboardType="numeric"
         maxLength={16}
         onChangeText={(nextValue) => {
