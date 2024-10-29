@@ -3,7 +3,7 @@ import { CreditCardRepository } from "@/src/domain/repositories/credit-cards.rep
 export class DeleteCreditCardUseCase {
   constructor(private readonly creditCardRepository: CreditCardRepository) {}
 
-  async export(id: number): Promise<void> {
+  async execute(id: number): Promise<void> {
     const removingCard = await this.creditCardRepository.deleteCreditCard(id);
     return removingCard;
   }
