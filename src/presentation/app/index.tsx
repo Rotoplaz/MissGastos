@@ -16,6 +16,9 @@ export default function Index() {
   
   useEffect(() => {
     const getUser = async () => {
+      const db = SQLite.openDatabaseSync("MissGastosDataBase");
+  
+      await migrateDbIfNeeded(db);
       const userRepository = new UserRepositorySqliteImpl();
       const user = await new GetUserUseCase(
         userRepository
@@ -27,10 +30,8 @@ export default function Index() {
         return;
       }
       router.replace({ pathname: "/(home)" });
-      const db = SQLite.openDatabaseSync("MissGastosDataBase");
-  
-      
-      migrateDbIfNeeded(db);
+
+     
    
       setUserStore(user);
     };

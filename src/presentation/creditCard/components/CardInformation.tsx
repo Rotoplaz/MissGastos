@@ -8,6 +8,9 @@ interface Props {
 }
 
 export const CardInformation = ({ creditCard }: Props) => {
+  const dueDate = new Date(creditCard.dueDate);
+  const date = new Date(dueDate.getTime() + dueDate.getTimezoneOffset() * 60 * 1000);
+
   return (
     <Layout>
       <Layout style={style.detailsContainer}>
@@ -24,7 +27,7 @@ export const CardInformation = ({ creditCard }: Props) => {
           Límite de crédito: ${creditCard.creditLimit} {"\n"}
         </Text>
         <Text style={style.detail}>
-          Fecha de corte: {creditCard.dueDate.toLocaleDateString("es-ES")}
+          Fecha de corte: {date.toLocaleDateString("es-ES")}
         </Text>
       </Layout>
     </Layout>

@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Alert, StyleSheet } from "react-native";
-import { Button, Calendar, Input, Layout, Text } from "@ui-kitten/components";
+import { Button, Calendar, Datepicker, Input, Layout, Text } from "@ui-kitten/components";
 import { CreateCreditCardUseCase } from "@/src/application/use-cases/creditCard/create-credit-card.user-case";
 import { CreditCardCrudRepositoryImpl } from "@/src/infrastructure/cards/credit-card-crud.repository.impl";
 import { useCreditCardsStore } from "../../store/credit-cards/useCreditCardsStore";
@@ -20,9 +20,9 @@ interface FormData {
 const creditCardSchema = z.object({
   name: z.string().min(1, "Nombre es requerido"),
   lastFourDigits: z.string().length(4, "Debe tener 4 dígitos"),
-  debt: z.coerce.number().min(1, "Debe ser un número válido"),
+  debt: z.coerce.number().min(0, "Debe ser un número válido"),
   creditLimit: z.coerce.number().min(1, "Debe ser un número válido"),
-  dueDate: z.coerce.number().min(1).max(31, "Debe ser un día del 1 al 31"),
+  dueDate: z.coerce.date()
 });
 
 export const CreditCardForm = () => {
@@ -50,7 +50,7 @@ export const CreditCardForm = () => {
     const newCard = await new CreateCreditCardUseCase(repository).execute({
       creditLimit: +data.creditLimit,
       debt: +data.debt,
-      dueDate: new Date("2029-10-10"),
+      dueDate: new Date(data.dueDate),
       lastFourDigits: data.lastFourDigits,
       name: data.name,
       type: "credit",
@@ -114,21 +114,18 @@ export const CreditCardForm = () => {
 
       <Layout>
         <Text style={style.label}>Fecha límite</Text>
-        <Calendar
-          style={style.calendar}
-          // date={date}
-          onSelect={(e: any) => console.log(e)}
-        />
-        {errors.dueDate && (
-          <Text style={style.error}>{errors.dueDate.message}</Text>
-        )}
+          <Datepicker
+            date={watch("dueDate")}
+            onSelect={nextDate => {
+              setValue("dueDate", nextDate)
+              console.log(nextDate)
+            }}
+          />
+
+        {errors.dueDate && <Text style={style.error}>{errors.dueDate.message}</Text>}
       </Layout>
 
-      <Button
-        style={style.submitButton}
-        status="danger"
-        onPress={handleSubmit(onSubmit)}
-      >
+      <Button style={style.submitButton} onPress={handleSubmit(onSubmit)}>
         Enviar
       </Button>
     </>
