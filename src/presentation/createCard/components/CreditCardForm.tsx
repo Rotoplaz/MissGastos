@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Alert, StyleSheet } from "react-native";
-import { Button, Input, Layout, Text } from "@ui-kitten/components";
+import { Button, Calendar, Input, Layout, Text } from "@ui-kitten/components";
 import { CreateCreditCardUseCase } from "@/src/application/use-cases/creditCard/create-credit-card.user-case";
 import { CreditCardCrudRepository } from "@/src/infrastructure/cards/credit-card-crud.repository.impl";
 import { useCreditCardsStore } from "../../store/credit-cards/useCreditCardsStore";
@@ -107,13 +107,10 @@ export const CreditCardForm = () => {
 
       <Layout>
         <Text style={style.label}>Fecha límite</Text>
-        <Input
-          style={style.input}
-          placeholder="Día del mes (1-31)"
-          keyboardType="numeric"
-          maxLength={2}
-          onChangeText={(text) => setValue("dueDate", text)}
-          value={watch("dueDate")}
+        <Calendar
+          style={style.calendar}
+          // date={date}
+          onSelect={(e:any)=>console.log(e)}
         />
         {errors.dueDate && <Text style={style.error}>{errors.dueDate.message}</Text>}
       </Layout>
