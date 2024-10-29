@@ -7,12 +7,14 @@ import { FullLoaderScreen } from "../common/screens/loaders/FullLoaderScreen";
 import { GetCreditCardByIdUseCase } from "@/src/application/use-cases/creditCard/get-credit-card-by-id.user-cases";
 import { CreditCardCrudRepository } from "@/src/infrastructure/cards/credit-card-crud.repository.impl";
 import { CardInformation } from "../credit-card/components/CardInformation";
-import { useLocalSearchParams } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import { Card } from "../credit-card/components/Card";
+import { DeleteCreditCardUseCase } from "@/src/application/use-cases/creditCard/delete-credit-card.user-case";
+import { useCreditCardsStore } from "../store/credit-cards/useCreditCardsStore";
 
 export default function CreditCardScreen() {
   const params = useLocalSearchParams<{ id: string }>();
-
+  const deleteCreditCard = useCreditCardsStore(state=>state.deleteCreditCard);
   const [creditCard, setCreditCard] = useState<CreditCard | null>(null);
 
   useEffect(() => {
@@ -43,6 +45,32 @@ export default function CreditCardScreen() {
     );
   };
 
+  const confirmDelete = () =>{
+    const creditCardRepository = new CreditCardCrudRepository();
+    Alert.alert(
+      "Confirmar Eliminación",
+      "¿Estás seguro de que quieres eliminar esta tarjeta?",
+      [
+        { text: "Cancelar", style: "cancel" },
+        {
+          text: "Confirmar",
+          onPress: async() => {
+            try {
+              await new DeleteCreditCardUseCase(creditCardRepository).export(creditCard!.id);
+              deleteCreditCard(creditCard!.id);
+              router.back();
+              
+            } catch (error) {
+              Alert.alert("Error eliminando tarjeta intende de nuevo");
+            }
+
+          },
+        },
+      ]
+    )
+  }
+  
+
   if (!creditCard) {
     return <FullLoaderScreen />;
   }
@@ -58,19 +86,7 @@ export default function CreditCardScreen() {
               style={style.exit}
               appearance="ghost"
               accessoryLeft={<Icon name="trash-2-outline" fill="white" />}
-              onPress={() =>
-                Alert.alert(
-                  "Confirmar Eliminación",
-                  "¿Estás seguro de que quieres eliminar esta tarjeta?",
-                  [
-                    { text: "Cancelar", style: "cancel" },
-                    {
-                      text: "Confirmar",
-                      onPress: () => console.log("Tarjeta eliminada"),
-                    },
-                  ]
-                )
-              }
+              onPress={confirmDelete}
             />
             <Button
               style={style.exit}

@@ -4,6 +4,7 @@ import { Button, Input, Layout, Text } from "@ui-kitten/components";
 import React, { useState } from "react";
 import { Alert, StyleSheet } from "react-native";
 import { useCreditCardsStore } from "../../store/credit-cards/useCreditCardsStore";
+import { router } from "expo-router";
 
 export const CreditCardForm = () => {
 
@@ -57,6 +58,7 @@ export const CreditCardForm = () => {
         type: "credit"
       });
       addCreditCard(newCard);
+      router.back();
       resetForm();
     }
   };

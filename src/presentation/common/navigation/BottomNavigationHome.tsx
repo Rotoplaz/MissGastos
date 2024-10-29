@@ -2,11 +2,8 @@ import {
   BottomNavigation,
   BottomNavigationTab,
   Icon,
-  Layout,
-  Text,
 } from "@ui-kitten/components";
-import React, { useState } from "react";
-import { StyleSheet } from "react-native";
+import React from "react";
 
 export const BottomNavigationHome = ({ navigation, state }: any) => {
   return (
@@ -34,13 +31,3 @@ export const BottomNavigationHome = ({ navigation, state }: any) => {
     </BottomNavigation>
   );
 };
-
-const style = StyleSheet.create({
-  // bottomNav: {
-  //     width: "100%",
-  //     position: "absolute",
-  //     bottom: 0,
-  //     borderTopLeftRadius: 20,
-  //     borderTopRightRadius: 20,
-  //   },
-});
