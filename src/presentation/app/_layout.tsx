@@ -4,10 +4,11 @@ import { ApplicationProvider, IconRegistry, Layout } from "@ui-kitten/components
 import * as eva from "@eva-design/eva";
 import { EvaIconsPack } from "@ui-kitten/eva-icons";
 import { ThemeProvider } from "@react-navigation/native";
+import { default as customTheme } from "../theme/custom-theme.json";
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
-  const theme = colorScheme === "dark" ? eva.dark : eva.light;
+  const theme = colorScheme === "dark" ? {...eva.dark, ...customTheme} : eva.light;
   const backgroundColor =
     colorScheme === "dark"
       ? theme["color-basic-800"]
