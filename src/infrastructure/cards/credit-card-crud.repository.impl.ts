@@ -3,7 +3,7 @@ import { CreditCardRepository } from "@/src/domain/repositories/credit-cards.rep
 import * as SQLite from "expo-sqlite";
 import { migrateDbIfNeeded } from "../db/migration";
 
-export class CreditCardCrudRepository implements CreditCardRepository {
+export class CreditCardCrudRepositoryImpl implements CreditCardRepository {
   private db: SQLite.SQLiteDatabase =
     SQLite.openDatabaseSync("MissGastosDataBase");
 
