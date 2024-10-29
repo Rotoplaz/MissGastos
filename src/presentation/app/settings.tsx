@@ -2,7 +2,7 @@ import { Button, Icon, Layout, Menu, MenuItem, Text } from '@ui-kitten/component
 import { router } from 'expo-router'
 import * as SqliteDatabase from 'expo-sqlite'
 import React from 'react'
-import { useUserStore } from '../store/useUserStore'
+import { useUserStore } from '../store/user/useUserStore'
 import { useTheme } from '@react-navigation/native'
 import { LayoutWithTopNavigation } from '../common/layouts/LayoutWithTopNavigation'
 

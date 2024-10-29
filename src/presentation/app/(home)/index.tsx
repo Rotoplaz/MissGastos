@@ -2,19 +2,14 @@ import React, { useState } from "react";
 import { Button, Layout, Text, Icon, Avatar } from "@ui-kitten/components";
 import { StyleSheet } from "react-native";
 import { PieChart } from "react-native-gifted-charts";
-import { useUserStore } from "../../store/useUserStore";
+import { useUserStore } from "../../store/user/useUserStore";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { TopNavigationHome } from "../../common/navigation/TopNavigationHome";
 import { GeneratePDFUseCase } from "@/src/application/use-cases/reports/generate-pdf.use-case";
 import { getPDFLayout } from "../../common/pdf-layout/get-PDF-layout";
 import { router } from "expo-router";
+import { ChartPieHome } from "../../home/components/chart/ChartPieHome";
 
-const data = [
-  { value: 70, color: "#f5b7b1" },
-  { value: 90, color: "#aed6f1" },
-  { value: 90, color: "#82e0aa" },
-  { value: 30, color: "#d2b4de" },
-];
 
 export default function index() {
   const user = useUserStore((state) => state.user);
@@ -55,14 +50,7 @@ export default function index() {
         <Text style={style.subText}>Este es en lo que más gastas: Comida</Text>
 
         <Layout style={{ width: "100%" }}>
-          <Layout style={style.chartContainer}>
-            <PieChart data={data} radius={90} />
-            <Layout style={{ alignSelf: "center" }}>
-              <Text>Comida</Text>
-              <Text>Educación</Text>
-              <Text>Video Juegos</Text>
-            </Layout>
-          </Layout>
+          <ChartPieHome />
           <Layout style={{ width: "60%", marginTop: 20, paddingLeft: 35 }}>
             <Button
               size="large"

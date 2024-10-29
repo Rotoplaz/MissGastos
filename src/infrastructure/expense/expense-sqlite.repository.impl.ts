@@ -3,6 +3,7 @@ import { Expense } from "@/src/domain/entities/expense.entity";
 import { ExpenseRepository } from "@/src/domain/repositories/expense.repository";
 import * as SQLite from "expo-sqlite";
 import { migrateDbIfNeeded } from "../db/migration";
+import { ExpenseChartDto } from "@/src/application/dtos/expense-chart.dto";
 
 export class ExpenseSqliteRepositoryImpl implements ExpenseRepository {
   private db: SQLite.SQLiteDatabase =
@@ -12,13 +13,12 @@ export class ExpenseSqliteRepositoryImpl implements ExpenseRepository {
     migrateDbIfNeeded(this.db);
   }
 
-  async getExpensesGroupByCategory(): Promise<
-    { type: string; totalExpense: number }[]
-  > {
+  async getExpensesGroupByCategory(): Promise<ExpenseChartDto[]> {
     const expensesGroupByCategory = await this.db.getAllAsync<{
       type: string;
       totalExpense: number;
-    }>(`SELECT c.type, SUM(e.amount) AS totalExpense 
+      color: string;
+    }>(`SELECT  c.color, c.type, SUM(e.amount) AS totalExpense 
             FROM Expense e
             JOIN Category c ON e.categoryId = c.id
             GROUP BY c.type;`);
