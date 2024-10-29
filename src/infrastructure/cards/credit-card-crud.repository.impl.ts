@@ -2,7 +2,7 @@ import { CreditCard } from "@/src/domain/entities/payment-methods.entity";
 import { CreditCardRepository } from "@/src/domain/repositories/credit-cards.repository";
 import * as SQLite from "expo-sqlite";
 
-export class CreditCardCrudRepository implements CreditCardRepository {
+export class CreditCardCrudRepositoryImpl implements CreditCardRepository {
   private db: SQLite.SQLiteDatabase =
     SQLite.openDatabaseSync("MissGastosDataBase");
 
@@ -14,7 +14,7 @@ export class CreditCardCrudRepository implements CreditCardRepository {
     if (!creditCard) {
       return null;
     }
-    return {...creditCard, dueDate: new Date(creditCard.dueDate) };
+    return { ...creditCard, dueDate: new Date(creditCard.dueDate) };
   }
 
   async createCreditCard(card: Omit<CreditCard, "id">): Promise<CreditCard> {
