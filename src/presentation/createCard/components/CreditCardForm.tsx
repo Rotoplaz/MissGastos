@@ -116,10 +116,7 @@ export const CreditCardForm = () => {
         <Text style={style.label}>Fecha límite</Text>
           <Datepicker
             date={watch("dueDate")}
-            onSelect={nextDate => {
-              setValue("dueDate", nextDate)
-              console.log(nextDate)
-            }}
+            onSelect={nextDate => setValue("dueDate", nextDate)}
           />
 
         {errors.dueDate && <Text style={style.error}>{errors.dueDate.message}</Text>}
