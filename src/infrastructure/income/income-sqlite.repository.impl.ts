@@ -1,15 +1,9 @@
 import { Income } from "@/src/domain/entities/income.entity";
 import { IncomeRepository } from "@/src/domain/repositories/income.repository";
 import * as SQLite from "expo-sqlite";
-import { migrateDbIfNeeded } from "../db/migration";
-
 export class IncomeSqliteRepositoryImpl implements IncomeRepository {
   private db: SQLite.SQLiteDatabase =
     SQLite.openDatabaseSync("MissGastosDataBase");
-
-  constructor() {
-    migrateDbIfNeeded(this.db);
-  }
 
   async getIncomeById(id: number): Promise<Income | null> {
     const Income = await this.db.getFirstAsync<Income>(

@@ -6,6 +6,8 @@ import React from "react";
 import { useUserStore } from "../store/user/useUserStore";
 import { useRouter } from "expo-router";
 import { FullLoaderScreen } from "../common/screens/loaders/FullLoaderScreen";
+import { migrateDbIfNeeded } from "@/src/infrastructure/db/migration";
+import * as SQLite from "expo-sqlite";
 
 export default function Index() {
   const [isLoadingUser, setIsLoadingUser] = useState<boolean>(true);
@@ -25,7 +27,11 @@ export default function Index() {
         return;
       }
       router.replace({ pathname: "/(home)" });
-
+      const db = SQLite.openDatabaseSync("MissGastosDataBase");
+  
+      
+      migrateDbIfNeeded(db);
+   
       setUserStore(user);
     };
 

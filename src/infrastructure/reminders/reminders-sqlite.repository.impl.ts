@@ -5,12 +5,9 @@ import { Reminder } from "@/src/domain/entities/reminders.entity";
 
 export class ReminderSqliteRepositoryImpl implements RemindersRepository {
 
-        private db: SQLite.SQLiteDatabase =
-        SQLite.openDatabaseSync("MissGastosDataBase");
+    private db: SQLite.SQLiteDatabase =
+    SQLite.openDatabaseSync("MissGastosDataBase");
 
-    constructor(){
-        migrateDbIfNeeded(this.db);
-    }
 
     async getReminderById(id: number): Promise<Reminder | null> {
        const reminder = await this.db.getFirstAsync<Reminder>("SELECT * FROM Reminder WHERE id = ?", [id]);
