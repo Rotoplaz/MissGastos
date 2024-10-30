@@ -1,3 +1,5 @@
+import { Expense } from "../entities/expense.entity";
+import { Income } from "../entities/income.entity";
 import { DebitCard } from "../entities/payment-methods.entity";
 import { User } from "../entities/user.entity";
 
@@ -52,6 +54,17 @@ export class UserMetricsService {
         }
         return 0;
     }
+    
+    totalAmountIncomes(income:Income[]):number{
+        const totalSum = income.reduce((acc, item) => acc + item.amount, 0);
+        return totalSum;
+    }
+
+    highAmountExpense(expense:Expense[]):number{
+        const highExpense = Math.max(...expense.map(expense => expense.amount));
+        return highExpense;
+    }
+
 
 }
 
