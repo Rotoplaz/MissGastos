@@ -141,6 +141,7 @@ export const CreditCardForm = ({creditCard}:Props) => {
       <Layout>
         <Text style={style.label}>Fecha límite</Text>
           <Datepicker
+            style={style.input}
             date={watch("dueDate")}
             onSelect={nextDate => setValue("dueDate", nextDate)}
           />
@@ -148,9 +149,11 @@ export const CreditCardForm = ({creditCard}:Props) => {
         {errors.dueDate && <Text style={style.error}>{errors.dueDate.message}</Text>}
       </Layout>
 
-      <Button style={style.submitButton} onPress={handleSubmit(onSubmit)}>
-        Guardar
-      </Button>
+        <Layout style={{alignSelf: "center"}}>
+          <Button onPress={handleSubmit(onSubmit)}>
+            Guardar
+          </Button>
+        </Layout>
     </>
   );
 };
@@ -161,21 +164,12 @@ const style = StyleSheet.create({
     marginBottom: 10,
   },
   input: {
+    marginBottom: 20,
     borderRadius: 8,
   },
   error: {
     color: "red",
     fontSize: 12,
     marginBottom: 5,
-  },
-  submitButton: {
-    marginTop: 0,
-    width: "30%",
-    marginLeft: "35%",
-  },
-  calendar: {
-    marginVertical: 15,
-    marginHorizontal: "5%",
-    width: "90%",
   },
 });
