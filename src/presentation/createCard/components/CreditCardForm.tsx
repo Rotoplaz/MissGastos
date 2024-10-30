@@ -51,6 +51,7 @@ export const CreditCardForm = ({creditCard}:Props) => {
   const creditCardRepository = useRef(new CreditCardCrudRepositoryImpl());
 
   const addCreditCard = useCreditCardsStore((state) => state.addCreditCard);
+  const updateCreditCard = useCreditCardsStore((state) => state.updateCreditCard);
 
   const onSubmit = async (data: FormData) => {
 
@@ -67,10 +68,11 @@ export const CreditCardForm = ({creditCard}:Props) => {
        type: "credit",
      });
      addCreditCard(newCard);
+     router.back();
      return;
     }
     
-    await new UpdateCreditCardUserCase(creditCardRepository.current).execute(creditCard.id, {
+    const creditCardUpdated = await new UpdateCreditCardUserCase(creditCardRepository.current).execute(creditCard.id, {
       creditLimit: +data.creditLimit,
       debt: +data.debt,
       dueDate: new Date(data.dueDate),
@@ -78,8 +80,9 @@ export const CreditCardForm = ({creditCard}:Props) => {
       name: data.name,
     })
     
-    
+    updateCreditCard(creditCardUpdated);
     router.back();
+    return;
   };
 
   return (
@@ -146,7 +149,7 @@ export const CreditCardForm = ({creditCard}:Props) => {
       </Layout>
 
       <Button style={style.submitButton} onPress={handleSubmit(onSubmit)}>
-        Enviar
+        Guardar
       </Button>
     </>
   );

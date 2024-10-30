@@ -35,9 +35,17 @@ export const CreditCardScreen = () => {
                 flex: 1,
                 justifyContent: "flex-start",
                 paddingHorizontal: 10,
-                gap: 10
+                gap: 20,
               }}
             >
+              <Button
+                appearance="ghost"
+                status="basic"
+                style={{ alignSelf: "flex-end" }}
+                onPress={() => setIsEditing(false)}
+              >
+                Cancelar
+              </Button>
               <CreditCardForm creditCard={creditCard} />
             </Layout>
           ) : (
@@ -71,7 +79,7 @@ const style = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "flex-start",
-    width: "100%"
+    width: "100%",
   },
   title: {
     color: "white",
@@ -83,10 +91,10 @@ const style = StyleSheet.create({
     height: 50,
   },
   cardContainer: {
-    marginTop: 40,
+    marginTop: 10,
     alignItems: "center",
     flex: 1,
-    width: "100%"
+    width: "100%",
   },
   card: {
     backgroundColor: "#1A5FAD",
