@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Alert, StyleSheet } from "react-native";
-import { Button, Calendar, Datepicker, Input, Layout, Text } from "@ui-kitten/components";
+import { Button, Datepicker, Input, Layout, Text } from "@ui-kitten/components";
 import { CreateCreditCardUseCase } from "@/src/application/use-cases/creditCard/create-credit-card.user-case";
 import { CreditCardCrudRepositoryImpl } from "@/src/infrastructure/cards/credit-card-crud.repository.impl";
 import { useCreditCardsStore } from "../../store/credit-cards/useCreditCardsStore";
@@ -88,10 +88,10 @@ export const CreditCardForm = ({creditCard}:Props) => {
   return (
     <>
       <Layout>
-        <Text style={style.label}>Nombre</Text>
+        <Text style={style.label}>Alias de la tarjeta</Text>
         <Input
           style={style.input}
-          placeholder="Nombres y apellidos"
+          placeholder="Alias de la tarjeta"
           onChangeText={(text) => setValue("name", text)}
           value={watch("name")}
         />
