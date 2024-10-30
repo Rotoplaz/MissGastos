@@ -8,12 +8,12 @@ import { router, useLocalSearchParams } from "expo-router";
 import { StyleSheet } from "react-native";
 import { FullLoaderScreen } from "../../common/screens/loaders/FullLoaderScreen";
 import { useCreditCardScreen } from "../hooks/useCreditCardScreen";
+import { CreditCardForm } from "../../createCard/components/CreditCardForm";
 
 export const CreditCardScreen = () => {
   const params = useLocalSearchParams<{ id: string }>();
-  const { confirmDelete, confirmEdit, creditCard } = useCreditCardScreen(
-    +params.id
-  );
+  const { confirmDelete, confirmEdit, creditCard, isEditing, setIsEditing } =
+    useCreditCardScreen(+params.id);
 
   if (!creditCard) {
     return <FullLoaderScreen />;
@@ -28,22 +28,38 @@ export const CreditCardScreen = () => {
     <LayoutWithTopNavigation TitleScreen={creditCard.name}>
       <Layout style={style.mainContainer}>
         <Layout style={style.cardContainer}>
-          <Card creditCard={creditCard} />
-          <CardInformation creditCard={creditCard} />
-          <Layout style={style.actionsContainer}>
-            <Button
-              style={style.exit}
-              appearance="ghost"
-              accessoryLeft={<Icon name="trash-2-outline" fill="white" />}
-              onPress={handleDelete}
-            />
-            <Button
-              style={style.exit}
-              appearance="ghost"
-              accessoryLeft={<Icon name="edit-outline" fill="white" />}
-              onPress={confirmEdit}
-            />
-          </Layout>
+          {isEditing ? (
+            <Layout
+              style={{
+                width: "100%",
+                flex: 1,
+                justifyContent: "flex-start",
+                paddingHorizontal: 10,
+                gap: 10
+              }}
+            >
+              <CreditCardForm creditCard={creditCard} />
+            </Layout>
+          ) : (
+            <>
+              <Card creditCard={creditCard} />
+              <CardInformation creditCard={creditCard} />
+              <Layout style={style.actionsContainer}>
+                <Button
+                  style={style.exit}
+                  appearance="ghost"
+                  accessoryLeft={<Icon name="trash-2-outline" fill="white" />}
+                  onPress={handleDelete}
+                />
+                <Button
+                  style={style.exit}
+                  appearance="ghost"
+                  accessoryLeft={<Icon name="edit-outline" fill="white" />}
+                  onPress={confirmEdit}
+                />
+              </Layout>
+            </>
+          )}
         </Layout>
       </Layout>
     </LayoutWithTopNavigation>
@@ -55,7 +71,7 @@ const style = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "flex-start",
-    paddingTop: "10%",
+    width: "100%"
   },
   title: {
     color: "white",
@@ -69,6 +85,8 @@ const style = StyleSheet.create({
   cardContainer: {
     marginTop: 40,
     alignItems: "center",
+    flex: 1,
+    width: "100%"
   },
   card: {
     backgroundColor: "#1A5FAD",

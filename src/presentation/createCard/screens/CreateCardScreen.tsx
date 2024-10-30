@@ -41,7 +41,7 @@ export const CreateCardScreen = () => {
               options[selectedIndex.row] === "Débito" ? (
                 <DebitCardForm />
               ) : (
-                <CreditCardForm />
+                <CreditCardForm creditCard={null} />
               )
             }
 
