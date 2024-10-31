@@ -57,7 +57,7 @@ export const TabBarAccessoriesShowcase = () => {
   };
 
   return (
-    <LayoutWithTopNavigation TitleScreen="Crear Transacción">
+    <LayoutWithTopNavigation titleScreen="Crear Transacción">
       <Layout style={styles.mainContainer}>
         <TabBar {...bottomState}>
           <Tab title="Gasto" />

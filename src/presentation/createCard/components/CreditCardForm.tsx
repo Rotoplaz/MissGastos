@@ -2,7 +2,13 @@ import React, { useRef } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { Alert, StyleSheet } from "react-native";
+import {
+  Alert,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  StyleSheet,
+} from "react-native";
 import { Button, Datepicker, Input, Layout, Text } from "@ui-kitten/components";
 import { CreateCreditCardUseCase } from "@/src/application/use-cases/creditCard/create-credit-card.user-case";
 import { CreditCardCrudRepositoryImpl } from "@/src/infrastructure/cards/credit-card-crud.repository.impl";
@@ -12,7 +18,7 @@ import { CreditCard } from "@/src/domain/entities/payment-methods.entity";
 import { UpdateCreditCardUserCase } from "@/src/application";
 
 interface Props {
-  creditCard: CreditCard|null;
+  creditCard: CreditCard | null;
 }
 
 interface FormData {
@@ -28,11 +34,10 @@ const creditCardSchema = z.object({
   lastFourDigits: z.string().length(4, "Debe tener 4 dígitos"),
   debt: z.coerce.number().min(0, "Debe ser un número válido"),
   creditLimit: z.coerce.number().min(1, "Debe ser un número válido"),
-  dueDate: z.coerce.date()
+  dueDate: z.coerce.date(),
 });
 
-export const CreditCardForm = ({creditCard}:Props) => {
-  
+export const CreditCardForm = ({ creditCard }: Props) => {
   const {
     handleSubmit,
     setValue,
@@ -44,42 +49,51 @@ export const CreditCardForm = ({creditCard}:Props) => {
       name: creditCard?.name || "",
       lastFourDigits: creditCard?.lastFourDigits || "",
       debt: creditCard?.debt.toString() || "",
-      creditLimit: creditCard?.creditLimit.toString()||"",
-      dueDate: creditCard ? new Date(creditCard.dueDate.getTime() + creditCard.dueDate.getTimezoneOffset() * 60 * 1000) : new Date(),
+      creditLimit: creditCard?.creditLimit.toString() || "",
+      dueDate: creditCard
+        ? new Date(
+            creditCard.dueDate.getTime() +
+              creditCard.dueDate.getTimezoneOffset() * 60 * 1000
+          )
+        : new Date(),
     },
   });
   const creditCardRepository = useRef(new CreditCardCrudRepositoryImpl());
 
   const addCreditCard = useCreditCardsStore((state) => state.addCreditCard);
-  const updateCreditCard = useCreditCardsStore((state) => state.updateCreditCard);
+  const updateCreditCard = useCreditCardsStore(
+    (state) => state.updateCreditCard
+  );
 
   const onSubmit = async (data: FormData) => {
-
-    if ( !creditCard ) {
-
+    if (!creditCard) {
       Alert.alert("Éxito", "Formulario enviado correctamente.");
 
-     const newCard = await new CreateCreditCardUseCase(creditCardRepository.current).execute({
-       creditLimit: +data.creditLimit,
-       debt: +data.debt,
-       dueDate: new Date(data.dueDate),
-       lastFourDigits: data.lastFourDigits,
-       name: data.name,
-       type: "credit",
-     });
-     addCreditCard(newCard);
-     router.back();
-     return;
+      const newCard = await new CreateCreditCardUseCase(
+        creditCardRepository.current
+      ).execute({
+        creditLimit: +data.creditLimit,
+        debt: +data.debt,
+        dueDate: new Date(data.dueDate),
+        lastFourDigits: data.lastFourDigits,
+        name: data.name,
+        type: "credit",
+      });
+      addCreditCard(newCard);
+      router.back();
+      return;
     }
-    
-    const creditCardUpdated = await new UpdateCreditCardUserCase(creditCardRepository.current).execute(creditCard.id, {
+
+    const creditCardUpdated = await new UpdateCreditCardUserCase(
+      creditCardRepository.current
+    ).execute(creditCard.id, {
       creditLimit: +data.creditLimit,
       debt: +data.debt,
       dueDate: new Date(data.dueDate),
       lastFourDigits: data.lastFourDigits,
       name: data.name,
-    })
-    
+    });
+
     updateCreditCard(creditCardUpdated);
     router.back();
     return;
@@ -140,20 +154,20 @@ export const CreditCardForm = ({creditCard}:Props) => {
 
       <Layout>
         <Text style={style.label}>Fecha límite</Text>
-          <Datepicker
-            style={style.input}
-            date={watch("dueDate")}
-            onSelect={nextDate => setValue("dueDate", nextDate)}
-          />
+        <Datepicker
+          style={style.input}
+          date={watch("dueDate")}
+          onSelect={(nextDate) => setValue("dueDate", nextDate)}
+        />
 
-        {errors.dueDate && <Text style={style.error}>{errors.dueDate.message}</Text>}
+        {errors.dueDate && (
+          <Text style={style.error}>{errors.dueDate.message}</Text>
+        )}
       </Layout>
 
-        <Layout style={{alignSelf: "center"}}>
-          <Button onPress={handleSubmit(onSubmit)}>
-            Guardar
-          </Button>
-        </Layout>
+      <Layout style={{ alignSelf: "center" }}>
+        <Button onPress={handleSubmit(onSubmit)}>Guardar</Button>
+      </Layout>
     </>
   );
 };

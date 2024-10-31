@@ -5,7 +5,7 @@ import { Card } from "../components/Card";
 import { CardInformation } from "../components/CardInformation";
 import { router, useLocalSearchParams } from "expo-router";
 
-import { StyleSheet } from "react-native";
+import { ScrollView, StyleSheet } from "react-native";
 import { FullLoaderScreen } from "../../common/screens/loaders/FullLoaderScreen";
 import { useCreditCardScreen } from "../hooks/useCreditCardScreen";
 import { CreditCardForm } from "../../createCard/components/CreditCardForm";
@@ -25,29 +25,31 @@ export const CreditCardScreen = () => {
   };
 
   return (
-    <LayoutWithTopNavigation TitleScreen={creditCard.name}>
+    <LayoutWithTopNavigation titleScreen={creditCard.name}>
       <Layout style={style.mainContainer}>
         <Layout style={style.cardContainer}>
           {isEditing ? (
-            <Layout
-              style={{
-                width: "100%",
-                flex: 1,
-                justifyContent: "flex-start",
-                paddingHorizontal: 10,
-                gap: 20,
-              }}
-            >
-              <Button
-                appearance="ghost"
-                status="basic"
-                style={{ alignSelf: "flex-end" }}
-                onPress={() => setIsEditing(false)}
+            <ScrollView>
+              <Layout
+                style={{
+                  width: "100%",
+                  flex: 1,
+                  justifyContent: "flex-start",
+                  paddingHorizontal: 10,
+                  gap: 20,
+                }}
               >
-                Cancelar
-              </Button>
-              <CreditCardForm creditCard={creditCard} />
-            </Layout>
+                <Button
+                  appearance="ghost"
+                  status="basic"
+                  style={{ alignSelf: "flex-end" }}
+                  onPress={() => setIsEditing(false)}
+                >
+                  Cancelar
+                </Button>
+                <CreditCardForm creditCard={creditCard} />
+              </Layout>
+            </ScrollView>
           ) : (
             <>
               <Card creditCard={creditCard} />
@@ -92,7 +94,6 @@ const style = StyleSheet.create({
   },
   cardContainer: {
     marginTop: 10,
-    alignItems: "center",
     flex: 1,
     width: "100%",
   },

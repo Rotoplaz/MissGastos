@@ -38,7 +38,7 @@ export const config = () => {
   }
 
   return (
-    <LayoutWithTopNavigation TitleScreen="Configuración">
+    <LayoutWithTopNavigation titleScreen="Configuración">
       <Layout
         style={{ paddingHorizontal: 10, flex: 1, gap: 10, paddingBottom: 15 }}
       >
