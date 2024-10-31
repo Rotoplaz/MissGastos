@@ -1,31 +1,32 @@
 import { Category } from "@/src/domain/entities/category.entity";
 import { CategoryRepository } from "@/src/domain/repositories/category.repository";
-import * as SQLite from "expo-sqlite";
+import { getDataBase } from "../db/database";
 
 export class CategoryRepositoryImpl implements CategoryRepository {
-  private db: SQLite.SQLiteDatabase =
-    SQLite.openDatabaseSync("MissGastosDataBase");
 
   async getCategoryById(id: number): Promise<Category | null> {
-    const category = await this.db.getFirstAsync<Category>(
+    const db = await getDataBase();
+    const category = await db.getFirstAsync<Category>(
       "SELECT * FROM Category WHERE id = ?",
       [id]
     );
     if (!category) {
       return null;
     }
-
+    await db.closeAsync();
     return category;
   }
 
   async createCategory(category: Omit<Category, "id">): Promise<Category> {
+    const db = await getDataBase();
     const { type, icon, color } = category;
-    const newCategory = await this.db.runAsync(
+    const newCategory = await db.runAsync(
       "INSERT INTO Category (type, icon, color) VALUES (?,?,?)",
       type,
       icon,
       color
     );
+    await db.closeAsync();
     return {
       id: newCategory.lastInsertRowId,
       ...category,
@@ -38,6 +39,7 @@ export class CategoryRepositoryImpl implements CategoryRepository {
   ): Promise<Category> {
     const fieldsToUpdate: string[] = [];
     const values: any[] = [];
+    const db = await getDataBase();
 
     if (category.type !== undefined) {
       fieldsToUpdate.push("type = ?");
@@ -58,7 +60,7 @@ export class CategoryRepositoryImpl implements CategoryRepository {
     values.push(id);
 
     if (setClause.length > 0) {
-      await this.db.runAsync(
+      await db.runAsync(
         `UPDATE Category SET ${setClause} WHERE id = ?`,
         ...values
       );
@@ -67,25 +69,30 @@ export class CategoryRepositoryImpl implements CategoryRepository {
     if (!updatedCategory) {
       throw new Error("Category not found after update");
     }
-
+    await db.closeAsync();
     return updatedCategory;
   }
 
   async deleteCategory(id: number): Promise<void> {
+    const db = await getDataBase();
     try {
-      await this.db.runAsync("DELETE FROM Category WHERE id = $id", {
+      await db.runAsync("DELETE FROM Category WHERE id = $id", {
         $id: id,
       });
       return;
     } catch (error) {
       throw new Error("Category doesn't exist");
+    }finally{
+      await db.closeAsync();
     }
   }
 
   async getAllCategories(): Promise<Category[]> {
-    const categories = await this.db.getAllAsync<Category>(
+    const db = await getDataBase();
+    const categories = await db.getAllAsync<Category>(
       "SELECT * FROM Category;"
     );
+    await db.closeAsync();
     return categories;
   }
 }

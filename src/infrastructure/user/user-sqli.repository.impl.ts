@@ -1,36 +1,38 @@
 
 import { User } from "@/src/domain/entities/user.entity";
 import { UserRepository } from "@/src/domain/repositories/user.repository";
-import * as SQLite from "expo-sqlite";
 import { CreateUserDto } from "@/src/application/dtos/create-user.dto";
+import { getDataBase } from "../db/database";
 
 export class UserRepositorySqliteImpl implements UserRepository {
-  private db: SQLite.SQLiteDatabase =
-    SQLite.openDatabaseSync("MissGastosDataBase");
 
   async getUser(): Promise<User | null> {
-    const user = await this.db.getFirstAsync<User>("SELECT * FROM User");
+    const db = await getDataBase();
+    const user = await db.getFirstAsync<User>("SELECT * FROM User");
 
     if (!user) {
+      await db.closeAsync();
       return null;
     }
-    
+    await db.closeAsync();
     return user;
   }
 
   async createUser(user: CreateUserDto): Promise<User> {
     const { name, globalLimitBudget, profilePictureUrl } = user;
-    const result = await this.db.runAsync(
+    const db = await getDataBase();
+    const result = await db.runAsync(
       "INSERT INTO User (name, profilePictureUrl, globalLimitBudget) VALUES (?, ?, ?)",
       name,
       profilePictureUrl || "",
       globalLimitBudget
     );
-    
+    await db.closeAsync();
     return { ...user,profilePictureUrl: user.profilePictureUrl || "", id: result.lastInsertRowId };
   }
 
   async updateUser(user: Partial<User>): Promise<User> {
+    const db = await getDataBase();
     const updates: string[] = [];
     const values: (string | number)[] = [];
     const currentUser = await this.getUser();
@@ -58,12 +60,15 @@ export class UserRepositorySqliteImpl implements UserRepository {
 
     const query = `UPDATE User SET ${updates.join(", ")} WHERE id = ?`;
     
-    await this.db.runAsync(query, ...values);
+    await db.runAsync(query, ...values);
 
     const userUpdated = await this.getUser();
     
-    if( ! userUpdated ) throw new Error("Usuario no encontrado");
-
+    if( ! userUpdated ) {
+      await db.closeAsync();
+      throw new Error("Usuario no encontrado");
+    }
+    await db.closeAsync();
     return userUpdated;
   }
 }
