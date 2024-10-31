@@ -1,3 +1,6 @@
+import { Category } from "../entities/category.entity";
+import { Expense } from "../entities/expense.entity";
+import { Income } from "../entities/income.entity";
 import { DebitCard } from "../entities/payment-methods.entity";
 import { User } from "../entities/user.entity";
 
@@ -52,6 +55,22 @@ export class UserMetricsService {
         }
         return 0;
     }
+    
+    totalAmountIncomes(income:Income[]):number{
+        const totalSum = income.reduce((acc, item) => acc + item.amount, 0);
+        return totalSum;
+    }
+
+    highAmountExpense(expense:Expense[]):{amount:number,category:Category} | null{
+        
+        if(!expense || expense.length === 0) return null;
+        const highExpense = expense.reduce((maxExpense, currentExpense) => 
+        currentExpense.amount > maxExpense.amount ? currentExpense : maxExpense
+        );
+        return {amount: highExpense.amount, category: highExpense.category};
+
+    }
+
 
 }
 
