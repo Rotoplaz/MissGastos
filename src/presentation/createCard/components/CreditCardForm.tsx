@@ -4,9 +4,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import {
   Alert,
-  KeyboardAvoidingView,
-  Platform,
-  ScrollView,
   StyleSheet,
 } from "react-native";
 import { Button, Datepicker, Input, Layout, Text } from "@ui-kitten/components";

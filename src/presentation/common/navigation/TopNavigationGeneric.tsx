@@ -1,7 +1,6 @@
 import React from "react";
 import {
   Icon,
-  IconElement,
   Layout,
   TopNavigation,
   TopNavigationAction,
