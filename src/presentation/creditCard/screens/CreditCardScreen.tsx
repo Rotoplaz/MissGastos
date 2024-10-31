@@ -51,7 +51,7 @@ export const CreditCardScreen = () => {
               </Layout>
             </ScrollView>
           ) : (
-            <>
+            <Layout style={{height: "80%",justifyContent: "center", alignItems: "center"}}>
               <Card creditCard={creditCard} />
               <CardInformation creditCard={creditCard} />
               <Layout style={style.actionsContainer}>
@@ -68,7 +68,7 @@ export const CreditCardScreen = () => {
                   onPress={confirmEdit}
                 />
               </Layout>
-            </>
+            </Layout>
           )}
         </Layout>
       </Layout>

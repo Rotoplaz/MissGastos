@@ -1,18 +1,42 @@
 import { Avatar, Button, Icon, Layout, Text } from "@ui-kitten/components";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { TopNavigationHome } from "../../common/navigation/TopNavigationHome";
 import { useUserStore } from "../../store/user/useUserStore";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { StyleSheet } from "react-native";
 import { router } from "expo-router";
 import { GeneratePDFUseCase } from "@/src/application/use-cases/reports/generate-pdf.use-case";
 import { getPDFLayout } from "../../common/pdf-layout/get-PDF-layout";
 import { ChartPieHome } from "../components/chart/ChartPieHome";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { UserMetricsService } from "@/src/domain/services/user-metrics.service";
+import { Category } from "@/src/domain/entities/category.entity";
 
 export const HomeScreen = () => {
   const user = useUserStore((state) => state.user);
   const [totalMoney] = useState(50000);
-  const { top } = useSafeAreaInsets();
+  const [money, setMoney] = useState(0);
+  const [maxCategoryExpense, setMaxCategoryExpense] = useState<{
+    amount: number;
+    category: Category;
+  } | null>(null);
+
+  useEffect(() => {
+    const getTotalMoney = () => {
+      const metricsService = new UserMetricsService();
+      const money = metricsService.totalAmountIncomes([]);
+      setMoney(money);
+    };
+    getTotalMoney();
+  }, []);
+
+  useEffect(() => {
+    const getMaxCategoryExpense = () => {
+      const metricsService = new UserMetricsService();
+      const category = metricsService.highAmountExpense([]);
+      setMaxCategoryExpense(category);
+    };
+    getMaxCategoryExpense();
+  }, []);
 
   const getAvatarSource = () => {
     if (totalMoney <= 5000) {
@@ -27,54 +51,58 @@ export const HomeScreen = () => {
   };
 
   return (
-    <Layout style={{ flex: 1, paddingTop: top }}>
-      <TopNavigationHome />
+    <SafeAreaView style={{ flex: 1 }}>
+      <Layout style={{ flex: 1 }}>
+        <TopNavigationHome />
 
-      <Layout style={style.mainContainer}>
-        <Text category="h1" style={style.welcomeText}>
-          Hola {!user ? "" : user.name} bienvenido
-        </Text>
+        <Layout style={style.mainContainer}>
+          <Text category="h1" style={style.welcomeText}>
+            Hola {!user ? "" : user.name} bienvenido
+          </Text>
 
-        <Avatar
-          size="giant"
-          style={{ width: 150, height: 150, marginBottom: 20 }}
-          source={getAvatarSource()}
-        />
+          <Avatar
+            size="giant"
+            style={{ width: 150, height: 150, marginBottom: 20 }}
+            source={getAvatarSource()}
+          />
 
-        <Text style={style.totalMoney}>Dinero Total:</Text>
-        <Text category="h2" style={style.money}>
-          ${totalMoney}
-        </Text>
-        <Text style={style.subText}>Este es en lo que más gastas: Comida</Text>
+          <Text style={style.totalMoney}>Dinero Total:</Text>
+          <Text category="h2" style={style.money}>
+            ${money}
+          </Text>
+          <Text style={style.subText}>
+            Este es en lo que más gastas: {maxCategoryExpense ? maxCategoryExpense.category.type : "Nada"}
+          </Text>
 
-        <Layout style={{ width: "100%" }}>
-          <ChartPieHome />
-          <Layout style={{ width: "60%", marginTop: 20, paddingLeft: 35 }}>
-            <Button
-              size="large"
-              onPress={() =>
-                new GeneratePDFUseCase().execute(getPDFLayout([], [], user!))
-              }
-            >
-              Generar Reporte
-            </Button>
+          <Layout style={{ width: "100%" }}>
+            <ChartPieHome />
+            <Layout style={{ width: "60%", marginTop: 20, paddingLeft: 35 }}>
+              <Button
+                size="large"
+                onPress={() =>
+                  new GeneratePDFUseCase().execute(getPDFLayout([], [], user!))
+                }
+              >
+                Generar Reporte
+              </Button>
+            </Layout>
           </Layout>
-        </Layout>
 
-        {/* Floating button to add entry/exit */}
-        <Button
-          onPress={() => router.push("/createTransaction")}
-          style={style.fabButton}
-          accessoryLeft={
-            <Icon
-              name="plus-outline"
-              fill="white"
-              style={{ width: 24, height: 24 }}
-            />
-          }
-        ></Button>
+          {/* Floating button to add entry/exit */}
+          <Button
+            onPress={() => router.push("/createTransaction")}
+            style={style.fabButton}
+            accessoryLeft={
+              <Icon
+                name="plus-outline"
+                fill="white"
+                style={{ width: 24, height: 24 }}
+              />
+            }
+          ></Button>
+        </Layout>
       </Layout>
-    </Layout>
+    </SafeAreaView>
   );
 };
 
