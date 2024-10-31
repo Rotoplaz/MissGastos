@@ -60,9 +60,16 @@ export class UserMetricsService {
         return totalSum;
     }
 
-    highAmountExpense(expense:Expense[]):number{
-        const highExpense = Math.max(...expense.map(expense => expense.amount));
-        return highExpense;
+    highAmountExpense(expense:Expense[]){
+        
+        if(!expense || expense!=undefined){
+            const highExpense = expense.reduce((maxExpense, currentExpense) => 
+                currentExpense.amount > maxExpense.amount ? currentExpense : maxExpense
+            );
+            return {amount: highExpense.amount, category: highExpense.category};
+        }
+        return null;
+        
     }
 
 
