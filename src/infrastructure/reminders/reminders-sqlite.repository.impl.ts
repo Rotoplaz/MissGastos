@@ -1,16 +1,12 @@
 import { RemindersRepository } from "@/src/domain/repositories/reminders.repository";
-import { migrateDbIfNeeded } from "../db/migration";
-import * as SQLite from "expo-sqlite";
 import { Reminder } from "@/src/domain/entities/reminders.entity";
+import { getDataBase } from "../db/database";
 
 export class ReminderSqliteRepositoryImpl implements RemindersRepository {
 
-    private db: SQLite.SQLiteDatabase =
-    SQLite.openDatabaseSync("MissGastosDataBase");
-
-
     async getReminderById(id: number): Promise<Reminder | null> {
-       const reminder = await this.db.getFirstAsync<Reminder>("SELECT * FROM Reminder WHERE id = ?", [id]);
+        const db = await getDataBase();
+       const reminder = await db.getFirstAsync<Reminder>("SELECT * FROM Reminder WHERE id = ?", [id]);
        if (!reminder){
             return null;
        }
@@ -20,7 +16,8 @@ export class ReminderSqliteRepositoryImpl implements RemindersRepository {
 
     async createReminder(reminder: Omit<Reminder, "id">): Promise<Reminder> {
         const { title, description, dueDate, isItPaid} = reminder;
-        const newReminder = await this.db.runAsync(
+        const db = await getDataBase();
+        const newReminder = await db.runAsync(
             "INSERT INTO Reminder (title, description, dueDate, isItPaid) VALUES (?,?,?,?)",
             title, description, dueDate.toISOString().split('T')[0], isItPaid);
         return {
@@ -33,6 +30,7 @@ export class ReminderSqliteRepositoryImpl implements RemindersRepository {
     async updateReminder(id: number, reminder: Partial<Reminder>): Promise<Reminder> {
         const updates: string[]=[];
         const values: (string | boolean | number)[] = [];
+        const db = await getDataBase();
 
         if (reminder.title != undefined){
             updates.push("title = ?");
@@ -56,9 +54,9 @@ export class ReminderSqliteRepositoryImpl implements RemindersRepository {
         const updateQuery = `UPDATE Income SET ${updates.join(", ")} WHERE id = ?`;
         values.push(id);
 
-        await this.db.runAsync(updateQuery, ...values);
+        await db.runAsync(updateQuery, ...values);
 
-        const updateReminder = await this.db.getFirstAsync<Reminder>("SELECT * FROM Reminder WHERE id = ?", [id]);
+        const updateReminder = await db.getFirstAsync<Reminder>("SELECT * FROM Reminder WHERE id = ?", [id]);
 
         if (!updateReminder){
             throw new Error("Error updating Reminder with id ${id}. ")
@@ -67,12 +65,14 @@ export class ReminderSqliteRepositoryImpl implements RemindersRepository {
         return updateReminder;
     }
     async deleteReminder(id: number): Promise<void> {
-        await this.db.runAsync('DELETE FROM Reminder WHERE id = $id', {$id: id});
+        const db = await getDataBase();
+        await db.runAsync('DELETE FROM Reminder WHERE id = $id', {$id: id});
         return;
         
     }
     async getAllReminders(): Promise<Reminder[]> {
-       const allReminders = await this.db.getAllAsync<Reminder>("SELECT * FROM Reminder");
+        const db = await getDataBase();
+       const allReminders = await db.getAllAsync<Reminder>("SELECT * FROM Reminder");
        return allReminders;
     }
         

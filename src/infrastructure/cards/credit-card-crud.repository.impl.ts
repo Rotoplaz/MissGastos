@@ -1,6 +1,5 @@
 import { CreditCard } from "@/src/domain/entities/payment-methods.entity";
 import { CreditCardRepository } from "@/src/domain/repositories/credit-cards.repository";
-import * as SQLite from "expo-sqlite";
 import { getDataBase } from "../db/database";
 
 export class CreditCardCrudRepositoryImpl implements CreditCardRepository {

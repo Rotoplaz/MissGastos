@@ -1,7 +1,6 @@
 
 import { User } from "@/src/domain/entities/user.entity";
 import { UserRepository } from "@/src/domain/repositories/user.repository";
-import * as SQLite from "expo-sqlite";
 import { CreateUserDto } from "@/src/application/dtos/create-user.dto";
 import { getDataBase } from "../db/database";
 

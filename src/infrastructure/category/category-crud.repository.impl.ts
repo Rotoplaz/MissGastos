@@ -1,13 +1,12 @@
 import { Category } from "@/src/domain/entities/category.entity";
 import { CategoryRepository } from "@/src/domain/repositories/category.repository";
-import * as SQLite from "expo-sqlite";
+import { getDataBase } from "../db/database";
 
 export class CategoryRepositoryImpl implements CategoryRepository {
-  private db: SQLite.SQLiteDatabase =
-    SQLite.openDatabaseSync("MissGastosDataBase");
 
   async getCategoryById(id: number): Promise<Category | null> {
-    const category = await this.db.getFirstAsync<Category>(
+    const db = await getDataBase();
+    const category = await db.getFirstAsync<Category>(
       "SELECT * FROM Category WHERE id = ?",
       [id]
     );
@@ -19,8 +18,9 @@ export class CategoryRepositoryImpl implements CategoryRepository {
   }
 
   async createCategory(category: Omit<Category, "id">): Promise<Category> {
+    const db = await getDataBase();
     const { type, icon, color } = category;
-    const newCategory = await this.db.runAsync(
+    const newCategory = await db.runAsync(
       "INSERT INTO Category (type, icon, color) VALUES (?,?,?)",
       type,
       icon,
@@ -38,6 +38,7 @@ export class CategoryRepositoryImpl implements CategoryRepository {
   ): Promise<Category> {
     const fieldsToUpdate: string[] = [];
     const values: any[] = [];
+    const db = await getDataBase();
 
     if (category.type !== undefined) {
       fieldsToUpdate.push("type = ?");
@@ -58,7 +59,7 @@ export class CategoryRepositoryImpl implements CategoryRepository {
     values.push(id);
 
     if (setClause.length > 0) {
-      await this.db.runAsync(
+      await db.runAsync(
         `UPDATE Category SET ${setClause} WHERE id = ?`,
         ...values
       );
@@ -73,7 +74,8 @@ export class CategoryRepositoryImpl implements CategoryRepository {
 
   async deleteCategory(id: number): Promise<void> {
     try {
-      await this.db.runAsync("DELETE FROM Category WHERE id = $id", {
+      const db = await getDataBase();
+      await db.runAsync("DELETE FROM Category WHERE id = $id", {
         $id: id,
       });
       return;
@@ -83,7 +85,8 @@ export class CategoryRepositoryImpl implements CategoryRepository {
   }
 
   async getAllCategories(): Promise<Category[]> {
-    const categories = await this.db.getAllAsync<Category>(
+    const db = await getDataBase();
+    const categories = await db.getAllAsync<Category>(
       "SELECT * FROM Category;"
     );
     return categories;

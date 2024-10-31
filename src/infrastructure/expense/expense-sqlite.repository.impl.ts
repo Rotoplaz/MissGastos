@@ -1,15 +1,14 @@
 import { Category } from "@/src/domain/entities/category.entity";
 import { Expense } from "@/src/domain/entities/expense.entity";
 import { ExpenseRepository } from "@/src/domain/repositories/expense.repository";
-import * as SQLite from "expo-sqlite";
 import { ExpenseChartDto } from "@/src/application/dtos/expense-chart.dto";
+import { getDataBase } from "../db/database";
 
 export class ExpenseSqliteRepositoryImpl implements ExpenseRepository {
-  private db: SQLite.SQLiteDatabase =
-    SQLite.openDatabaseSync("MissGastosDataBase");
 
   async getExpensesGroupByCategory(): Promise<ExpenseChartDto[]> {
-    const expensesGroupByCategory = await this.db.getAllAsync<{
+    const db = await getDataBase();
+    const expensesGroupByCategory = await db.getAllAsync<{
       type: string;
       totalExpense: number;
       color: string;
@@ -21,7 +20,8 @@ export class ExpenseSqliteRepositoryImpl implements ExpenseRepository {
   }
 
   async getExpenseById(id: number): Promise<Expense | null> {
-    const expense = await this.db.getFirstAsync<Expense>(
+    const db = await getDataBase();
+    const expense = await db.getFirstAsync<Expense>(
       "SELECT * FROM Expense WHERE id = ?",
       [id]
     );
@@ -33,10 +33,10 @@ export class ExpenseSqliteRepositoryImpl implements ExpenseRepository {
   }
   async createExpense(expense: Omit<Expense, "id">): Promise<Expense> {
     const { amount, concept, category, date } = expense;
-
+    const db = await getDataBase();
     switch (expense.paymentMethod.type) {
       case "credit": {
-        const infoDatabse = await this.db.runAsync(
+        const infoDatabse = await db.runAsync(
           "INSERT INTO Expense (amount, concept, categoryId, paymentMethod, cardId, date) VALUES ",
           amount,
           concept ? concept : null,
@@ -56,7 +56,7 @@ export class ExpenseSqliteRepositoryImpl implements ExpenseRepository {
         };
       }
       case "cash": {
-        const infoDatabse = await this.db.runAsync(
+        const infoDatabse = await db.runAsync(
           "INSERT INTO Expense (amount, concept, categoryId, paymentMethod, cardId) VALUES ",
           amount,
           concept ? concept : null,
@@ -76,7 +76,7 @@ export class ExpenseSqliteRepositoryImpl implements ExpenseRepository {
         };
       }
       case "debit": {
-        const infoDatabse = await this.db.runAsync(
+        const infoDatabse = await db.runAsync(
           "INSERT INTO Expense (amount, concept, categoryId, paymentMethod, cardId) VALUES ",
           amount,
           concept ? concept : null,
@@ -104,6 +104,7 @@ export class ExpenseSqliteRepositoryImpl implements ExpenseRepository {
   async updateExpense(id: number, expense: Partial<Expense>): Promise<Expense> {
     const updates: string[] = [];
     const values: (string | number | null)[] = [];
+    const db = await getDataBase();
 
     switch (expense.paymentMethod?.type) {
       case "credit": {
@@ -136,9 +137,9 @@ export class ExpenseSqliteRepositoryImpl implements ExpenseRepository {
           ", "
         )} WHERE id = ?`;
         values.push(id);
-        await this.db.runAsync(updateQuery, ...values);
+        await db.runAsync(updateQuery, ...values);
 
-        const updatedExpense = await this.db.getFirstAsync<Expense>(
+        const updatedExpense = await db.getFirstAsync<Expense>(
           "SELECT * FROM Expense WHERE id = ?",
           [id]
         );
@@ -178,9 +179,9 @@ export class ExpenseSqliteRepositoryImpl implements ExpenseRepository {
           ", "
         )} WHERE id = ?`;
         values.push(id);
-        await this.db.runAsync(updateQuery, ...values);
+        await db.runAsync(updateQuery, ...values);
 
-        const updatedExpense = await this.db.getFirstAsync<Expense>(
+        const updatedExpense = await db.getFirstAsync<Expense>(
           "SELECT * FROM Expense WHERE id = ?",
           [id]
         );
@@ -221,9 +222,9 @@ export class ExpenseSqliteRepositoryImpl implements ExpenseRepository {
           ", "
         )} WHERE id = ?`;
         values.push(id);
-        await this.db.runAsync(updateQuery, ...values);
+        await db.runAsync(updateQuery, ...values);
 
-        const updatedExpense = await this.db.getFirstAsync<Expense>(
+        const updatedExpense = await db.getFirstAsync<Expense>(
           "SELECT * FROM Expense WHERE id = ?",
           [id]
         );
@@ -238,17 +239,20 @@ export class ExpenseSqliteRepositoryImpl implements ExpenseRepository {
     }
   }
   async deleteExpense(id: number): Promise<void> {
-    await this.db.runAsync("DELETE FROM Expense WHERE id = $id", { $id: id });
+    const db = await getDataBase();
+    await db.runAsync("DELETE FROM Expense WHERE id = $id", { $id: id });
     return;
   }
   async getAllExpenses(): Promise<Expense[]> {
-    const allExpense = await this.db.getAllAsync<Expense>(
+    const db = await getDataBase();
+    const allExpense = await db.getAllAsync<Expense>(
       "SELECT * FROM Expense"
     );
     return allExpense;
   }
   async getExpensesByCategory?(category: Category): Promise<Expense[]> {
-    const allExpense = await this.db.getAllAsync<Expense>(
+    const db = await getDataBase();
+    const allExpense = await db.getAllAsync<Expense>(
       "SELECT * FROM Expense WHERE categoryId = ?",
       [category.id]
     );
@@ -259,9 +263,10 @@ export class ExpenseSqliteRepositoryImpl implements ExpenseRepository {
     startDate: Date,
     endDate: Date
   ): Promise<Expense[]> {
+    const db = await getDataBase();
     const formattedStartDate = startDate.toISOString().split("T")[0];
     const formattedEndDate = endDate.toISOString().split("T")[0];
-    const dateExpenses = await this.db.getAllAsync<Expense>(
+    const dateExpenses = await db.getAllAsync<Expense>(
       "SELECT * FROM Expense WHERE date BETWEEN ? AND ? ORDER BY date",
       [formattedStartDate, formattedEndDate]
     );

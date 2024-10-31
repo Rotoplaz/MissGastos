@@ -1,6 +1,5 @@
 import { DebitCard } from "@/src/domain/entities/payment-methods.entity";
 import { DebitCardRepository } from "@/src/domain/repositories/debit-cards.repository";
-import * as SQLite from "expo-sqlite";
 import { getDataBase } from "../db/database";
 
 export class DebitCardRepositoryImpl implements DebitCardRepository {

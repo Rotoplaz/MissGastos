@@ -1,12 +1,11 @@
 import { Income } from "@/src/domain/entities/income.entity";
 import { IncomeRepository } from "@/src/domain/repositories/income.repository";
-import * as SQLite from "expo-sqlite";
+import { getDataBase } from "../db/database";
 export class IncomeSqliteRepositoryImpl implements IncomeRepository {
-  private db: SQLite.SQLiteDatabase =
-    SQLite.openDatabaseSync("MissGastosDataBase");
 
   async getIncomeById(id: number): Promise<Income | null> {
-    const Income = await this.db.getFirstAsync<Income>(
+    const db = await getDataBase();
+    const Income = await db.getFirstAsync<Income>(
       "SELECT * FROM Income WHERE id = ?",
       [id]
     );
@@ -19,7 +18,8 @@ export class IncomeSqliteRepositoryImpl implements IncomeRepository {
 
   async createIncome(income: Omit<Income, "id">): Promise<Income> {
     const { amount, concept, date } = income;
-    const newIncome = await this.db.runAsync(
+    const db = await getDataBase();
+    const newIncome = await db.runAsync(
       "INSERT INTO Income (amount, concept, date) VALUES (?, ?, ?)",
       amount,
       concept ? concept : null,
@@ -34,6 +34,7 @@ export class IncomeSqliteRepositoryImpl implements IncomeRepository {
   async updateIncome(id: number, income: Partial<Income>): Promise<Income> {
     const updates: string[] = [];
     const values: (string | number)[] = [];
+    const db = await getDataBase();
 
     if (income.amount !== undefined) {
       updates.push("amount = ?");
@@ -57,9 +58,9 @@ export class IncomeSqliteRepositoryImpl implements IncomeRepository {
     const updateQuery = `UPDATE Income SET ${updates.join(", ")} WHERE id = ?`;
     values.push(id);
 
-    await this.db.runAsync(updateQuery, ...values);
+    await db.runAsync(updateQuery, ...values);
 
-    const updatedIncome = await this.db.getFirstAsync<Income>(
+    const updatedIncome = await db.getFirstAsync<Income>(
       "SELECT * FROM Income WHERE id = ?",
       [id]
     );
@@ -72,12 +73,14 @@ export class IncomeSqliteRepositoryImpl implements IncomeRepository {
   }
 
   async deleteIncome(id: number): Promise<void> {
-    await this.db.runAsync("DELETE FROM Income WHERE id = $id", { $id: id });
+    const db = await getDataBase();
+    await db.runAsync("DELETE FROM Income WHERE id = $id", { $id: id });
     return;
   }
 
   async getAllIncome(): Promise<Income[]> {
-    const allIncomes = await this.db.getAllAsync<Income>(
+    const db = await getDataBase();
+    const allIncomes = await db.getAllAsync<Income>(
       "SELECT * FROM Income"
     );
     return allIncomes;
@@ -87,9 +90,10 @@ export class IncomeSqliteRepositoryImpl implements IncomeRepository {
     startDate: Date,
     endDate: Date
   ): Promise<Income[]> {
+    const db = await getDataBase();
     const formattedStartDate = startDate.toISOString().split("T")[0];
     const formattedEndDate = endDate.toISOString().split("T")[0];
-    const dateIncomes = await this.db.getAllAsync<Income>(
+    const dateIncomes = await db.getAllAsync<Income>(
       "SELECT * FROM Income WHERE date BETWEEN ? AND ? ORDER BY date",
       [formattedStartDate, formattedEndDate]
     );
