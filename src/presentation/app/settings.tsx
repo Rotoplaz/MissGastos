@@ -9,7 +9,7 @@ import { Alert } from "react-native";
 
 export const config = () => {
   const theme = useTheme();
-  const setUser = useUserStore(state=>state.setUser);
+  const resetUserStore = useUserStore(state=>state.resetUserStore);
   
   const handleDeleteDatabaseInformation = async()=> {
     Alert.alert("Cuidado", "Seguro de eliminar toda tu información",
@@ -26,7 +26,7 @@ export const config = () => {
               const database = await SqliteDatabase.openDatabaseAsync("MissGastosDataBase");
               await database.closeAsync();
               await SqliteDatabase.deleteDatabaseAsync("MissGastosDataBase");
-              setUser(null);
+              resetUserStore();
               router.replace("/");
             } catch (error) {
               console.log(error)
@@ -38,7 +38,7 @@ export const config = () => {
   }
 
   return (
-    <LayoutWithTopNavigation TitleScreen="Configuración">
+    <LayoutWithTopNavigation titleScreen="Configuración">
       <Layout
         style={{ paddingHorizontal: 10, flex: 1, gap: 10, paddingBottom: 15 }}
       >

@@ -40,6 +40,11 @@ export class CreditCardCrudRepositoryImpl implements CreditCardRepository {
     const fieldsToUpdate: string[] = [];
     const values: any[] = [];
 
+    if (card.dueDate !== undefined) {
+      fieldsToUpdate.push("dueDate = ?");
+      values.push(card.dueDate.toISOString().split("T")[0]);
+    }
+
     if (card.name !== undefined) {
       fieldsToUpdate.push("name = ?");
       values.push(card.name);
@@ -56,7 +61,7 @@ export class CreditCardCrudRepositoryImpl implements CreditCardRepository {
     }
 
     if (card.creditLimit !== undefined) {
-      fieldsToUpdate.push("currentBalance = ?");
+      fieldsToUpdate.push("creditLimit = ?");
       values.push(card.creditLimit);
     }
 

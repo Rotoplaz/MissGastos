@@ -66,7 +66,7 @@ export default function Profile() {
   }, [user, form, setUser, userRepository]);
 
   return (
-    <LayoutWithTopNavigation TitleScreen="Perfil">
+    <LayoutWithTopNavigation titleScreen="Perfil">
       <Layout style={styles.mainContainer}>
         <Layout style={styles.avatarContainer}>
           <Image

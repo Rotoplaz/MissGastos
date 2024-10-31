@@ -9,6 +9,7 @@ import {
 } from "@/src/application";
 
 export const useCreditCardScreen = (id: number) => {
+  const [isEditing, setIsEditing] = useState(false);
   const deleteCreditCard = useCreditCardsStore(
     (state) => state.deleteCreditCard
   );
@@ -26,20 +27,7 @@ export const useCreditCardScreen = (id: number) => {
   }, []);
 
   const confirmEdit = () => {
-    Alert.alert(
-      "Confirmar Edición",
-      "¿Estás seguro de que quieres editar esta tarjeta?",
-      [
-        {
-          text: "Cancelar",
-          style: "cancel",
-        },
-        {
-          text: "Confirmar",
-          //onPress: () => navigation.navigate("EditCard"), // Asegúrate de usar el nombre correcto de la pantalla
-        },
-      ]
-    );
+    setIsEditing(true);
   };
 
   const confirmDelete = () => {
@@ -70,5 +58,7 @@ export const useCreditCardScreen = (id: number) => {
     confirmDelete,
     confirmEdit,
     creditCard,
+    isEditing,
+    setIsEditing
   };
 };

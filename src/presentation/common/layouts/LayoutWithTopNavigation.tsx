@@ -1,23 +1,32 @@
-import { Layout } from '@ui-kitten/components'
-import React from 'react'
-import { TopNavigationGeneric } from '../navigation/TopNavigationGeneric'
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { StyleProp, ViewStyle } from 'react-native';
+import { Layout } from "@ui-kitten/components";
+import React from "react";
+import { TopNavigationGeneric } from "../navigation/TopNavigationGeneric";
+import { SafeAreaView } from "react-native-safe-area-context";
+import {
+  KeyboardAvoidingView,
+  StyleProp,
+  ViewStyle,
+} from "react-native";
 
 interface Props {
-    TitleScreen: string;
-    children: React.ReactNode;
-    style?: StyleProp<ViewStyle>;
+  titleScreen: string;
+  children: React.ReactNode;
+  style?: StyleProp<ViewStyle>;
 }
 
-export const LayoutWithTopNavigation = ({ TitleScreen, children, style }:Props) => {
-   const { top } =  useSafeAreaInsets();
+export const LayoutWithTopNavigation = ({
+  titleScreen,
+  children,
+  style,
+}: Props) => {
   return (
-    <Layout style={{flex: 1, paddingTop: top}}>
-        <TopNavigationGeneric TitleScreen={TitleScreen} />
-        <Layout style={[{flex: 1}, style]}>
-            {children}
+    <SafeAreaView style={{ flex: 1 }}>
+      <KeyboardAvoidingView style={{ flex: 1 }} behavior={"padding"}>
+        <Layout style={{ flex: 1 }}>
+          <TopNavigationGeneric titleScreen={titleScreen} />
+          <Layout style={[{ flex: 1 }, style]}>{children}</Layout>
         </Layout>
-    </Layout>
-  )
-}
+      </KeyboardAvoidingView>
+    </SafeAreaView>
+  );
+};
