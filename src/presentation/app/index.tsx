@@ -7,7 +7,8 @@ import { useUserStore } from "../store/user/useUserStore";
 import { useRouter } from "expo-router";
 import { FullLoaderScreen } from "../common/screens/loaders/FullLoaderScreen";
 import { migrateDbIfNeeded } from "@/src/infrastructure/db/migration";
-import * as SQLite from "expo-sqlite";
+import { getDataBase } from "@/src/infrastructure/db/database";
+
 
 export default function Index() {
   const [isLoadingUser, setIsLoadingUser] = useState<boolean>(true);
@@ -16,8 +17,7 @@ export default function Index() {
   
   useEffect(() => {
     const getUser = async () => {
-      const db = SQLite.openDatabaseSync("MissGastosDataBase");
-  
+      const db = await getDataBase();
       await migrateDbIfNeeded(db);
       const userRepository = new UserRepositorySqliteImpl();
       const user = await new GetUserUseCase(

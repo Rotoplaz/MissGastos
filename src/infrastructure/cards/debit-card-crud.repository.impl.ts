@@ -1,13 +1,13 @@
 import { DebitCard } from "@/src/domain/entities/payment-methods.entity";
 import { DebitCardRepository } from "@/src/domain/repositories/debit-cards.repository";
 import * as SQLite from "expo-sqlite";
+import { getDataBase } from "../db/database";
 
 export class DebitCardRepositoryImpl implements DebitCardRepository {
-  private db: SQLite.SQLiteDatabase =
-    SQLite.openDatabaseSync("MissGastosDataBase");
 
   async getDebitCardById(id: number): Promise<DebitCard | null> {
-    const debitCard = await this.db.getFirstAsync<DebitCard>(
+    const db = await getDataBase();
+    const debitCard = await db.getFirstAsync<DebitCard>(
       "SELECT * FROM Card WHERE id = ?",
       [id]
     );
@@ -20,7 +20,8 @@ export class DebitCardRepositoryImpl implements DebitCardRepository {
 
   async createDebitCard(card: Omit<DebitCard, "id">): Promise<DebitCard> {
     const { name, lastFourDigits, debt, currentBalance, type } = card;
-    const debitCard = await this.db.runAsync(
+    const db = await getDataBase();
+    const debitCard = await db.runAsync(
       "INSERT INTO Card (name, lastFourDigits, debt, cardType, currentBalance) VALUES (?,?,?,?,?)",
       name,
       lastFourDigits,
@@ -40,7 +41,7 @@ export class DebitCardRepositoryImpl implements DebitCardRepository {
   ): Promise<DebitCard> {
     const fieldsToUpdate: string[] = [];
     const values: any[] = [];
-
+    const db = await getDataBase();
     if (card.name !== undefined) {
       fieldsToUpdate.push("name = ?");
       values.push(card.name);
@@ -70,7 +71,7 @@ export class DebitCardRepositoryImpl implements DebitCardRepository {
     values.push(id);
 
     if (setClause.length > 0) {
-      await this.db.runAsync(
+      await db.runAsync(
         `UPDATE Card SET ${setClause} WHERE id = ?`,
         ...values
       );
@@ -85,7 +86,8 @@ export class DebitCardRepositoryImpl implements DebitCardRepository {
 
   async deleteDebitCard(id: number): Promise<void> {
     try {
-      await this.db.runAsync("DELETE FROM Card WHERE id = $id", { $id: id });
+      const db = await getDataBase();
+      await db.runAsync("DELETE FROM Card WHERE id = $id", { $id: id });
       return;
     } catch (error) {
       throw new Error("Card doesn't exist");
@@ -93,7 +95,8 @@ export class DebitCardRepositoryImpl implements DebitCardRepository {
   }
 
   async getAllDebitCards(): Promise<DebitCard[]> {
-    const allDebitCards = await this.db.getAllAsync<DebitCard>(
+    const db = await getDataBase();
+    const allDebitCards = await db.getAllAsync<DebitCard>(
       "SELECT * FROM Card WHERE cardType = 'debit'"
     );
     return allDebitCards;

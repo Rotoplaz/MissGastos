@@ -1,13 +1,14 @@
 import { CreditCard } from "@/src/domain/entities/payment-methods.entity";
 import { CreditCardRepository } from "@/src/domain/repositories/credit-cards.repository";
 import * as SQLite from "expo-sqlite";
+import { getDataBase } from "../db/database";
 
 export class CreditCardCrudRepositoryImpl implements CreditCardRepository {
-  private db: SQLite.SQLiteDatabase =
-    SQLite.openDatabaseSync("MissGastosDataBase");
+
 
   async getCreditCardById(id: number): Promise<CreditCard | null> {
-    const creditCard = await this.db.getFirstAsync<CreditCard>(
+    const db = await getDataBase();
+    const creditCard = await db.getFirstAsync<CreditCard>(
       "SELECT * FROM Card WHERE id = ?",
       [id]
     );
@@ -19,7 +20,8 @@ export class CreditCardCrudRepositoryImpl implements CreditCardRepository {
 
   async createCreditCard(card: Omit<CreditCard, "id">): Promise<CreditCard> {
     const { name, lastFourDigits, debt, creditLimit, type, dueDate } = card;
-    const creditCard = await this.db.runAsync(
+    const db = await getDataBase();
+    const creditCard = await db.runAsync(
       "INSERT INTO Card (name, lastFourDigits, debt, cardType, creditLimit, dueDate) VALUES (?,?,?,?,?,?)",
       name,
       lastFourDigits,
@@ -37,6 +39,7 @@ export class CreditCardCrudRepositoryImpl implements CreditCardRepository {
     id: number,
     card: Partial<CreditCard>
   ): Promise<CreditCard> {
+    const db = await getDataBase();
     const fieldsToUpdate: string[] = [];
     const values: any[] = [];
 
@@ -74,7 +77,7 @@ export class CreditCardCrudRepositoryImpl implements CreditCardRepository {
     values.push(id);
 
     if (setClause.length > 0) {
-      await this.db.runAsync(
+      await db.runAsync(
         `UPDATE Card SET ${setClause} WHERE id = ?`,
         ...values
       );
@@ -88,14 +91,16 @@ export class CreditCardCrudRepositoryImpl implements CreditCardRepository {
   }
   async deleteCreditCard(id: number): Promise<void> {
     try {
-      await this.db.runAsync("DELETE FROM Card WHERE id = $id", { $id: id });
+      const db = await getDataBase();
+      await db.runAsync("DELETE FROM Card WHERE id = $id", { $id: id });
       return;
     } catch (error) {
       throw new Error("Card doesn't exist");
     }
   }
   async getAllCreditCards(): Promise<CreditCard[]> {
-    const allCreditCards = await this.db.getAllAsync<CreditCard>(
+    const db = await getDataBase();
+    const allCreditCards = await db.getAllAsync<CreditCard>(
       "SELECT * FROM Card WHERE cardType = 'credit'"
     );
     return allCreditCards;

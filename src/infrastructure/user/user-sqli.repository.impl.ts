@@ -3,13 +3,13 @@ import { User } from "@/src/domain/entities/user.entity";
 import { UserRepository } from "@/src/domain/repositories/user.repository";
 import * as SQLite from "expo-sqlite";
 import { CreateUserDto } from "@/src/application/dtos/create-user.dto";
+import { getDataBase } from "../db/database";
 
 export class UserRepositorySqliteImpl implements UserRepository {
-  private db: SQLite.SQLiteDatabase =
-    SQLite.openDatabaseSync("MissGastosDataBase");
 
   async getUser(): Promise<User | null> {
-    const user = await this.db.getFirstAsync<User>("SELECT * FROM User");
+    const db = await getDataBase();
+    const user = await db.getFirstAsync<User>("SELECT * FROM User");
 
     if (!user) {
       return null;
@@ -20,7 +20,8 @@ export class UserRepositorySqliteImpl implements UserRepository {
 
   async createUser(user: CreateUserDto): Promise<User> {
     const { name, globalLimitBudget, profilePictureUrl } = user;
-    const result = await this.db.runAsync(
+    const db = await getDataBase();
+    const result = await db.runAsync(
       "INSERT INTO User (name, profilePictureUrl, globalLimitBudget) VALUES (?, ?, ?)",
       name,
       profilePictureUrl || "",
@@ -31,6 +32,7 @@ export class UserRepositorySqliteImpl implements UserRepository {
   }
 
   async updateUser(user: Partial<User>): Promise<User> {
+    const db = await getDataBase();
     const updates: string[] = [];
     const values: (string | number)[] = [];
     const currentUser = await this.getUser();
@@ -58,7 +60,7 @@ export class UserRepositorySqliteImpl implements UserRepository {
 
     const query = `UPDATE User SET ${updates.join(", ")} WHERE id = ?`;
     
-    await this.db.runAsync(query, ...values);
+    await db.runAsync(query, ...values);
 
     const userUpdated = await this.getUser();
     
