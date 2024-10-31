@@ -13,7 +13,7 @@ export class DebitCardRepositoryImpl implements DebitCardRepository {
     if (!debitCard) {
       return null;
     }
-
+    await db.closeAsync();
     return debitCard;
   }
 
@@ -28,6 +28,7 @@ export class DebitCardRepositoryImpl implements DebitCardRepository {
       type,
       currentBalance
     );
+    await db.closeAsync();
     return {
       id: debitCard.lastInsertRowId,
       ...card,
@@ -79,17 +80,19 @@ export class DebitCardRepositoryImpl implements DebitCardRepository {
     if (!updatedCard) {
       throw new Error("Card not found after update");
     }
-
+    await db.closeAsync();
     return updatedCard;
   }
 
   async deleteDebitCard(id: number): Promise<void> {
+    const db = await getDataBase();
     try {
-      const db = await getDataBase();
       await db.runAsync("DELETE FROM Card WHERE id = $id", { $id: id });
       return;
     } catch (error) {
       throw new Error("Card doesn't exist");
+    }finally{
+      await db.closeAsync();
     }
   }
 
@@ -98,6 +101,7 @@ export class DebitCardRepositoryImpl implements DebitCardRepository {
     const allDebitCards = await db.getAllAsync<DebitCard>(
       "SELECT * FROM Card WHERE cardType = 'debit'"
     );
+    await db.closeAsync();
     return allDebitCards;
   }
 }

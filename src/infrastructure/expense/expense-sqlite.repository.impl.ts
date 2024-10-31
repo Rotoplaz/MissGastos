@@ -5,7 +5,6 @@ import { ExpenseChartDto } from "@/src/application/dtos/expense-chart.dto";
 import { getDataBase } from "../db/database";
 
 export class ExpenseSqliteRepositoryImpl implements ExpenseRepository {
-
   async getExpensesGroupByCategory(): Promise<ExpenseChartDto[]> {
     const db = await getDataBase();
     const expensesGroupByCategory = await db.getAllAsync<{
@@ -16,6 +15,7 @@ export class ExpenseSqliteRepositoryImpl implements ExpenseRepository {
             FROM Expense e
             JOIN Category c ON e.categoryId = c.id
             GROUP BY c.type;`);
+    await db.closeAsync();
     return expensesGroupByCategory;
   }
 
@@ -28,7 +28,7 @@ export class ExpenseSqliteRepositoryImpl implements ExpenseRepository {
     if (!expense) {
       return null;
     }
-
+    await db.closeAsync();
     return expense;
   }
   async createExpense(expense: Omit<Expense, "id">): Promise<Expense> {
@@ -45,7 +45,7 @@ export class ExpenseSqliteRepositoryImpl implements ExpenseRepository {
           expense.paymentMethod.id,
           date.toISOString().split("T")[0]
         );
-
+        await db.closeAsync();
         return {
           id: infoDatabse.lastInsertRowId,
           amount,
@@ -65,7 +65,7 @@ export class ExpenseSqliteRepositoryImpl implements ExpenseRepository {
           null,
           date.toISOString().split("T")[0]
         );
-
+        await db.closeAsync();
         return {
           id: infoDatabse.lastInsertRowId,
           amount,
@@ -85,7 +85,7 @@ export class ExpenseSqliteRepositoryImpl implements ExpenseRepository {
           expense.paymentMethod.id,
           date.toISOString().split("T")[0]
         );
-
+        await db.closeAsync();
         return {
           id: infoDatabse.lastInsertRowId,
           amount,
@@ -97,6 +97,7 @@ export class ExpenseSqliteRepositoryImpl implements ExpenseRepository {
       }
 
       default:
+        await db.closeAsync();
         throw new Error("PaymentMethod not allowed");
     }
   }
@@ -144,9 +145,10 @@ export class ExpenseSqliteRepositoryImpl implements ExpenseRepository {
           [id]
         );
         if (!updatedExpense) {
+          await db.closeAsync();
           throw new Error("Error updating Income with id ${id}.");
         }
-
+        await db.closeAsync();
         return updatedExpense;
       }
 
@@ -186,9 +188,10 @@ export class ExpenseSqliteRepositoryImpl implements ExpenseRepository {
           [id]
         );
         if (!updatedExpense) {
+          await db.closeAsync();
           throw new Error("Error updating Income with id ${id}.");
         }
-
+        await db.closeAsync();
         return updatedExpense;
       }
 
@@ -229,25 +232,27 @@ export class ExpenseSqliteRepositoryImpl implements ExpenseRepository {
           [id]
         );
         if (!updatedExpense) {
+          await db.closeAsync();
           throw new Error("Error updating Income with id ${id}.");
         }
-
+        await db.closeAsync();
         return updatedExpense;
       }
       default:
+        await db.closeAsync();
         throw new Error("PaymentMethod not allowed");
     }
   }
   async deleteExpense(id: number): Promise<void> {
     const db = await getDataBase();
     await db.runAsync("DELETE FROM Expense WHERE id = $id", { $id: id });
+    await db.closeAsync();
     return;
   }
   async getAllExpenses(): Promise<Expense[]> {
     const db = await getDataBase();
-    const allExpense = await db.getAllAsync<Expense>(
-      "SELECT * FROM Expense"
-    );
+    const allExpense = await db.getAllAsync<Expense>("SELECT * FROM Expense");
+    await db.closeAsync();
     return allExpense;
   }
   async getExpensesByCategory?(category: Category): Promise<Expense[]> {
@@ -256,6 +261,7 @@ export class ExpenseSqliteRepositoryImpl implements ExpenseRepository {
       "SELECT * FROM Expense WHERE categoryId = ?",
       [category.id]
     );
+    await db.closeAsync();
     return allExpense;
   }
 
@@ -270,6 +276,7 @@ export class ExpenseSqliteRepositoryImpl implements ExpenseRepository {
       "SELECT * FROM Expense WHERE date BETWEEN ? AND ? ORDER BY date",
       [formattedStartDate, formattedEndDate]
     );
+    await db.closeAsync();
     return dateExpenses;
   }
 }

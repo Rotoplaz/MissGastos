@@ -12,7 +12,7 @@ export class IncomeSqliteRepositoryImpl implements IncomeRepository {
     if (!Income) {
       return null;
     }
-
+    await db.closeAsync();
     return Income;
   }
 
@@ -25,6 +25,7 @@ export class IncomeSqliteRepositoryImpl implements IncomeRepository {
       concept ? concept : null,
       date.toISOString().split("T")[0]
     );
+    await db.closeAsync();
     return {
       id: newIncome.lastInsertRowId,
       ...income,
@@ -52,6 +53,7 @@ export class IncomeSqliteRepositoryImpl implements IncomeRepository {
     }
 
     if (updates.length === 0) {
+      await db.closeAsync();
       throw new Error("No fields to update.");
     }
 
@@ -66,15 +68,17 @@ export class IncomeSqliteRepositoryImpl implements IncomeRepository {
     );
 
     if (!updatedIncome) {
+      await db.closeAsync();
       throw new Error("Error updating Income with id ${id}.");
     }
-
+    await db.closeAsync();
     return updatedIncome;
   }
 
   async deleteIncome(id: number): Promise<void> {
     const db = await getDataBase();
     await db.runAsync("DELETE FROM Income WHERE id = $id", { $id: id });
+    await db.closeAsync();
     return;
   }
 
@@ -83,6 +87,7 @@ export class IncomeSqliteRepositoryImpl implements IncomeRepository {
     const allIncomes = await db.getAllAsync<Income>(
       "SELECT * FROM Income"
     );
+    await db.closeAsync();
     return allIncomes;
   }
 
@@ -97,6 +102,7 @@ export class IncomeSqliteRepositoryImpl implements IncomeRepository {
       "SELECT * FROM Income WHERE date BETWEEN ? AND ? ORDER BY date",
       [formattedStartDate, formattedEndDate]
     );
+    await db.closeAsync();
     return dateIncomes;
   }
 }

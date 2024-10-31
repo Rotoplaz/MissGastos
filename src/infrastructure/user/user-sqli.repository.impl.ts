@@ -11,9 +11,10 @@ export class UserRepositorySqliteImpl implements UserRepository {
     const user = await db.getFirstAsync<User>("SELECT * FROM User");
 
     if (!user) {
+      await db.closeAsync();
       return null;
     }
-    
+    await db.closeAsync();
     return user;
   }
 
@@ -26,7 +27,7 @@ export class UserRepositorySqliteImpl implements UserRepository {
       profilePictureUrl || "",
       globalLimitBudget
     );
-    
+    await db.closeAsync();
     return { ...user,profilePictureUrl: user.profilePictureUrl || "", id: result.lastInsertRowId };
   }
 
@@ -63,8 +64,11 @@ export class UserRepositorySqliteImpl implements UserRepository {
 
     const userUpdated = await this.getUser();
     
-    if( ! userUpdated ) throw new Error("Usuario no encontrado");
-
+    if( ! userUpdated ) {
+      await db.closeAsync();
+      throw new Error("Usuario no encontrado");
+    }
+    await db.closeAsync();
     return userUpdated;
   }
 }

@@ -14,6 +14,8 @@ export class CreditCardCrudRepositoryImpl implements CreditCardRepository {
     if (!creditCard) {
       return null;
     }
+
+    await db.closeAsync();
     return { ...creditCard, dueDate: new Date(creditCard.dueDate) };
   }
 
@@ -29,6 +31,7 @@ export class CreditCardCrudRepositoryImpl implements CreditCardRepository {
       creditLimit,
       dueDate.toISOString().split("T")[0]
     );
+    await db.closeAsync();
     return {
       id: creditCard.lastInsertRowId,
       ...card,
@@ -85,16 +88,18 @@ export class CreditCardCrudRepositoryImpl implements CreditCardRepository {
     if (!updatedCard) {
       throw new Error("Card not found after update");
     }
-
+    await db.closeAsync();
     return updatedCard;
   }
   async deleteCreditCard(id: number): Promise<void> {
+    const db = await getDataBase();
     try {
-      const db = await getDataBase();
       await db.runAsync("DELETE FROM Card WHERE id = $id", { $id: id });
       return;
     } catch (error) {
       throw new Error("Card doesn't exist");
+    }finally {
+      await db.closeAsync();
     }
   }
   async getAllCreditCards(): Promise<CreditCard[]> {
@@ -102,6 +107,7 @@ export class CreditCardCrudRepositoryImpl implements CreditCardRepository {
     const allCreditCards = await db.getAllAsync<CreditCard>(
       "SELECT * FROM Card WHERE cardType = 'credit'"
     );
+    await db.closeAsync();
     return allCreditCards;
   }
 }

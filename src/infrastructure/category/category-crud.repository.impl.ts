@@ -13,7 +13,7 @@ export class CategoryRepositoryImpl implements CategoryRepository {
     if (!category) {
       return null;
     }
-
+    await db.closeAsync();
     return category;
   }
 
@@ -26,6 +26,7 @@ export class CategoryRepositoryImpl implements CategoryRepository {
       icon,
       color
     );
+    await db.closeAsync();
     return {
       id: newCategory.lastInsertRowId,
       ...category,
@@ -68,19 +69,21 @@ export class CategoryRepositoryImpl implements CategoryRepository {
     if (!updatedCategory) {
       throw new Error("Category not found after update");
     }
-
+    await db.closeAsync();
     return updatedCategory;
   }
 
   async deleteCategory(id: number): Promise<void> {
+    const db = await getDataBase();
     try {
-      const db = await getDataBase();
       await db.runAsync("DELETE FROM Category WHERE id = $id", {
         $id: id,
       });
       return;
     } catch (error) {
       throw new Error("Category doesn't exist");
+    }finally{
+      await db.closeAsync();
     }
   }
 
@@ -89,6 +92,7 @@ export class CategoryRepositoryImpl implements CategoryRepository {
     const categories = await db.getAllAsync<Category>(
       "SELECT * FROM Category;"
     );
+    await db.closeAsync();
     return categories;
   }
 }
