@@ -35,13 +35,13 @@ export const useCardsScreens = () => {
 
   useEffect(() => {
     const cardsFormated = cardsInStore.map(
-      ({ name, id, lastFourDigits }) => ({
+      ({ name, id, lastFourDigits, type }) => ({
         id,
         name,
         lastFourDigits,
+        type
       })
     );
-
     setCards([...cardsFormated]);
   }, [cardsInStore]);
 

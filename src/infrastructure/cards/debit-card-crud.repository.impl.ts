@@ -21,7 +21,7 @@ export class DebitCardRepositoryImpl implements DebitCardRepository {
     const { name, lastFourDigits, debt, currentBalance, type } = card;
     const db = await getDataBase();
     const debitCard = await db.runAsync(
-      "INSERT INTO Card (name, lastFourDigits, debt, cardType, currentBalance) VALUES (?,?,?,?,?)",
+      "INSERT INTO Card (name, lastFourDigits, debt, type, currentBalance) VALUES (?,?,?,?,?)",
       name,
       lastFourDigits,
       debt,
@@ -63,7 +63,7 @@ export class DebitCardRepositoryImpl implements DebitCardRepository {
     }
 
     if (card.type !== undefined) {
-      fieldsToUpdate.push("cardType = ?");
+      fieldsToUpdate.push("type = ?");
       values.push(card.type);
     }
 
@@ -99,7 +99,7 @@ export class DebitCardRepositoryImpl implements DebitCardRepository {
   async getAllDebitCards(): Promise<DebitCard[]> {
     const db = await getDataBase();
     const allDebitCards = await db.getAllAsync<DebitCard>(
-      "SELECT * FROM Card WHERE cardType = 'debit'"
+      "SELECT * FROM Card WHERE type = 'debit'"
     );
     await db.closeAsync();
     return allDebitCards;
