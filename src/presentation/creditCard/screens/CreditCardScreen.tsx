@@ -52,7 +52,7 @@ export const CreditCardScreen = () => {
             </ScrollView>
           ) : (
             <Layout style={{height: "80%",justifyContent: "center", alignItems: "center"}}>
-              <Card creditCard={creditCard} />
+              <Card lastFourDigits={creditCard.lastFourDigits} />
               <CardInformation creditCard={creditCard} />
               <Layout style={style.actionsContainer}>
                 <Button
