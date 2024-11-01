@@ -20,7 +20,7 @@ interface FormData {
 const creditCardSchema = z.object({
 name: z.string().min(1, "Nombre es requerido"),
 lastFourDigits: z.string().length(4, "Debe tener 4 dígitos"),
-debt: z.coerce.number().min(0, "Debe ser un número válido"),
+debt: z.coerce.number().optional().default(0),
 creditLimit: z.coerce.number().min(1, "Debe ser un número válido"),
 dueDate: z.coerce.date(),
 });
@@ -57,8 +57,6 @@ export const useCreditCardForm = (creditCard: CreditCard | null) => {
     
       const onSubmit = async (data: FormData) => {
         if (!creditCard) {
-          Alert.alert("Éxito", "Formulario enviado correctamente.");
-    
           const newCard = await new CreateCreditCardUseCase(
             creditCardRepository.current
           ).execute({
@@ -70,6 +68,7 @@ export const useCreditCardForm = (creditCard: CreditCard | null) => {
             type: "credit",
           });
           addCreditCard(newCard);
+          Alert.alert("Éxito", "Formulario enviado correctamente.");
           router.back();
           return;
         }

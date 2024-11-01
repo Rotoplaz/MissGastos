@@ -1,28 +1,37 @@
 import { Button, Input, Layout, Text } from "@ui-kitten/components";
-import React from "react";
+import React, { useRef } from "react";
 import { Alert, StyleSheet } from "react-native";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
+import { DebitCard } from "@/src/domain/entities/payment-methods.entity";
+import { DebitCardRepositoryImpl } from "@/src/infrastructure";
+import { CreateDebitCardUseCase } from "@/src/application";
+import { useDebitCardsStore } from "../../store";
+import { router } from "expo-router";
 
-// Definimos el esquema de validación con zod
+
+interface Props {
+  debitCard: DebitCard | null;
+}
+
 const debitCardSchema = z.object({
-  alias: z.string().min(1, "Alias es requerido"),
+  name: z.string().min(1, "Alias es requerido"),
   lastFourDigits: z.string().length(4, "Debe tener 4 dígitos"),
-  debt: z.coerce.number().min(0, "Debe ser un número válido"),
+  debt: z.coerce.number().optional().default(0),
   limit: z.coerce.number().min(1, "Debe ser un número válido"),
-  currentBalance: z.coerce.number().optional(),
+  currentBalance: z.coerce.number().optional().default(0),
 });
 
 interface FormData {
-  alias: string;
+  name: string;
   lastFourDigits: string;
   debt: string;
   limit: string;
-  currentBalance?: string;
+  currentBalance: string;
 }
 
-export const DebitCardForm = () => {
+export const DebitCardForm = ({ debitCard }:Props) => {
   const {
     handleSubmit,
     setValue,
@@ -31,22 +40,30 @@ export const DebitCardForm = () => {
   } = useForm<FormData>({
     resolver: zodResolver(debitCardSchema),
     defaultValues: {
-      alias: "",
-      lastFourDigits: "",
-      debt: "",
-      limit: "",
-      currentBalance: "",
+      name: debitCard?.name || "",
+      lastFourDigits:  debitCard?.lastFourDigits || "",
+      debt: debitCard?.debt.toString() || "",
+      limit: debitCard?.limit.toString() || "",
+      currentBalance: debitCard?.currentBalance.toString() || "",
     },
   });
+  const debitCardRepository = useRef(new DebitCardRepositoryImpl());
+  const addDebitCard = useDebitCardsStore(state=> state.addDebitCard);
+  const onSubmit = async (data: FormData) => {
+    if(!debitCard) {
+      const newCard = await new CreateDebitCardUseCase(debitCardRepository.current).execute({
+        currentBalance: +data.currentBalance,
+        debt: +data.debt,
+        lastFourDigits: data.lastFourDigits,
+        limit: +data.limit,
+        name: data.name,
+        type: "debit"
+      });
+      addDebitCard(newCard);
+      Alert.alert("Éxito", "Formulario enviado correctamente.");
+      router.back();
+    }
 
-  const onSubmit = (data: FormData) => {
-    Alert.alert("Éxito", "Formulario enviado correctamente.");
-    // Resetea el formulario después de enviar los datos
-    setValue("alias", "");
-    setValue("lastFourDigits", "");
-    setValue("debt", "");
-    setValue("limit", "");
-    setValue("currentBalance", "");
   };
 
   return (
@@ -55,10 +72,10 @@ export const DebitCardForm = () => {
         <Text style={style.label}>Alias de la tarjeta</Text>
         <Input
           placeholder="Alias de la tarjeta"
-          onChangeText={(text) => setValue("alias", text)}
-          value={watch("alias")}
+          onChangeText={(text) => setValue("name", text)}
+          value={watch("name")}
         />
-        {errors.alias && <Text style={style.error}>{errors.alias.message}</Text>}
+        {errors.name && <Text style={style.error}>{errors.name.message}</Text>}
       </Layout>
 
       <Layout style={style.inputContainer}>
