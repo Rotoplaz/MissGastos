@@ -1,30 +1,57 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { LayoutWithTopNavigation } from "../../common/layouts/LayoutWithTopNavigation";
 import { FullLoaderScreen } from "../../common/screens/loaders/FullLoaderScreen";
-import { useLocalSearchParams } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import { Button, Icon, Layout, Text } from "@ui-kitten/components";
 import { DebitCard } from "@/src/domain/entities/payment-methods.entity";
-import { GetDebitCardByIdUseCase } from "@/src/application";
+import { DeleteDebitCardUseCase, GetDebitCardByIdUseCase } from "@/src/application";
 import { DebitCardRepositoryImpl } from "@/src/infrastructure";
 import { DebitCardInformtaion } from "../components/DebitCardInfo";
-import { ScrollView, StyleSheet } from "react-native";
+import { Alert, ScrollView, StyleSheet } from "react-native";
 import { DebitCardForm } from "../../createCard/components/DebitCardForm";
 import { Card } from "../../creditCard/components/Card";
+import { useCardsStore } from "../../store";
 
 export const DebitCardScreen = () => {
   const params = useLocalSearchParams<{ id: string }>();
   const [debitCard, setDebitCard] = useState<DebitCard | null>(null);
   const [isEditing, setIsEditing] = useState(false);
+  const debitCardRepository = useRef(new DebitCardRepositoryImpl());
+  const deleteCard = useCardsStore(state=>state.deleteCard);
+
   useEffect(() => {
     const getDebitCard = async () => {
-      const debitCardRepository = new DebitCardRepositoryImpl();
+      
       const card = await new GetDebitCardByIdUseCase(
-        debitCardRepository
+        debitCardRepository.current
       ).execute(+params.id);
       setDebitCard(card);
     };
     getDebitCard();
   }, []);
+
+  const handleDelete = async () => {
+    
+    Alert.alert(
+      "Confirmar Eliminación",
+      "¿Estás seguro de que quieres eliminar esta tarjeta?",
+      [
+        { text: "Cancelar", style: "cancel" },
+        {
+          text: "Confirmar",
+          onPress: async () => {
+            try {
+              await new DeleteDebitCardUseCase(debitCardRepository.current).execute(debitCard!.id);
+              deleteCard(debitCard!.id);
+              router.back();
+            } catch (error) {
+              Alert.alert("Error eliminando tarjeta intende de nuevo");
+            }
+          },
+        },
+      ]
+    );
+  }
 
   if (!debitCard) {
     return <FullLoaderScreen />;
@@ -64,7 +91,7 @@ export const DebitCardScreen = () => {
                   style={style.exit}
                   appearance="ghost"
                   accessoryLeft={<Icon name="trash-2-outline" fill="white" />}
-                  onPress={()=>{}}
+                  onPress={handleDelete}
                 />
                 <Button
                   style={style.exit}

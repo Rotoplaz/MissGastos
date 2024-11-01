@@ -13,7 +13,6 @@ export class DebitCardRepositoryImpl implements DebitCardRepository {
     if (!debitCard) {
       return null;
     }
-    console.log(debitCard)
     await db.closeAsync();
     return debitCard;
   }
