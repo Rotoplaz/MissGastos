@@ -51,10 +51,9 @@ export const DebitCardForm = () => {
 
   return (
     <>
-      <Layout>
+      <Layout style={style.inputContainer}>
         <Text style={style.label}>Alias de la tarjeta</Text>
         <Input
-          style={style.input}
           placeholder="Alias de la tarjeta"
           onChangeText={(text) => setValue("alias", text)}
           value={watch("alias")}
@@ -62,10 +61,9 @@ export const DebitCardForm = () => {
         {errors.alias && <Text style={style.error}>{errors.alias.message}</Text>}
       </Layout>
 
-      <Layout>
+      <Layout style={style.inputContainer}>
         <Text style={style.label}>Últimos 4 dígitos</Text>
         <Input
-          style={style.input}
           placeholder="****"
           keyboardType="numeric"
           maxLength={4}
@@ -77,10 +75,9 @@ export const DebitCardForm = () => {
         )}
       </Layout>
 
-      <Layout>
+      <Layout style={style.inputContainer}>
         <Text style={style.label}>Deuda</Text>
         <Input
-          style={style.input}
           placeholder="Cantidad"
           keyboardType="numeric"
           onChangeText={(text) => setValue("debt", text.replace(/[^0-9]/g, ""))}
@@ -89,10 +86,9 @@ export const DebitCardForm = () => {
         {errors.debt && <Text style={style.error}>{errors.debt.message}</Text>}
       </Layout>
 
-      <Layout>
+      <Layout style={style.inputContainer}>
         <Text style={style.label}>Límite de gasto</Text>
         <Input
-          style={style.input}
           placeholder="Solo números"
           keyboardType="numeric"
           onChangeText={(text) => setValue("limit", text.replace(/[^0-9]/g, ""))}
@@ -101,10 +97,9 @@ export const DebitCardForm = () => {
         {errors.limit && <Text style={style.error}>{errors.limit.message}</Text>}
       </Layout>
 
-      <Layout>
+      <Layout style={style.inputContainer}>
         <Text style={style.label}>Saldo actual</Text>
         <Input
-          style={style.input}
           placeholder="Solo números"
           keyboardType="numeric"
           onChangeText={(text) => setValue("currentBalance", text.replace(/[^0-9]/g, ""))}
@@ -115,7 +110,7 @@ export const DebitCardForm = () => {
         )}
       </Layout>
 
-      <Layout style={{ alignSelf: "center" }}>
+      <Layout style={{ alignSelf: "center", marginTop: 20 }}>
         <Button onPress={handleSubmit(onSubmit)}>
           Guardar
         </Button>
@@ -127,11 +122,10 @@ export const DebitCardForm = () => {
 const style = StyleSheet.create({
   label: {
     fontSize: 18,
-    marginBottom: 8,
+    marginBottom: 10,
   },
-  input: {
-    marginBottom: 20,
-    borderRadius: 8,
+  inputContainer: {
+    marginBottom: 20
   },
   error: {
     color: "red",

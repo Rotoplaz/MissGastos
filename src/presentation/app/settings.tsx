@@ -6,13 +6,14 @@ import { useUserStore } from "../store/user/useUserStore";
 import { useTheme } from "@react-navigation/native";
 import { LayoutWithTopNavigation } from "../common/layouts/LayoutWithTopNavigation";
 import { Alert } from "react-native";
+import { getDataBase } from "@/src/infrastructure/db/database";
 
 export const config = () => {
   const theme = useTheme();
   const resetUserStore = useUserStore(state=>state.resetUserStore);
   
   const handleDeleteDatabaseInformation = async()=> {
-    Alert.alert("Cuidado", "Seguro de eliminar toda tu información",
+    Alert.alert("Cuidado", "¿Seguro de eliminar toda tu información?",
       [
         {
           text: "Cancelar",
@@ -23,7 +24,7 @@ export const config = () => {
           style: "destructive",
           onPress: async() => {
             try {
-              const database = await SqliteDatabase.openDatabaseAsync("MissGastosDataBase");
+              const database = await getDataBase();
               await database.closeAsync();
               await SqliteDatabase.deleteDatabaseAsync("MissGastosDataBase");
               resetUserStore();
