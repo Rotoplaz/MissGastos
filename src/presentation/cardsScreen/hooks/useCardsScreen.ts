@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { useCreditCardsStore, useDebitCardsStore } from "../../store";
 import { IListCardItem } from "../interfaces/IListCardItem";
 import {
   CreditCardCrudRepositoryImpl,
@@ -9,13 +8,12 @@ import {
   GetAllCreditsCardsUseCase,
   GetAllDebitCardsUseCase,
 } from "@/src/application";
+import { useCardsStore } from "../../store/cards/useCardsStore";
 
 export const useCardsScreens = () => {
-  const creditCards = useCreditCardsStore((state) => state.creditCards);
-  const setCreditCards = useCreditCardsStore((state) => state.setCreditCards);
-  const debitCards = useDebitCardsStore((state) => state.debitCards);
-  const setDebitCards = useDebitCardsStore((state) => state.setDebitCards);
 
+  const setCardsStore = useCardsStore(state=> state.setCards);
+  const cardsInStore = useCardsStore(state=> state.cards);
   const [cards, setCards] = useState<IListCardItem[]>([]);
 
   useEffect(() => {
@@ -30,30 +28,22 @@ export const useCardsScreens = () => {
       const creditCardsFromRepository = await new GetAllCreditsCardsUseCase(
         creditCardsRepository
       ).execute();
-
-      setDebitCards(debitCardsFromRepository);
-      setCreditCards(creditCardsFromRepository);
+      setCardsStore([...debitCardsFromRepository,...creditCardsFromRepository]);
     };
     getCards();
   }, []);
 
   useEffect(() => {
-    const debitCardsFormated = debitCards.map(
+    const cardsFormated = cardsInStore.map(
       ({ name, id, lastFourDigits }) => ({
         id,
         name,
         lastFourDigits,
       })
     );
-    const creditCardsFormated = creditCards.map(
-      ({ name, id, lastFourDigits }) => ({
-        id,
-        name,
-        lastFourDigits,
-      })
-    );
-    setCards([...debitCardsFormated, ...creditCardsFormated]);
-  }, [debitCards, creditCards]);
+
+    setCards([...cardsFormated]);
+  }, [cardsInStore]);
 
   return {
     cards,

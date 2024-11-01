@@ -4,10 +4,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { router } from "expo-router";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-import { useCreditCardsStore } from "../../store";
 import { useRef } from "react";
 import { Alert } from "react-native";
 import { CreditCardCrudRepositoryImpl } from "@/src/infrastructure";
+import { useCardsStore } from "../../store/cards/useCardsStore";
 
 interface FormData {
     name: string;
@@ -50,11 +50,9 @@ export const useCreditCardForm = (creditCard: CreditCard | null) => {
       });
       const creditCardRepository = useRef(new CreditCardCrudRepositoryImpl());
     
-      const addCreditCard = useCreditCardsStore((state) => state.addCreditCard);
-      const updateCreditCard = useCreditCardsStore(
-        (state) => state.updateCreditCard
-      );
-    
+      const addCardInStore = useCardsStore(state=>state.addCard);
+      const updateCardInStore = useCardsStore(state=>state.updateCard);
+
       const onSubmit = async (data: FormData) => {
         if (!creditCard) {
           const newCard = await new CreateCreditCardUseCase(
@@ -67,7 +65,7 @@ export const useCreditCardForm = (creditCard: CreditCard | null) => {
             name: data.name,
             type: "credit",
           });
-          addCreditCard(newCard);
+          addCardInStore(newCard);
           Alert.alert("Éxito", "Formulario enviado correctamente.");
           router.back();
           return;
@@ -83,7 +81,7 @@ export const useCreditCardForm = (creditCard: CreditCard | null) => {
           name: data.name,
         });
     
-        updateCreditCard(creditCardUpdated);
+        updateCardInStore(creditCardUpdated);
         router.back();
         return;
       };

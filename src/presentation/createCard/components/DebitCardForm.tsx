@@ -7,8 +7,8 @@ import * as z from "zod";
 import { DebitCard } from "@/src/domain/entities/payment-methods.entity";
 import { DebitCardRepositoryImpl } from "@/src/infrastructure";
 import { CreateDebitCardUseCase } from "@/src/application";
-import { useDebitCardsStore } from "../../store";
 import { router } from "expo-router";
+import { useCardsStore } from "../../store";
 
 
 interface Props {
@@ -48,7 +48,7 @@ export const DebitCardForm = ({ debitCard }:Props) => {
     },
   });
   const debitCardRepository = useRef(new DebitCardRepositoryImpl());
-  const addDebitCard = useDebitCardsStore(state=> state.addDebitCard);
+  const addCardInStore = useCardsStore(state=>state.addCard)
   const onSubmit = async (data: FormData) => {
     if(!debitCard) {
       const newCard = await new CreateDebitCardUseCase(debitCardRepository.current).execute({
@@ -59,7 +59,7 @@ export const DebitCardForm = ({ debitCard }:Props) => {
         name: data.name,
         type: "debit"
       });
-      addDebitCard(newCard);
+      addCardInStore(newCard);
       Alert.alert("Éxito", "Formulario enviado correctamente.");
       router.back();
     }
