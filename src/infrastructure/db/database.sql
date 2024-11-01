@@ -20,7 +20,7 @@ CREATE TABLE Card (
     name TEXT NOT NULL,
     lastFourDigits TEXT NOT NULL,
     debt REAL NOT NULL,
-    cardType TEXT CHECK(cardType IN ('credit', 'debit')), -- Defines whether it is a credit or debit card
+    type TEXT CHECK(type IN ('credit', 'debit')), -- Defines whether it is a credit or debit card
     limitDebit REAL, -- Only for debit cards
     dueDate DATE, -- Only for credit cards
     creditLimit REAL,   -- Only for credit cards
@@ -72,7 +72,7 @@ INSERT INTO Category (type, color, icon) VALUES
 ('Ropa', '#E67E22', '👗');            
 
 -- Insert cards
-INSERT INTO Card (name, lastFourDigits, debt, cardType, limitDebit, currentBalance) VALUES 
+INSERT INTO Card (name, lastFourDigits, debt, type, limitDebit, currentBalance) VALUES 
 ('Debit Card Bank A', '1234', 0.00, 'debit', 5000.00, 1000.00),
 ('Credit Card Bank B', '5678', 200.00, 'credit', '2024-11-01', 10000.00);
 
@@ -104,7 +104,7 @@ SELECT * FROM User;
 SELECT * FROM Category;
 
 -- Get all credit cards
-SELECT * FROM Card WHERE cardType = 'credit';
+SELECT * FROM Card WHERE type = 'credit';
 
 -- Get all expenses made with debit card
 SELECT * FROM Expense WHERE paymentMethod = 'debit';
@@ -122,7 +122,7 @@ JOIN Category c ON e.categoryId = c.id
 GROUP BY c.type;
 
 -- Get the card with the highest credit limit
-SELECT * FROM Card WHERE cardType = 'credit' ORDER BY creditLimit DESC LIMIT 1;
+SELECT * FROM Card WHERE type = 'credit' ORDER BY creditLimit DESC LIMIT 1;
 
 
 -- This query selects all expenses made within a specified date range.

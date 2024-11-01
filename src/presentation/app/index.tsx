@@ -30,9 +30,8 @@ export default function Index() {
         return;
       }
       router.replace({ pathname: "/(home)" });
-
      
-   
+      await db.closeAsync();
       setUserStore(user);
     };
 

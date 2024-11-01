@@ -23,7 +23,7 @@ export class CreditCardCrudRepositoryImpl implements CreditCardRepository {
     const { name, lastFourDigits, debt, creditLimit, type, dueDate } = card;
     const db = await getDataBase();
     const creditCard = await db.runAsync(
-      "INSERT INTO Card (name, lastFourDigits, debt, cardType, creditLimit, dueDate) VALUES (?,?,?,?,?,?)",
+      "INSERT INTO Card (name, lastFourDigits, debt, type, creditLimit, dueDate) VALUES (?,?,?,?,?,?)",
       name,
       lastFourDigits,
       debt,
@@ -71,7 +71,7 @@ export class CreditCardCrudRepositoryImpl implements CreditCardRepository {
     }
 
     if (card.type !== undefined) {
-      fieldsToUpdate.push("cardType = ?");
+      fieldsToUpdate.push("type = ?");
       values.push(card.type);
     }
 
@@ -105,7 +105,7 @@ export class CreditCardCrudRepositoryImpl implements CreditCardRepository {
   async getAllCreditCards(): Promise<CreditCard[]> {
     const db = await getDataBase();
     const allCreditCards = await db.getAllAsync<CreditCard>(
-      "SELECT * FROM Card WHERE cardType = 'credit'"
+      "SELECT * FROM Card WHERE type = 'credit'"
     );
     await db.closeAsync();
     return allCreditCards;

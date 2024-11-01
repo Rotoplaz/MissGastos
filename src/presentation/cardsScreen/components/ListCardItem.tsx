@@ -9,15 +9,18 @@ interface Props {
 
 export const ListCardItem = ({item}:Props) => {
     
-  const handleCardPress = (id: number) => {
-    router.push({ pathname: "/creditCard", params: { id } });
+  const handleCardPress = (item: IListCardItem) => {
+    if(item.type === "credit") {
+      return router.push({ pathname: "/creditCard", params: { id: item.id } });
+    } 
+    return router.push({ pathname: "/debitCard", params: { id: item.id } });
   };
   return (
     <ListItem
       title={`${item.name}`}
       description={`**** **** **** ${item.lastFourDigits}`}
       accessoryLeft={<Icon name="credit-card-outline" />}
-      onPress={() => handleCardPress(item.id)}
+      onPress={() => handleCardPress(item)}
     />
   );
 };

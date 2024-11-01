@@ -1,71 +1,31 @@
 import { Button, Input, Layout, Text } from "@ui-kitten/components";
 import React from "react";
-import { Alert, StyleSheet } from "react-native";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
+import { StyleSheet } from "react-native";
 
-// Definimos el esquema de validación con zod
-const debitCardSchema = z.object({
-  alias: z.string().min(1, "Alias es requerido"),
-  lastFourDigits: z.string().length(4, "Debe tener 4 dígitos"),
-  debt: z.coerce.number().min(0, "Debe ser un número válido"),
-  limit: z.coerce.number().min(1, "Debe ser un número válido"),
-  currentBalance: z.coerce.number().optional(),
-});
+import { DebitCard } from "@/src/domain/entities/payment-methods.entity";
+import { useDebitCardForm } from "../hooks/useDebitCardForm";
 
-interface FormData {
-  alias: string;
-  lastFourDigits: string;
-  debt: string;
-  limit: string;
-  currentBalance?: string;
+interface Props {
+  debitCard: DebitCard | null;
 }
 
-export const DebitCardForm = () => {
-  const {
-    handleSubmit,
-    setValue,
-    watch,
-    formState: { errors },
-  } = useForm<FormData>({
-    resolver: zodResolver(debitCardSchema),
-    defaultValues: {
-      alias: "",
-      lastFourDigits: "",
-      debt: "",
-      limit: "",
-      currentBalance: "",
-    },
-  });
-
-  const onSubmit = (data: FormData) => {
-    Alert.alert("Éxito", "Formulario enviado correctamente.");
-    // Resetea el formulario después de enviar los datos
-    setValue("alias", "");
-    setValue("lastFourDigits", "");
-    setValue("debt", "");
-    setValue("limit", "");
-    setValue("currentBalance", "");
-  };
-
+export const DebitCardForm = ({ debitCard }:Props) => {
+  const { errors, handleSubmit, setValue, watch, onSubmit } = useDebitCardForm(debitCard);
   return (
     <>
-      <Layout>
+      <Layout style={style.inputContainer}>
         <Text style={style.label}>Alias de la tarjeta</Text>
         <Input
-          style={style.input}
           placeholder="Alias de la tarjeta"
-          onChangeText={(text) => setValue("alias", text)}
-          value={watch("alias")}
+          onChangeText={(text) => setValue("name", text)}
+          value={watch("name")}
         />
-        {errors.alias && <Text style={style.error}>{errors.alias.message}</Text>}
+        {errors.name && <Text style={style.error}>{errors.name.message}</Text>}
       </Layout>
 
-      <Layout>
+      <Layout style={style.inputContainer}>
         <Text style={style.label}>Últimos 4 dígitos</Text>
         <Input
-          style={style.input}
           placeholder="****"
           keyboardType="numeric"
           maxLength={4}
@@ -77,10 +37,9 @@ export const DebitCardForm = () => {
         )}
       </Layout>
 
-      <Layout>
+      <Layout style={style.inputContainer}>
         <Text style={style.label}>Deuda</Text>
         <Input
-          style={style.input}
           placeholder="Cantidad"
           keyboardType="numeric"
           onChangeText={(text) => setValue("debt", text.replace(/[^0-9]/g, ""))}
@@ -89,10 +48,9 @@ export const DebitCardForm = () => {
         {errors.debt && <Text style={style.error}>{errors.debt.message}</Text>}
       </Layout>
 
-      <Layout>
+      <Layout style={style.inputContainer}>
         <Text style={style.label}>Límite de gasto</Text>
         <Input
-          style={style.input}
           placeholder="Solo números"
           keyboardType="numeric"
           onChangeText={(text) => setValue("limit", text.replace(/[^0-9]/g, ""))}
@@ -101,10 +59,9 @@ export const DebitCardForm = () => {
         {errors.limit && <Text style={style.error}>{errors.limit.message}</Text>}
       </Layout>
 
-      <Layout>
+      <Layout style={style.inputContainer}>
         <Text style={style.label}>Saldo actual</Text>
         <Input
-          style={style.input}
           placeholder="Solo números"
           keyboardType="numeric"
           onChangeText={(text) => setValue("currentBalance", text.replace(/[^0-9]/g, ""))}
@@ -115,7 +72,7 @@ export const DebitCardForm = () => {
         )}
       </Layout>
 
-      <Layout style={{ alignSelf: "center" }}>
+      <Layout style={{ alignSelf: "center", marginTop: 20 }}>
         <Button onPress={handleSubmit(onSubmit)}>
           Guardar
         </Button>
@@ -127,11 +84,10 @@ export const DebitCardForm = () => {
 const style = StyleSheet.create({
   label: {
     fontSize: 18,
-    marginBottom: 8,
+    marginBottom: 10,
   },
-  input: {
-    marginBottom: 20,
-    borderRadius: 8,
+  inputContainer: {
+    marginBottom: 20
   },
   error: {
     color: "red",

@@ -2,7 +2,6 @@ import { SQLiteDatabase } from "expo-sqlite";
 
 export async function migrateDbIfNeeded(db: SQLiteDatabase) {
   try {
-    
     const DATABASE_VERSION = 1;
     const userVersion = await db.getFirstAsync<{ user_version: number }>(
       "PRAGMA user_version"
@@ -35,7 +34,7 @@ CREATE TABLE Card (
     name TEXT NOT NULL,
     lastFourDigits TEXT NOT NULL,
     debt REAL NOT NULL,
-    cardType TEXT CHECK(cardType IN ('credit', 'debit')), -- Defines whether it is a credit or debit card
+    type TEXT CHECK(type IN ('credit', 'debit')), -- Defines whether it is a credit or debit card
     limitDebit REAL, -- Only for debit cards
     dueDate DATE, -- Only for credit cards
     creditLimit REAL,   -- Only for credit cards

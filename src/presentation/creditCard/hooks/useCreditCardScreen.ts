@@ -1,4 +1,3 @@
-import { useCreditCardsStore } from "../../store";
 import { useEffect, useState } from "react";
 import { CreditCard } from "@/src/domain/entities/payment-methods.entity";
 import { Alert } from "react-native";
@@ -7,12 +6,11 @@ import {
   DeleteCreditCardUseCase,
   GetCreditCardByIdUseCase,
 } from "@/src/application";
+import { useCardsStore } from "../../store/cards/useCardsStore";
 
 export const useCreditCardScreen = (id: number) => {
   const [isEditing, setIsEditing] = useState(false);
-  const deleteCreditCard = useCreditCardsStore(
-    (state) => state.deleteCreditCard
-  );
+  const deleteCardStore = useCardsStore(state=>state.deleteCard);
   const [creditCard, setCreditCard] = useState<CreditCard | null>(null);
 
   useEffect(() => {
@@ -44,7 +42,7 @@ export const useCreditCardScreen = (id: number) => {
               await new DeleteCreditCardUseCase(creditCardRepository).export(
                 creditCard!.id
               );
-              deleteCreditCard(creditCard!.id);
+              deleteCardStore(creditCard!.id);
             } catch (error) {
               Alert.alert("Error eliminando tarjeta intende de nuevo");
             }

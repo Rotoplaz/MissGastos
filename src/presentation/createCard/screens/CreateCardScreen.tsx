@@ -8,8 +8,6 @@ import {
   Text,
 } from "@ui-kitten/components";
 import {
-  KeyboardAvoidingView,
-  Platform,
   ScrollView,
   StyleSheet,
 } from "react-native";
@@ -43,7 +41,7 @@ export const CreateCardScreen = () => {
           </Layout>
 
           {options[selectedIndex.row] === "Débito" ? (
-            <DebitCardForm />
+            <DebitCardForm debitCard={null}/>
           ) : (
             <CreditCardForm creditCard={null} />
           )}

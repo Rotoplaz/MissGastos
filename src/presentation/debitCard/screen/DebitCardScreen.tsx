@@ -1,31 +1,63 @@
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { LayoutWithTopNavigation } from "../../common/layouts/LayoutWithTopNavigation";
-import { Button, Icon, Layout } from "@ui-kitten/components";
-import { Card } from "../components/Card";
-import { CardInformation } from "../components/CardInformation";
-import { router, useLocalSearchParams } from "expo-router";
-
-import { ScrollView, StyleSheet } from "react-native";
 import { FullLoaderScreen } from "../../common/screens/loaders/FullLoaderScreen";
-import { useCreditCardScreen } from "../hooks/useCreditCardScreen";
-import { CreditCardForm } from "../../createCard/components/CreditCardForm";
+import { router, useLocalSearchParams } from "expo-router";
+import { Button, Icon, Layout, Text } from "@ui-kitten/components";
+import { DebitCard } from "@/src/domain/entities/payment-methods.entity";
+import { DeleteDebitCardUseCase, GetDebitCardByIdUseCase } from "@/src/application";
+import { DebitCardRepositoryImpl } from "@/src/infrastructure";
+import { DebitCardInformtaion } from "../components/DebitCardInfo";
+import { Alert, ScrollView, StyleSheet } from "react-native";
+import { DebitCardForm } from "../../createCard/components/DebitCardForm";
+import { Card } from "../../creditCard/components/Card";
+import { useCardsStore } from "../../store";
 
-export const CreditCardScreen = () => {
+export const DebitCardScreen = () => {
   const params = useLocalSearchParams<{ id: string }>();
-  const { confirmDelete, confirmEdit, creditCard, isEditing, setIsEditing } =
-    useCreditCardScreen(+params.id);
+  const [debitCard, setDebitCard] = useState<DebitCard | null>(null);
+  const [isEditing, setIsEditing] = useState(false);
+  const debitCardRepository = useRef(new DebitCardRepositoryImpl());
+  const deleteCard = useCardsStore(state=>state.deleteCard);
 
-  if (!creditCard) {
-    return <FullLoaderScreen />;
+  useEffect(() => {
+    const getDebitCard = async () => {
+      
+      const card = await new GetDebitCardByIdUseCase(
+        debitCardRepository.current
+      ).execute(+params.id);
+      setDebitCard(card);
+    };
+    getDebitCard();
+  }, []);
+
+  const handleDelete = async () => {
+    
+    Alert.alert(
+      "Confirmar Eliminación",
+      "¿Estás seguro de que quieres eliminar esta tarjeta?",
+      [
+        { text: "Cancelar", style: "cancel" },
+        {
+          text: "Confirmar",
+          onPress: async () => {
+            try {
+              await new DeleteDebitCardUseCase(debitCardRepository.current).execute(debitCard!.id);
+              deleteCard(debitCard!.id);
+              router.back();
+            } catch (error) {
+              Alert.alert("Error eliminando tarjeta intende de nuevo");
+            }
+          },
+        },
+      ]
+    );
   }
 
-  const handleDelete = () => {
-    confirmDelete();
-    router.back();
-  };
-
-  return (
-    <LayoutWithTopNavigation titleScreen={creditCard.name}>
+  if (!debitCard) {
+    return <FullLoaderScreen />;
+  }
+  return(
+<LayoutWithTopNavigation titleScreen={debitCard.name}>
       <Layout style={style.mainContainer}>
         <Layout style={style.cardContainer}>
           {isEditing ? (
@@ -47,13 +79,13 @@ export const CreditCardScreen = () => {
                 >
                   Cancelar
                 </Button>
-                <CreditCardForm creditCard={creditCard} />
+                <DebitCardForm debitCard={debitCard} />
               </Layout>
             </ScrollView>
           ) : (
             <Layout style={{height: "80%",justifyContent: "center", alignItems: "center"}}>
-              <Card lastFourDigits={creditCard.lastFourDigits} />
-              <CardInformation creditCard={creditCard} />
+              <Card lastFourDigits={debitCard.lastFourDigits} />
+              <DebitCardInformtaion debitCard={debitCard!} />
               <Layout style={style.actionsContainer}>
                 <Button
                   style={style.exit}
@@ -65,7 +97,7 @@ export const CreditCardScreen = () => {
                   style={style.exit}
                   appearance="ghost"
                   accessoryLeft={<Icon name="edit-outline" fill="white" />}
-                  onPress={confirmEdit}
+                  onPress={()=>setIsEditing(true)}
                 />
               </Layout>
             </Layout>
@@ -75,6 +107,7 @@ export const CreditCardScreen = () => {
     </LayoutWithTopNavigation>
   );
 };
+
 
 const style = StyleSheet.create({
   mainContainer: {

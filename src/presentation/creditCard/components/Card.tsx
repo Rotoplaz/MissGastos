@@ -4,15 +4,15 @@ import React from "react";
 import { StyleSheet } from "react-native";
 
 interface Props {
-    creditCard: CreditCard;
+  lastFourDigits: string;
 }
   
 
-export const Card = ({creditCard}:Props) => {
+export const Card = ({lastFourDigits}:Props) => {
   return (
     <Layout style={style.card}>
       <Text style={style.cardText}>
-        **** **** **** {creditCard.lastFourDigits}
+        **** **** **** {lastFourDigits}
       </Text>
     </Layout>
   );
