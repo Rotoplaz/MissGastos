@@ -37,7 +37,7 @@ export const useDebitCardForm = (debitCard: DebitCard | null) => {
       name: debitCard?.name || "",
       lastFourDigits: debitCard?.lastFourDigits || "",
       debt: debitCard?.debt.toString() || "",
-      limit: debitCard?.limit.toString() || "",
+      limit: debitCard?.limitDebit.toString() || "",
       currentBalance: debitCard?.currentBalance.toString() || "",
     },
   });
@@ -51,7 +51,7 @@ export const useDebitCardForm = (debitCard: DebitCard | null) => {
         currentBalance: +data.currentBalance,
         debt: +data.debt,
         lastFourDigits: data.lastFourDigits,
-        limit: +data.limit,
+        limitDebit: +data.limit,
         name: data.name,
         type: "debit",
       });

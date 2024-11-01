@@ -10,7 +10,6 @@ interface Props {
 export const ListCardItem = ({item}:Props) => {
     
   const handleCardPress = (item: IListCardItem) => {
-    console.log(item)
     if(item.type === "credit") {
       return router.push({ pathname: "/creditCard", params: { id: item.id } });
     } 

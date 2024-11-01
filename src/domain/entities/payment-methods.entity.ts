@@ -14,7 +14,7 @@ export interface CreditCard extends BaseCard {
 
 export interface DebitCard extends BaseCard {
     currentBalance: number;
-    limit: number;
+    limitDebit: number;
     type: "debit";
 }
 

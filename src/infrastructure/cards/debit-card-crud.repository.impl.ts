@@ -13,20 +13,22 @@ export class DebitCardRepositoryImpl implements DebitCardRepository {
     if (!debitCard) {
       return null;
     }
+    console.log(debitCard)
     await db.closeAsync();
     return debitCard;
   }
 
   async createDebitCard(card: Omit<DebitCard, "id">): Promise<DebitCard> {
-    const { name, lastFourDigits, debt, currentBalance, type } = card;
+    const { name, lastFourDigits, debt, currentBalance, type, limitDebit } = card;
     const db = await getDataBase();
     const debitCard = await db.runAsync(
-      "INSERT INTO Card (name, lastFourDigits, debt, type, currentBalance) VALUES (?,?,?,?,?)",
+      "INSERT INTO Card (name, lastFourDigits, debt, type, currentBalance, limitDebit) VALUES (?,?,?,?,?,?)",
       name,
       lastFourDigits,
       debt,
       type,
-      currentBalance
+      currentBalance,
+      limitDebit
     );
     await db.closeAsync();
     return {
