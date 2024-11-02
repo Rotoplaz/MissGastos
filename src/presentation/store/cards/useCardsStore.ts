@@ -8,7 +8,7 @@ interface State {
     setCards: (cards: Array<CreditCard | DebitCard>) => void;
     addCard: (card: CreditCard | DebitCard) => Array<CreditCard | DebitCard>;
     deleteCard: (id: number) => void;
-    updateCard: (card: CreditCard | CreditCard) => Array<CreditCard | DebitCard>;
+    updateCard: (card: CreditCard | DebitCard) => Array<CreditCard | DebitCard>;
 }
 
 
@@ -27,7 +27,7 @@ export const useCardsStore = create<State>()((set,get)=>({
             cards: state.cards.filter(card=> card.id !== id)
         }));
     },
-    updateCard: (card: CreditCard | CreditCard) => {
+    updateCard: (card: CreditCard | DebitCard) => {
         const newCards: Array<CreditCard | DebitCard> = get().cards.map((cardInStore: CreditCard | DebitCard) => {
             if ( cardInStore.id === card.id ) {
                 return card;

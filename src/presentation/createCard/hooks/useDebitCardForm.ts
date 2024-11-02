@@ -4,7 +4,10 @@ import { useRef } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { useCardsStore } from "../../store";
-import { CreateDebitCardUseCase } from "@/src/application";
+import {
+  CreateDebitCardUseCase,
+  UpdateDebitCardUseCase,
+} from "@/src/application";
 import { DebitCardRepositoryImpl } from "@/src/infrastructure";
 import { Alert } from "react-native";
 import { router } from "expo-router";
@@ -41,9 +44,13 @@ export const useDebitCardForm = (debitCard: DebitCard | null) => {
       currentBalance: debitCard?.currentBalance.toString() || "",
     },
   });
+
   const debitCardRepository = useRef(new DebitCardRepositoryImpl());
   const addCardInStore = useCardsStore((state) => state.addCard);
+  const updateCardStore = useCardsStore((state) => state.updateCard);
+
   const onSubmit = async (data: FormData) => {
+
     if (!debitCard) {
       const newCard = await new CreateDebitCardUseCase(
         debitCardRepository.current
@@ -59,6 +66,22 @@ export const useDebitCardForm = (debitCard: DebitCard | null) => {
       Alert.alert("Éxito", "Formulario enviado correctamente.");
       router.back();
     }
+    
+    const newCard = await new UpdateDebitCardUseCase(
+      debitCardRepository.current
+    ).execute(debitCard!.id, {
+      currentBalance: +data.currentBalance,
+      debt: +data.debt,
+      limitDebit: +data.limit,
+      lastFourDigits: data.lastFourDigits,
+      name: data.name,
+    });
+
+    updateCardStore(newCard);
+    
+    Alert.alert("Éxito", "Formulario enviado correctamente.");
+    router.back();
+    return;
   };
 
   return {
@@ -66,6 +89,6 @@ export const useDebitCardForm = (debitCard: DebitCard | null) => {
     setValue,
     watch,
     errors,
-    onSubmit
+    onSubmit,
   };
 };
