@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View } from "react-native";
 import { Button } from "@ui-kitten/components";
 import { generatePDF } from "../../../application/use-cases/reports/generate-pdf.use-case";
-import { getPDFLayout } from "../../pdf-layout/get-PDF-layout";
+import { getPDFLayout } from "../../../home/pdf-layout/get-PDF-layout";
 import { useEffect, useState } from "react";
 import { IncomeSqliteRepositoryImpl } from "@/src/infrastructure/income/income-sqlite.repository.impl";
 import { GetAllIncomeUseCase } from "@/src/application/use-cases/income/get-all-income.use-case";
