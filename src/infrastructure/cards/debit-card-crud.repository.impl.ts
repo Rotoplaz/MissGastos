@@ -81,6 +81,7 @@ export class DebitCardRepositoryImpl implements DebitCardRepository {
     if (!updatedCard) {
       throw new Error("Card not found after update");
     }
+    
     await db.closeAsync();
     return updatedCard;
   }

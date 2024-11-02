@@ -5,7 +5,7 @@ import { useUserStore } from "../../store/user/useUserStore";
 import { StyleSheet } from "react-native";
 import { router } from "expo-router";
 import { GeneratePDFUseCase } from "@/src/application/use-cases/reports/generate-pdf.use-case";
-import { getPDFLayout } from "../../common/pdf-layout/get-PDF-layout";
+import { getPDFLayout } from "../pdf-layout/get-PDF-layout";
 import { ChartPieHome } from "../components/chart/ChartPieHome";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { UserMetricsService } from "@/src/domain/services/user-metrics.service";
@@ -82,6 +82,7 @@ export const HomeScreen = () => {
                 onPress={() =>
                   new GeneratePDFUseCase().execute(getPDFLayout([], [], user!))
                 }
+                accessoryLeft={<Icon name="pie-chart-outline"/>}
               >
                 Generar Reporte
               </Button>

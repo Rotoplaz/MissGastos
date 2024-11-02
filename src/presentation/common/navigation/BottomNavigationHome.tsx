@@ -24,8 +24,8 @@ export const BottomNavigationHome = ({ navigation, state }: any) => {
         icon={(props) => <Icon {...props} name="file-text-outline" />}
       />
       <BottomNavigationTab
-        title="Recordatorios"
-        icon={(props) => <Icon {...props} name="calendar-outline" />}
+        title="Categorías"
+        icon={(props) => <Icon {...props} name="grid-outline" />}
       />
 
     </BottomNavigation>
