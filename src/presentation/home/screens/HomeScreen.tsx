@@ -82,6 +82,7 @@ export const HomeScreen = () => {
                 onPress={() =>
                   new GeneratePDFUseCase().execute(getPDFLayout([], [], user!))
                 }
+                accessoryLeft={<Icon name="pie-chart-outline"/>}
               >
                 Generar Reporte
               </Button>

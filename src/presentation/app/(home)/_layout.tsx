@@ -18,7 +18,7 @@ export default function RootLayout() {
       <Tabs.Screen name="index" />
       <Tabs.Screen name="cards" />
       <Tabs.Screen name="history" /> 
-      <Tabs.Screen name="remainders" /> 
+      <Tabs.Screen name="categories" /> 
     </Tabs>
   
   );

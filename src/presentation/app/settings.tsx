@@ -7,11 +7,12 @@ import { useTheme } from "@react-navigation/native";
 import { LayoutWithTopNavigation } from "../common/layouts/LayoutWithTopNavigation";
 import { Alert } from "react-native";
 import { getDataBase } from "@/src/infrastructure/db/database";
+import { useCardsStore } from "../store";
 
 export const config = () => {
   const theme = useTheme();
   const resetUserStore = useUserStore(state=>state.resetUserStore);
-  
+  const resetCardStore = useCardsStore(state=>state.resetCardStore);
   const handleDeleteDatabaseInformation = async()=> {
     Alert.alert("Cuidado", "¿Seguro de eliminar toda tu información?",
       [
@@ -28,6 +29,7 @@ export const config = () => {
               await database.closeAsync();
               await SqliteDatabase.deleteDatabaseAsync("MissGastosDataBase");
               resetUserStore();
+              resetCardStore();
               router.replace("/");
             } catch (error) {
               console.log(error)
@@ -50,9 +52,23 @@ export const config = () => {
             onPress={() => router.push("/profile")}
           />
           <MenuItem
-            
+            title="Recordatorios"
+            accessoryLeft={<Icon name="clock-outline" />}
+            onPress={() => router.push("/remainders")}
+          />
+          <MenuItem
+            title="Rango de metricas"
+            accessoryLeft={<Icon name="calendar-outline" />}
+            onPress={() => router.push("/remainders")}
+          />
+                    <MenuItem
+            title={`Tema: ${theme.dark ? "oscuro": "claro"}`}
+            accessoryLeft={<Icon name="color-palette-outline" />}
+            onPress={() => {}}
+          />
+          <MenuItem
             style={{justifyContent: "flex-start"}}
-            title={(evaProps) => (
+            title={() => (
               <Text status="danger" >
                 Borrar toda mi información
               </Text>

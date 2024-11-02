@@ -9,11 +9,15 @@ interface State {
     addCard: (card: CreditCard | DebitCard) => Array<CreditCard | DebitCard>;
     deleteCard: (id: number) => void;
     updateCard: (card: CreditCard | DebitCard) => Array<CreditCard | DebitCard>;
+    resetCardStore: ()=>void;
 }
 
+const initialData =  {
+    cards: []
+}
 
 export const useCardsStore = create<State>()((set,get)=>({
-    cards: [],
+    ...initialData,
     setCards: (cards: Array<CreditCard | DebitCard>) => {
         set({cards: cards})
     },
@@ -37,5 +41,8 @@ export const useCardsStore = create<State>()((set,get)=>({
 
         set({ cards: newCards });
         return newCards; 
+    },
+    resetCardStore: () => {
+        set({...initialData});
     }
 }));
