@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
-import { LayoutWithTopNavigation } from "../../common/layouts/LayoutWithTopNavigation";
-import { FullLoaderScreen } from "../../common/screens/loaders/FullLoaderScreen";
+import { LayoutWithTopNavigation } from "../../../common/layouts/LayoutWithTopNavigation";
+import { FullLoaderScreen } from "../../../common/screens/loaders/FullLoaderScreen";
 import { router, useLocalSearchParams } from "expo-router";
 import { Button, Icon, Layout, Text } from "@ui-kitten/components";
 import { DebitCard } from "@/src/domain/entities/payment-methods.entity";
@@ -8,9 +8,9 @@ import { DeleteDebitCardUseCase, GetDebitCardByIdUseCase } from "@/src/applicati
 import { DebitCardRepositoryImpl } from "@/src/infrastructure";
 import { DebitCardInformtaion } from "../components/DebitCardInfo";
 import { Alert, ScrollView, StyleSheet } from "react-native";
+import { useCardsStore } from "../../../store";
 import { DebitCardForm } from "../../createCard/components/DebitCardForm";
 import { Card } from "../../creditCard/components/Card";
-import { useCardsStore } from "../../store";
 
 export const DebitCardScreen = () => {
   const params = useLocalSearchParams<{ id: string }>();

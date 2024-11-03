@@ -1,5 +1,4 @@
 import React from 'react'
-import { LayoutWithTopNavigation } from '../../common/layouts/LayoutWithTopNavigation'
 import { Layout, Text } from '@ui-kitten/components'
 import { SafeAreaView } from 'react-native-safe-area-context'
 

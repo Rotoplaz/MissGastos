@@ -1,14 +1,14 @@
 import React from "react";
-import { LayoutWithTopNavigation } from "../../common/layouts/LayoutWithTopNavigation";
 import { Button, Icon, Layout } from "@ui-kitten/components";
 import { Card } from "../components/Card";
 import { CardInformation } from "../components/CardInformation";
 import { router, useLocalSearchParams } from "expo-router";
 
 import { ScrollView, StyleSheet } from "react-native";
-import { FullLoaderScreen } from "../../common/screens/loaders/FullLoaderScreen";
 import { useCreditCardScreen } from "../hooks/useCreditCardScreen";
 import { CreditCardForm } from "../../createCard/components/CreditCardForm";
+import { FullLoaderScreen } from "@/src/presentation/common/screens/loaders/FullLoaderScreen";
+import { LayoutWithTopNavigation } from "@/src/presentation/common/layouts/LayoutWithTopNavigation";
 
 export const CreditCardScreen = () => {
   const params = useLocalSearchParams<{ id: string }>();
