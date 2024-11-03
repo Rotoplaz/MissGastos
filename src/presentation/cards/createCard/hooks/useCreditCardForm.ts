@@ -7,7 +7,7 @@ import * as z from "zod";
 import { useRef } from "react";
 import { Alert } from "react-native";
 import { CreditCardCrudRepositoryImpl } from "@/src/infrastructure";
-import { useCardsStore } from "../../store/cards/useCardsStore";
+import { useCardsStore } from "@/src/presentation/store";
 
 interface FormData {
     name: string;

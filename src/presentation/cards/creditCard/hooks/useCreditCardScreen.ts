@@ -6,7 +6,7 @@ import {
   DeleteCreditCardUseCase,
   GetCreditCardByIdUseCase,
 } from "@/src/application";
-import { useCardsStore } from "../../store/cards/useCardsStore";
+import { useCardsStore } from "@/src/presentation/store";
 
 export const useCreditCardScreen = (id: number) => {
   const [isEditing, setIsEditing] = useState(false);

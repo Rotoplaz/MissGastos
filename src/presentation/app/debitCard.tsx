@@ -1,4 +1,4 @@
-import { DebitCardScreen } from "../debitCard/screen/DebitCardScreen";
+import { DebitCardScreen } from "../cards/debitCard/screen/DebitCardScreen";
 
 
 export default function CreditCard() {

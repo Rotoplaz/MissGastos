@@ -71,7 +71,21 @@ CREATE TABLE Income (
     concept TEXT
 );
   `);
-  
+      
+      const categories = [
+        { color: "#e67e22", icon: "calendar-outline", type: "Alimento" },
+        { color: "#884ea0", icon: "camera-outline", type: "Escuela" },
+        { color: "#d4ac0d", icon: "compass-outline", type: "Café" },
+        { color: "#229954", icon: "globe-2-outline", type: "Porno" },
+      ];
+
+      for (const category of categories) {
+        await db.execAsync(`
+            INSERT INTO Category (type, color, icon)
+            VALUES ('${category.type}', '${category.color}', '${category.icon}');
+          `);
+      }
+
       userVersion!.user_version = 1;
     }
     // if (currentDbVersion === 1) {
@@ -79,6 +93,6 @@ CREATE TABLE Income (
     // }
     await db.execAsync(`PRAGMA user_version = ${DATABASE_VERSION}`);
   } catch (error) {
-    console.log(error)
+    console.log(error);
   }
 }

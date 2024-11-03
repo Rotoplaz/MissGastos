@@ -1,4 +1,5 @@
-import { CreateCardScreen } from "../createCard/screens/CreateCardScreen";
+import { CreateCardScreen } from "../cards/createCard/screens/CreateCardScreen";
+
 
 export default function AddCard() {
   return (

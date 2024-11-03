@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { LayoutWithTopNavigation } from "../../common/layouts/LayoutWithTopNavigation";
 import {
   IndexPath,
   Layout,
@@ -13,6 +12,7 @@ import {
 } from "react-native";
 import { DebitCardForm } from "../components/DebitCardForm";
 import { CreditCardForm } from "../components/CreditCardForm";
+import { LayoutWithTopNavigation } from "@/src/presentation/common/layouts/LayoutWithTopNavigation";
 
 export const CreateCardScreen = () => {
   const [selectedIndex, setSelectedIndex] = useState<IndexPath>(

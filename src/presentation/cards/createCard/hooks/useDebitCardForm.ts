@@ -3,14 +3,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useRef } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-import { useCardsStore } from "../../store";
-import {
-  CreateDebitCardUseCase,
-  UpdateDebitCardUseCase,
-} from "@/src/application";
 import { DebitCardRepositoryImpl } from "@/src/infrastructure";
 import { Alert } from "react-native";
 import { router } from "expo-router";
+import { useCardsStore } from "@/src/presentation/store";
+import { CreateDebitCardUseCase, UpdateDebitCardUseCase } from "@/src/application";
 
 const debitCardSchema = z.object({
   name: z.string().min(1, "Alias es requerido"),

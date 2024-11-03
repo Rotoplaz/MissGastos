@@ -8,7 +8,7 @@ import {
   GetAllCreditsCardsUseCase,
   GetAllDebitCardsUseCase,
 } from "@/src/application";
-import { useCardsStore } from "../../store/cards/useCardsStore";
+import { useCardsStore } from "@/src/presentation/store";
 
 export const useCardsScreens = () => {
 

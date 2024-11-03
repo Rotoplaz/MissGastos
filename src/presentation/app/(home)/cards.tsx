@@ -1,4 +1,5 @@
-import { CardsScreens } from "../../cardsScreen/screens/CardsScreens";
+import { CardsScreens } from "../../cards/cardsScreen/screens/CardsScreens";
+
 
 
 export default function YourCards() {

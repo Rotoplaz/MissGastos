@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Layout,
   Tab,
@@ -12,34 +12,41 @@ import {
 } from "@ui-kitten/components";
 import { StyleSheet } from "react-native";
 import { LayoutWithTopNavigation } from "../common/layouts/LayoutWithTopNavigation";
+import { Category as CategoryEntity } from "@/src/domain/entities/category.entity";
+import { Category } from "../categories/components/Category";
+import { CategoryRepositoryImpl } from "@/src/infrastructure";
+import { GetAllCategoriesUseCase } from "@/src/application/use-cases/category/get-all-categories.use-case";
 
 const useTabBarState = (initialState = 0) => {
   const [selectedIndex, setSelectedIndex] = React.useState(initialState);
   return { selectedIndex, onSelect: setSelectedIndex };
 };
 
-const circleColors = ["#e67e22", "#229954", "#d4ac0d", "#884ea0"];
 
 export const TabBarAccessoriesShowcase = () => {
+
   const bottomState = useTabBarState();
-  const [selectedIcon, setSelectedIcon] = React.useState<number | null>(null);
   const [expenseValue, setExpenseValue] = React.useState("");
   const [paymentMethod, setPaymentMethod] = React.useState<string | null>(null);
   const [visible, setVisible] = React.useState(false);
   const [selectedCardIndex, setSelectedCardIndex] = React.useState<
     number | null
   >(null);
-
+  const [categories, setCategories] = useState<CategoryEntity[]>([])
+  useEffect(() => {
+    const getCategories = async () => {
+      const categoriesRepository = new CategoryRepositoryImpl();
+      const categories = await new GetAllCategoriesUseCase(categoriesRepository).execute();
+      setCategories(categories);
+    }
+    getCategories();
+  }, []);
+  
   const cards = [
     { name: "Nu", lastFour: "**1234" },
     { name: "BBVA", lastFour: "**5678" },
     { name: "Banamex", lastFour: "**9012" },
   ];
-
-  const handleIconPress = (index: number) => {
-    setSelectedIcon(index);
-    console.log(`Icono ${index + 1} presionado`);
-  };
 
   // Cambia el texto del botón según la tarjeta seleccionada
   const renderToggleButton = () => (
@@ -82,29 +89,9 @@ export const TabBarAccessoriesShowcase = () => {
 
             <Text style={styles.sectionTitle}>Tipo de gasto:</Text>
             <Layout style={styles.iconRow}>
-              {[
-                "image-outline",
-                "briefcase-outline",
-                "shopping-cart-outline",
-                "plus-outline",
-              ].map((iconName, index) => (
-                <Button
-                  key={index}
-                  appearance="ghost"
-                  accessoryLeft={() => (
-                    <Layout
-                      style={[
-                        styles.iconCircle,
-                        { backgroundColor: circleColors[index] },
-                        selectedIcon === index && styles.selectedIconBackground,
-                      ]}
-                    >
-                      <Icon name={iconName} style={styles.iconInsideCircle} />
-                    </Layout>
-                  )}
-                  onPress={() => handleIconPress(index)}
-                />
-              ))}
+                {
+                  categories.map(category=> (<Category key={category.id} category={category} />))
+                }
             </Layout>
 
             <Text style={styles.sectionTitle}>Concepto:</Text>
@@ -343,19 +330,6 @@ const styles = StyleSheet.create({
   },
   cardLastFour: {
     fontSize: 12,
-  },
-  iconCircle: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    backgroundColor: "#3366FF",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  iconInsideCircle: {
-    width: 24,
-    height: 24,
-    tintColor: "#FFFFFF",
   },
   selectedIconBackground: {
     backgroundColor: "#154360",
