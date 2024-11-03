@@ -9,28 +9,25 @@ import { FullLoaderScreen } from "../common/screens/loaders/FullLoaderScreen";
 import { migrateDbIfNeeded } from "@/src/infrastructure/db/migration";
 import { getDataBase } from "@/src/infrastructure/db/database";
 
-
 export default function Index() {
   const [isLoadingUser, setIsLoadingUser] = useState<boolean>(true);
   const setUserStore = useUserStore((state) => state.setUser);
   const router = useRouter();
-  
+
   useEffect(() => {
     const getUser = async () => {
       const db = await getDataBase();
       await migrateDbIfNeeded(db);
       const userRepository = new UserRepositorySqliteImpl();
-      const user = await new GetUserUseCase(
-        userRepository
-      ).execute();
-      
+      const user = await new GetUserUseCase(userRepository).execute();
+
       setIsLoadingUser(false);
-      
+
       if (!user) {
         return;
       }
       router.replace({ pathname: "/(home)" });
-     
+
       await db.closeAsync();
       setUserStore(user);
     };
@@ -38,12 +35,5 @@ export default function Index() {
     getUser();
   }, []);
 
-  return (
-    <>
-      {
-        isLoadingUser ? <FullLoaderScreen/> : <InitialScreen />
-      }
-      
-    </>
-  );
+  return <>{isLoadingUser ? <FullLoaderScreen /> : <InitialScreen />}</>;
 }

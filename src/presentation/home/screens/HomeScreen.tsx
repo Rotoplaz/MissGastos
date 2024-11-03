@@ -40,13 +40,13 @@ export const HomeScreen = () => {
 
   const getAvatarSource = () => {
     if (totalMoney <= 5000) {
-      return require("../../assets/verylittlemoney.png");
+      return require("../../assets/images/verylittlemoney.png");
     } else if (totalMoney >= 5001 && totalMoney <= 9999) {
-      return require("../../assets/littlemoney.png");
+      return require("../../assets/images/littlemoney.png");
     } else if (totalMoney >= 10000 && totalMoney <= 20000) {
-      return require("../../assets/goodmoney.png");
+      return require("../../assets/images/goodmoney.png");
     } else {
-      return require("../../assets/bigmoney.jpg");
+      return require("../../assets/images/bigmoney.jpg");
     }
   };
 
@@ -71,7 +71,8 @@ export const HomeScreen = () => {
             ${money}
           </Text>
           <Text style={style.subText}>
-            Este es en lo que más gastas: {maxCategoryExpense ? maxCategoryExpense.category.type : "Nada"}
+            Este es en lo que más gastas:{" "}
+            {maxCategoryExpense ? maxCategoryExpense.category.type : "Nada"}
           </Text>
 
           <Layout style={{ width: "100%" }}>
@@ -82,7 +83,7 @@ export const HomeScreen = () => {
                 onPress={() =>
                   new GeneratePDFUseCase().execute(getPDFLayout([], [], user!))
                 }
-                accessoryLeft={<Icon name="pie-chart-outline"/>}
+                accessoryLeft={<Icon name="pie-chart-outline" />}
               >
                 Generar Reporte
               </Button>
