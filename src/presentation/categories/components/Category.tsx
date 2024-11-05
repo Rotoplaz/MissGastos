@@ -1,25 +1,26 @@
 import { Category as CategoryEntity } from '@/src/domain/entities/category.entity'
 import { Button, Icon, Layout } from '@ui-kitten/components';
 import React from 'react'
-import { StyleSheet } from 'react-native';
+import { StyleProp, StyleSheet, ViewStyle } from 'react-native';
 
 interface Props {
-    category: CategoryEntity;
+  category: CategoryEntity;
+  style?: StyleProp<ViewStyle>;
 }
 
-export const Category = ({category}:Props) => {
+export const Category = ({category, style}:Props) => {
   return (
     <Button
     appearance="ghost"
+    style={[{
+      backgroundColor: category.color,
+      borderRadius: 100,
+      paddingHorizontal: 12,
+      paddingVertical: 12
+    }, style]}
     accessoryLeft={() => (
-      <Layout
-        style={[
-          styles.iconCircle,
-          { backgroundColor: category.color  }
-        ]}
-      >
-        <Icon name={category.icon} style={[styles.iconInsideCircle]} />
-      </Layout>
+
+        <Icon name={category.icon} style={[styles.iconCircle]} fill="white" />
     )}
   />
   )
@@ -28,15 +29,8 @@ export const Category = ({category}:Props) => {
 
 const styles = StyleSheet.create({
     iconCircle: {
-        width: 50,
-        height: 50,
-        borderRadius: 25,
-        alignItems: "center",
-        justifyContent: "center",
+        width: 30,
+        height: 30,
+        borderRadius: 50
     },
-    iconInsideCircle: {
-        width: 24,
-        height: 24,
-        tintColor: "#FFFFFF",
-      },
 });
