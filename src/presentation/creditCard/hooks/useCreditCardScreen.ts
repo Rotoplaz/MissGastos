@@ -53,7 +53,7 @@ export const useCreditCardScreen = (id: number) => {
           text: "Confirmar",
           onPress: async () => {
             try {
-              await new DeleteCreditCardUseCase(creditCardRepository).export(
+              await new DeleteCreditCardUseCase(creditCardRepository).execute(
                 creditCard!.id
               );
               deleteCreditCard(creditCard!.id);
