@@ -10,7 +10,7 @@ import { useCardsStore } from "@/src/presentation/store";
 
 export const useCreditCardScreen = (id: number) => {
   const [isEditing, setIsEditing] = useState(false);
-  const deleteCardStore = useCardsStore(state=>state.deleteCard);
+  const deleteCardStore = useCardsStore((state) => state.deleteCard);
   const [creditCard, setCreditCard] = useState<CreditCard | null>(null);
 
   useEffect(() => {
@@ -39,7 +39,7 @@ export const useCreditCardScreen = (id: number) => {
           text: "Confirmar",
           onPress: async () => {
             try {
-              await new DeleteCreditCardUseCase(creditCardRepository).export(
+              await new DeleteCreditCardUseCase(creditCardRepository).execute(
                 creditCard!.id
               );
               deleteCardStore(creditCard!.id);
@@ -57,6 +57,6 @@ export const useCreditCardScreen = (id: number) => {
     confirmEdit,
     creditCard,
     isEditing,
-    setIsEditing
+    setIsEditing,
   };
 };
