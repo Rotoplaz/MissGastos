@@ -1,28 +1,32 @@
 import { Category as CategoryEntity } from '@/src/domain/entities/category.entity'
-import { Button, Icon, Layout } from '@ui-kitten/components';
+import { Button, Icon, Layout, Text } from '@ui-kitten/components';
 import React from 'react'
-import { StyleProp, StyleSheet, ViewStyle } from 'react-native';
+import { GestureResponderEvent, StyleProp, StyleSheet, ViewStyle } from 'react-native';
 
 interface Props {
   category: CategoryEntity;
   style?: StyleProp<ViewStyle>;
+  onPress?: ((event: GestureResponderEvent) => void) | undefined
 }
 
-export const Category = ({category, style}:Props) => {
+export const Category = ({category, style, onPress}:Props) => {
   return (
-    <Button
-    appearance="ghost"
-    style={[{
-      backgroundColor: category.color,
-      borderRadius: 100,
-      paddingHorizontal: 12,
-      paddingVertical: 12
-    }, style]}
-    accessoryLeft={() => (
-
-        <Icon name={category.icon} style={[styles.iconCircle]} fill="white" />
-    )}
-  />
+    <Layout style={{justifyContent: "center", alignItems: "center", gap: 5}}>
+      <Button
+      appearance="ghost"
+      style={[{
+        backgroundColor: category.color,
+        borderRadius: 100,
+        paddingHorizontal: 12,
+        paddingVertical: 12
+      }, style]}
+      onPress={onPress}
+      accessoryLeft={() => (
+          <Icon name={category.icon} style={[styles.iconCircle]} fill="white" />
+      )}
+    />
+    <Text category="c2" appearance='hint'>{category.type}</Text>
+    </Layout>
   )
 }
 
