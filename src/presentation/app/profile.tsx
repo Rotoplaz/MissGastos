@@ -1,7 +1,7 @@
 import { Button, Icon, Input, Layout } from "@ui-kitten/components";
 import { Image, StyleSheet } from "react-native";
 import { useUserStore } from "../store/user/useUserStore";
-import { useRef, useState, useCallback } from 'react';
+import { useRef, useState, useCallback } from "react";
 import { router } from "expo-router";
 import { PickImageUseCase } from "@/src/application/use-cases/profilePicture/profile-picture.use-case";
 import { UserRepositorySqliteImpl } from "@/src/infrastructure/user/user-sqli.repository.impl";
@@ -33,9 +33,9 @@ export default function Profile() {
             ...form,
             globalLimitBudget: Number(form.globalLimitBudget),
           });
-      
+
       setUser(userUpdated);
-      
+
       router.replace("/(home)");
     } catch (error) {
       console.error("Error al guardar el usuario:", error);
@@ -56,9 +56,11 @@ export default function Profile() {
     if (!image) return;
 
     try {
-      const userWithImage = await new UpdateUserUseCase(userRepository).execute({
-        profilePictureUrl: image,
-      });
+      const userWithImage = await new UpdateUserUseCase(userRepository).execute(
+        {
+          profilePictureUrl: image,
+        }
+      );
       setUser(userWithImage);
     } catch (error) {
       console.error("Error al actualizar la imagen de perfil:", error);
@@ -71,7 +73,11 @@ export default function Profile() {
         <Layout style={styles.avatarContainer}>
           <Image
             style={styles.avatar}
-            source={user?.profilePictureUrl ? { uri: user.profilePictureUrl } : require("../assets/avatar.png")}
+            source={
+              user?.profilePictureUrl
+                ? { uri: user.profilePictureUrl }
+                : require("../assets/images/avatar.png")
+            }
           />
           <Button
             style={styles.cameraButton}
@@ -80,7 +86,7 @@ export default function Profile() {
             onPress={handlePickImage}
           />
         </Layout>
-        
+
         <Input
           style={styles.input}
           status="basic"
@@ -95,7 +101,9 @@ export default function Profile() {
           status="basic"
           placeholder="Limite de gastos"
           value={form.globalLimitBudget}
-          onChangeText={(text) => setForm((prev) => ({ ...prev, globalLimitBudget: text }))}
+          onChangeText={(text) =>
+            setForm((prev) => ({ ...prev, globalLimitBudget: text }))
+          }
         />
 
         <Button style={styles.saveButton} onPress={handleSaveUser}>
