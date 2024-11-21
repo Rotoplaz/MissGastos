@@ -6,3 +6,6 @@ export const createTransaction = () => {
     <TransactionScreen />
   )
 }
+
+
+export default createTransaction;
