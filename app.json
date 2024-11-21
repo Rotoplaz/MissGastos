@@ -24,7 +24,7 @@
     "web": {
       "bundler": "metro",
       "output": "static",
-      "favicon":  "./src/presentation/assets/icons/icon.png"
+      "favicon": "./src/presentation/assets/icons/icon.png"
     },
     "plugins": [
       [
@@ -32,7 +32,8 @@
         {
           "root": "./src/presentation/app"
         }
-      ]
+      ],
+      "expo-font"
     ],
     "experiments": {
       "typedRoutes": true
