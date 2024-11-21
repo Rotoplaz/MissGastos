@@ -34,7 +34,6 @@ export default function RootLayout() {
           <Stack
             screenOptions={{
               headerShown: false,
-              
             }}
           >
 
@@ -47,6 +46,7 @@ export default function RootLayout() {
             <Stack.Screen name="createCard" />
             <Stack.Screen name="debitCard" />
             <Stack.Screen name="remainders" />
+            <Stack.Screen name="createTransaction" />
             
           </Stack>
         </Layout>
