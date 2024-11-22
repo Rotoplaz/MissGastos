@@ -9,8 +9,10 @@ import { useCreditCardScreen } from "../hooks/useCreditCardScreen";
 import { CreditCardForm } from "../../createCard/components/CreditCardForm";
 import { FullLoaderScreen } from "@/src/presentation/common/screens/loaders/FullLoaderScreen";
 import { LayoutWithTopNavigation } from "@/src/presentation/common/layouts/LayoutWithTopNavigation";
+import { usePreventScreenCapture } from "expo-screen-capture";
 
 export const CreditCardScreen = () => {
+  usePreventScreenCapture();
   const params = useLocalSearchParams<{ id: string }>();
   const { confirmDelete, confirmEdit, creditCard, isEditing, setIsEditing } =
     useCreditCardScreen(+params.id);

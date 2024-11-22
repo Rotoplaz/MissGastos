@@ -11,8 +11,10 @@ import { Alert, ScrollView, StyleSheet } from "react-native";
 import { useCardsStore } from "../../../store";
 import { DebitCardForm } from "../../createCard/components/DebitCardForm";
 import { Card } from "../../creditCard/components/Card";
+import { usePreventScreenCapture } from "expo-screen-capture";
 
 export const DebitCardScreen = () => {
+  usePreventScreenCapture();
   const params = useLocalSearchParams<{ id: string }>();
   const [debitCard, setDebitCard] = useState<DebitCard | null>(null);
   const [isEditing, setIsEditing] = useState(false);
