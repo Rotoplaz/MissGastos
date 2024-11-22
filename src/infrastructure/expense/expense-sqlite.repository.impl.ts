@@ -11,10 +11,7 @@ export class ExpenseSqliteRepositoryImpl implements ExpenseRepository {
       type: string;
       totalExpense: number;
       color: string;
-    }>(`SELECT  c.color, c.type, SUM(e.amount) AS totalExpense 
-            FROM Expense e
-            JOIN Category c ON e.categoryId = c.id
-            GROUP BY c.type;`);
+    }>("SELECT  c.color, c.type, SUM(e.amount) AS totalExpense FROM Expense e JOIN Category c ON e.categoryId = c.id GROUP BY c.type;");
     await db.closeAsync();
     return expensesGroupByCategory;
   }
@@ -148,7 +145,7 @@ export class ExpenseSqliteRepositoryImpl implements ExpenseRepository {
         );
         if (!updatedExpense) {
           await db.closeAsync();
-          throw new Error("Error updating Income with id ${id}.");
+          throw new Error("Error updating Expense with id ${id}.");
         }
         await db.closeAsync();
         return updatedExpense;
@@ -191,7 +188,7 @@ export class ExpenseSqliteRepositoryImpl implements ExpenseRepository {
         );
         if (!updatedExpense) {
           await db.closeAsync();
-          throw new Error("Error updating Income with id ${id}.");
+          throw new Error("Error updating Expense with id ${id}.");
         }
         await db.closeAsync();
         return updatedExpense;
@@ -235,7 +232,7 @@ export class ExpenseSqliteRepositoryImpl implements ExpenseRepository {
         );
         if (!updatedExpense) {
           await db.closeAsync();
-          throw new Error("Error updating Income with id ${id}.");
+          throw new Error("Error updating Expense with id ${id}.");
         }
         await db.closeAsync();
         return updatedExpense;
