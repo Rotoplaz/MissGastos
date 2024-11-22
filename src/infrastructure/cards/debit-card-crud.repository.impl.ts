@@ -3,7 +3,6 @@ import { DebitCardRepository } from "@/src/domain/repositories/debit-cards.repos
 import { getDataBase } from "../db/database";
 
 export class DebitCardRepositoryImpl implements DebitCardRepository {
-
   async getDebitCardById(id: number): Promise<DebitCard | null> {
     const db = await getDataBase();
     const debitCard = await db.getFirstAsync<DebitCard>(
@@ -19,7 +18,8 @@ export class DebitCardRepositoryImpl implements DebitCardRepository {
   }
 
   async createDebitCard(card: Omit<DebitCard, "id">): Promise<DebitCard> {
-    const { name, lastFourDigits, debt, currentBalance, type, limitDebit } = card;
+    const { name, lastFourDigits, debt, currentBalance, type, limitDebit } =
+      card;
     const db = await getDataBase();
     const debitCard = await db.runAsync(
       "INSERT INTO Card (name, lastFourDigits, debt, type, currentBalance, limitDebit) VALUES (?,?,?,?,?,?)",
@@ -44,6 +44,11 @@ export class DebitCardRepositoryImpl implements DebitCardRepository {
     const fieldsToUpdate: string[] = [];
     const values: any[] = [];
     const db = await getDataBase();
+    const currentCard = await this.getDebitCardById(id);
+
+    if (!currentCard) {
+      throw new Error("card not found");
+    }
     if (card.name !== undefined) {
       fieldsToUpdate.push("name = ?");
       values.push(card.name);
@@ -73,17 +78,14 @@ export class DebitCardRepositoryImpl implements DebitCardRepository {
     values.push(id);
 
     if (setClause.length > 0) {
-      await db.runAsync(
-        `UPDATE Card SET ${setClause} WHERE id = ?`,
-        ...values
-      );
+      await db.runAsync(`UPDATE Card SET ${setClause} WHERE id = ?`, ...values);
     }
     const updatedCard = await this.getDebitCardById(id);
     if (!updatedCard) {
       await db.closeAsync();
       throw new Error("Card not found after update");
     }
-    
+
     await db.closeAsync();
     return updatedCard;
   }
@@ -95,7 +97,7 @@ export class DebitCardRepositoryImpl implements DebitCardRepository {
       return;
     } catch (error) {
       throw new Error("Card doesn't exist");
-    }finally{
+    } finally {
       await db.closeAsync();
     }
   }
