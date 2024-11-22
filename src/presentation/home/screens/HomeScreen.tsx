@@ -121,7 +121,6 @@ const style = StyleSheet.create({
   },
   subText: {
     marginBottom: 20,
-    color: "white",
   },
   fabButton: {
     position: "absolute",
