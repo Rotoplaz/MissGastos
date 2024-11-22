@@ -27,7 +27,7 @@ export class UserMetricsService {
     }
 
     isDebitCardLimitExede(debitCard: DebitCard):boolean{
-        if (debitCard.debt > debitCard.limit){
+        if (debitCard.debt > debitCard.limitDebit){
             return true;
         }
         return false;
