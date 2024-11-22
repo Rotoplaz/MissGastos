@@ -1,12 +1,17 @@
 import React from 'react';
 import { TabBar, Tab } from '@ui-kitten/components';
 
+interface Props {
+    setTabIndex: React.Dispatch<React.SetStateAction<number>>;
+    index: number;
+}
 
-export const TopTabsNavigation = ({ navigation, state }:any) => (
+export const TopTabsNavigation = ({ index, setTabIndex }:Props) => (
   <TabBar
-    selectedIndex={state.index}
-    onSelect={index => navigation.navigate(state.routeNames[index])}>
+    selectedIndex={index}
+    onSelect={setTabIndex}>
     <Tab title='Gasto'/>
+    <Tab title='Ingreso'/>
   </TabBar>
 );
 

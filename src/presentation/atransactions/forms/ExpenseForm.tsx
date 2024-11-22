@@ -217,6 +217,7 @@ const styles = StyleSheet.create({
       flexDirection: "row",
       justifyContent: "space-around",
       marginVertical: 10,
+      minHeight: 100
     },
     iconButton: {
       width: 30,
