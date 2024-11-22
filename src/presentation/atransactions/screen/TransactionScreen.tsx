@@ -3,11 +3,16 @@ import ExpenseForm from "../forms/ExpenseForm";
 import { TopTabsNavigation } from "../../common/navigation/TopTabsNavigation";
 import { useState } from "react";
 import { Text } from "@ui-kitten/components";
+import { IncomeForm } from "../forms/IncomeForm";
 
 const tabs = [
   {
     index: 0,
     component: <ExpenseForm />,
+  },
+  {
+    index: 1,
+    component: <IncomeForm />,
   },
 ];
 

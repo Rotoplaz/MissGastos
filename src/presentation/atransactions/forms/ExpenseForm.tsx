@@ -233,6 +233,7 @@ const styles = StyleSheet.create({
       width: "120%",
       alignSelf: "center",
       marginBottom: 0,
+      paddingVertical: 16,
     },
   
     dollarSign: {
