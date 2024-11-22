@@ -1,11 +1,9 @@
-
 import { User } from "@/src/domain/entities/user.entity";
 import { UserRepository } from "@/src/domain/repositories/user.repository";
 import { CreateUserDto } from "@/src/application/dtos/create-user.dto";
 import { getDataBase } from "../db/database";
 
 export class UserRepositorySqliteImpl implements UserRepository {
-
   async getUser(): Promise<User | null> {
     const db = await getDataBase();
     const user = await db.getFirstAsync<User>("SELECT * FROM User");
@@ -28,7 +26,11 @@ export class UserRepositorySqliteImpl implements UserRepository {
       globalLimitBudget
     );
     await db.closeAsync();
-    return { ...user,profilePictureUrl: user.profilePictureUrl || "", id: result.lastInsertRowId };
+    return {
+      ...user,
+      profilePictureUrl: user.profilePictureUrl || "",
+      id: result.lastInsertRowId,
+    };
   }
 
   async updateUser(user: Partial<User>): Promise<User> {
@@ -59,12 +61,11 @@ export class UserRepositorySqliteImpl implements UserRepository {
     values.push(currentUser.id);
 
     const query = `UPDATE User SET ${updates.join(", ")} WHERE id = ?`;
-    
     await db.runAsync(query, ...values);
 
     const userUpdated = await this.getUser();
-    
-    if( ! userUpdated ) {
+
+    if (!userUpdated) {
       await db.closeAsync();
       throw new Error("Usuario no encontrado");
     }

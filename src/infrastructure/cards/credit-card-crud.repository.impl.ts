@@ -3,8 +3,6 @@ import { CreditCardRepository } from "@/src/domain/repositories/credit-cards.rep
 import { getDataBase } from "../db/database";
 
 export class CreditCardCrudRepositoryImpl implements CreditCardRepository {
-
-
   async getCreditCardById(id: number): Promise<CreditCard | null> {
     const db = await getDataBase();
     const creditCard = await db.getFirstAsync<CreditCard>(
@@ -79,15 +77,16 @@ export class CreditCardCrudRepositoryImpl implements CreditCardRepository {
     values.push(id);
 
     if (setClause.length > 0) {
-      await db.runAsync(
-        `UPDATE Card SET ${setClause} WHERE id = ?`,
-        ...values
-      );
+      await db.runAsync(`UPDATE Card SET ${setClause} WHERE id = ?`, ...values);
+      //const query = `UPDATE Card SET ${fieldsToUpdate.join(", ")} WHERE id = ?`;
+      //await db.runAsync(query, ...values);
     }
     const updatedCard = await this.getCreditCardById(id);
+    console.log(updatedCard?.name);
     if (!updatedCard) {
       throw new Error("Card not found after update");
     }
+
     await db.closeAsync();
     return updatedCard;
   }
@@ -98,7 +97,7 @@ export class CreditCardCrudRepositoryImpl implements CreditCardRepository {
       return;
     } catch (error) {
       throw new Error("Card doesn't exist");
-    }finally {
+    } finally {
       await db.closeAsync();
     }
   }
