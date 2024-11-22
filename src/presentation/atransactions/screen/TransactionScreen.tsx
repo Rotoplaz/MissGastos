@@ -18,13 +18,12 @@ import { Cash, CreditCard, DebitCard } from "@/src/domain/entities/payment-metho
 import { LayoutWithTopNavigation } from "../../common/layouts/LayoutWithTopNavigation";
 import { Category } from "../../categories/components/Category";
 import { zodSchemaTransaction } from "../zod-schemas/zod-schemas";
+import { useCardsStore } from "../../store";
+import { CreateExpenseUseCase } from "@/src/application/use-cases/expense/create-expense.use-case";
+import { ExpenseSqliteRepositoryImpl } from '../../../infrastructure/expense/expense-sqlite.repository.impl';
 
 
-const cards = [
-  { name: "Nu", lastFour: "**1234" },
-  { name: "BBVA", lastFour: "**5678" },
-  { name: "Banamex", lastFour: "**9012" },
-];
+
 
 
 interface FormData {
@@ -60,12 +59,13 @@ export const TransactionScreen = () => {
     setValue("selectedCategory", category);
   };
 
-  const [paymentMethod, setPaymentMethod] = useState<CreditCard | Cash | DebitCard | null>(null);
+  const [paymentMethod, setPaymentMethod] = useState<'cash'|'card' | null>(null);
   const [visible, setVisible] = useState(false);
   const [selectedCardIndex, setSelectedCardIndex] = useState<null | number>(
     null
   );
   const [categories, setCategories] = useState<CategoryEntity[]>([]);
+  const cards = useCardsStore(state=>state.cards);
 
   useEffect(() => {
     const getCategories = async () => {
@@ -78,6 +78,7 @@ export const TransactionScreen = () => {
     getCategories();
   }, []);
 
+
   const renderToggleButton = () => (
     <Button onPress={() => setVisible(true)}>
       {selectedCardIndex !== null
@@ -88,15 +89,26 @@ export const TransactionScreen = () => {
 
   const onSelect = (index: number) => {
     setSelectedCardIndex(index);
+    setValue("paymentMethod",cards[index]);
+
     setVisible(false);
   };
-
-  const onSubmit = (data: FormData) => {
-    console.log("Transacción creada", data);
+  
+  const onSubmit = async (data: FormData) => {
+    
+    const expensesRepository = new ExpenseSqliteRepositoryImpl();
+    const transaction = await new CreateExpenseUseCase(expensesRepository).execute({
+      amount: +data.amount,
+      category: data.selectedCategory!,
+      date: new Date(),
+      paymentMethod: data.paymentMethod!,
+      concept: data.concept
+    });
+    console.log("Transacción creada", transaction);
   };
 
   const handleSelectPaymentMethod = (paymentMethod: CreditCard | Cash | DebitCard)=> {
-    setPaymentMethod(paymentMethod);
+    setPaymentMethod("cash")
     setValue("paymentMethod", paymentMethod);
   }
 
@@ -127,6 +139,7 @@ export const TransactionScreen = () => {
                 <Category
                   key={category.id}
                   category={category}
+                  
                   style={{
                     backgroundColor:
                       selectedCategory?.id === category.id
@@ -156,25 +169,25 @@ export const TransactionScreen = () => {
                 onPress={()=>handleSelectPaymentMethod({type: "cash"})}
                 style={[
                   styles.paymentButton,
-                  paymentMethod?.type === "cash" && styles.selectedPaymentButton,
+                  paymentMethod === "cash" && styles.selectedPaymentButton,
                 ]}
-                status={paymentMethod?.type === "cash" ? "primary" : "basic"}
+                status={paymentMethod === "cash" ? "primary" : "basic"}
               >
                 Efectivo
               </Button>
               <Button
-                onPress={() => setPaymentMethod({type:"cash"})}
+                onPress={() => setPaymentMethod('card')}
                 style={[
                   styles.paymentButton,
-                  paymentMethod?.type === "credit" && styles.selectedPaymentButton,
+                  paymentMethod === "card" && styles.selectedPaymentButton,
                 ]}
-                status={paymentMethod?.type === "credit" ? "primary" : "basic"}
+                status={paymentMethod === "card" ? "primary" : "basic"}
               >
                 Tarjeta
               </Button>
             </Layout>
 
-            {/* {paymentMethod.type === "Tarjeta" && (
+            {paymentMethod === "card" && (
               <>
                 <Text style={styles.sectionTitle}>Selecciona tu tarjeta:</Text>
                 <OverflowMenu
@@ -192,7 +205,7 @@ export const TransactionScreen = () => {
                         <Layout style={styles.cardMenuItem}>
                           <Text style={styles.cardName}>{card.name}</Text>
                           <Text appearance="hint" style={styles.cardLastFour}>
-                            {card.lastFour}
+                            {card.lastFourDigits}
                           </Text>
                         </Layout>
                       )}
@@ -201,7 +214,7 @@ export const TransactionScreen = () => {
                   ))}
                 </OverflowMenu>
               </>
-            )} */}
+            )}
             {errors.paymentMethod && (
                 <Text style={styles.errorText}>{errors.paymentMethod.message}</Text>
               )}

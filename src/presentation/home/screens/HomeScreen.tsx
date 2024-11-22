@@ -10,9 +10,12 @@ import { ChartPieHome } from "../components/chart/ChartPieHome";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { UserMetricsService } from "@/src/domain/services/user-metrics.service";
 import { Category } from "@/src/domain/entities/category.entity";
+import { EmojiStatus } from "../components/EmojiStatus";
+import { useGetCardsFromDatabase } from "../../cards/cardsScreen/hooks/useGetCardsFromDatabase";
 
 export const HomeScreen = () => {
   const user = useUserStore((state) => state.user);
+  useGetCardsFromDatabase();
   const [totalMoney] = useState(50000);
   const [money, setMoney] = useState(0);
   const [maxCategoryExpense, setMaxCategoryExpense] = useState<{
@@ -38,17 +41,6 @@ export const HomeScreen = () => {
     getMaxCategoryExpense();
   }, []);
 
-  const getAvatarSource = () => {
-    if (totalMoney <= 5000) {
-      return require("../../assets/images/verylittlemoney.png");
-    } else if (totalMoney >= 5001 && totalMoney <= 9999) {
-      return require("../../assets/images/littlemoney.png");
-    } else if (totalMoney >= 10000 && totalMoney <= 20000) {
-      return require("../../assets/images/goodmoney.png");
-    } else {
-      return require("../../assets/images/bigmoney.jpg");
-    }
-  };
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -60,11 +52,8 @@ export const HomeScreen = () => {
             Hola {!user ? "" : user.name} bienvenido
           </Text>
 
-          <Avatar
-            size="giant"
-            style={{ width: 150, height: 150, marginBottom: 20 }}
-            source={getAvatarSource()}
-          />
+
+          <EmojiStatus totalMoney={totalMoney}  />
 
           <Text style={style.totalMoney}>Dinero Total:</Text>
           <Text category="h2" style={style.money}>

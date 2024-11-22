@@ -12,6 +12,7 @@ export class CreditCardCrudRepositoryImpl implements CreditCardRepository {
       [id]
     );
     if (!creditCard) {
+      await db.closeAsync();
       return null;
     }
 
@@ -86,6 +87,7 @@ export class CreditCardCrudRepositoryImpl implements CreditCardRepository {
     }
     const updatedCard = await this.getCreditCardById(id);
     if (!updatedCard) {
+      await db.closeAsync();
       throw new Error("Card not found after update");
     }
     await db.closeAsync();
