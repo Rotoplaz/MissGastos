@@ -68,6 +68,18 @@ describe("CreditCardCrudRepositoryImpl", () => {
     expect(mockDb.closeAsync).toHaveBeenCalled();
   });
 
+  it("debería eliminar una tarjeta de crédito", async () => {
+    mockDb.runAsync.mockResolvedValueOnce({});
+
+    await repository.deleteCreditCard(1);
+
+    expect(mockDb.runAsync).toHaveBeenCalledWith(
+      "DELETE FROM Card WHERE id = $id",
+      { $id: 1 }
+    );
+    expect(mockDb.closeAsync).toHaveBeenCalled();
+  });
+
   it("debería actualizar una tarjeta de crédito", async () => {
     const mockCard = {
       id: 1,
@@ -88,6 +100,7 @@ describe("CreditCardCrudRepositoryImpl", () => {
     mockDb.getFirstAsync.mockResolvedValueOnce(mockCard); // Recuperar la tarjeta original
     mockDb.runAsync.mockResolvedValueOnce({}); // Simular una actualización exitosa
     mockDb.getFirstAsync.mockResolvedValueOnce(updatedCard); // Devolver la tarjeta actualizada en la siguiente llamada
+
     const result = await repository.updateCreditCard(1, {
       name: "VisaUpdated",
     });
@@ -97,18 +110,6 @@ describe("CreditCardCrudRepositoryImpl", () => {
       "UPDATE Card SET name = ? WHERE id = ?",
       "VisaUpdated",
       1
-    );
-    expect(mockDb.closeAsync).toHaveBeenCalled();
-  });
-
-  it("debería eliminar una tarjeta de crédito", async () => {
-    mockDb.runAsync.mockResolvedValueOnce({});
-
-    await repository.deleteCreditCard(1);
-
-    expect(mockDb.runAsync).toHaveBeenCalledWith(
-      "DELETE FROM Card WHERE id = $id",
-      { $id: 1 }
     );
     expect(mockDb.closeAsync).toHaveBeenCalled();
   });

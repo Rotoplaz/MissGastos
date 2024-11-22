@@ -3,8 +3,6 @@ import { CreditCardRepository } from "@/src/domain/repositories/credit-cards.rep
 import { getDataBase } from "../db/database";
 
 export class CreditCardCrudRepositoryImpl implements CreditCardRepository {
-
-
   async getCreditCardById(id: number): Promise<CreditCard | null> {
     const db = await getDataBase();
     const creditCard = await db.getFirstAsync<CreditCard>(
@@ -37,6 +35,7 @@ export class CreditCardCrudRepositoryImpl implements CreditCardRepository {
       ...card,
     };
   }
+
   async updateCreditCard(
     id: number,
     card: Partial<CreditCard>
@@ -44,7 +43,11 @@ export class CreditCardCrudRepositoryImpl implements CreditCardRepository {
     const db = await getDataBase();
     const fieldsToUpdate: string[] = [];
     const values: any[] = [];
+    const currentCard = await this.getCreditCardById(id);
 
+    if (!currentCard) {
+      throw new Error("card not found");
+    }
     if (card.dueDate !== undefined) {
       fieldsToUpdate.push("dueDate = ?");
       values.push(card.dueDate.toISOString().split("T")[0]);
@@ -79,11 +82,9 @@ export class CreditCardCrudRepositoryImpl implements CreditCardRepository {
     values.push(id);
 
     if (setClause.length > 0) {
-      await db.runAsync(
-        `UPDATE Card SET ${setClause} WHERE id = ?`,
-        ...values
-      );
+      await db.runAsync(`UPDATE Card SET ${setClause} WHERE id = ?`, ...values);
     }
+
     const updatedCard = await this.getCreditCardById(id);
     if (!updatedCard) {
       throw new Error("Card not found after update");
@@ -91,6 +92,7 @@ export class CreditCardCrudRepositoryImpl implements CreditCardRepository {
     await db.closeAsync();
     return updatedCard;
   }
+
   async deleteCreditCard(id: number): Promise<void> {
     const db = await getDataBase();
     try {
@@ -98,7 +100,7 @@ export class CreditCardCrudRepositoryImpl implements CreditCardRepository {
       return;
     } catch (error) {
       throw new Error("Card doesn't exist");
-    }finally {
+    } finally {
       await db.closeAsync();
     }
   }
