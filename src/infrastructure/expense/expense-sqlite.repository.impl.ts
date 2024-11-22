@@ -26,6 +26,7 @@ export class ExpenseSqliteRepositoryImpl implements ExpenseRepository {
       [id]
     );
     if (!expense) {
+      await db.closeAsync();
       return null;
     }
     await db.closeAsync();
@@ -33,11 +34,12 @@ export class ExpenseSqliteRepositoryImpl implements ExpenseRepository {
   }
   async createExpense(expense: Omit<Expense, "id">): Promise<Expense> {
     const { amount, concept, category, date } = expense;
+    // console.log(expense)
     const db = await getDataBase();
     switch (expense.paymentMethod.type) {
       case "credit": {
         const infoDatabse = await db.runAsync(
-          "INSERT INTO Expense (amount, concept, categoryId, paymentMethod, cardId, date) VALUES ",
+          "INSERT INTO Expense (amount, concept, categoryId, paymentMethod, cardId, date) VALUES (?,?,?,?,?,?)",
           amount,
           concept ? concept : null,
           category.id,
@@ -57,7 +59,7 @@ export class ExpenseSqliteRepositoryImpl implements ExpenseRepository {
       }
       case "cash": {
         const infoDatabse = await db.runAsync(
-          "INSERT INTO Expense (amount, concept, categoryId, paymentMethod, cardId) VALUES ",
+          "INSERT INTO Expense (amount, concept, categoryId, paymentMethod, cardId,date) VALUES (?,?,?,?,?,?)",
           amount,
           concept ? concept : null,
           category.id,
@@ -77,7 +79,7 @@ export class ExpenseSqliteRepositoryImpl implements ExpenseRepository {
       }
       case "debit": {
         const infoDatabse = await db.runAsync(
-          "INSERT INTO Expense (amount, concept, categoryId, paymentMethod, cardId) VALUES ",
+          "INSERT INTO Expense (amount, concept, categoryId, paymentMethod, cardId, date) VALUES (?,?,?,?,?,?)",
           amount,
           concept ? concept : null,
           category.id,

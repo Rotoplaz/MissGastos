@@ -11,6 +11,7 @@ export class DebitCardRepositoryImpl implements DebitCardRepository {
       [id]
     );
     if (!debitCard) {
+      await db.closeAsync();
       return null;
     }
     await db.closeAsync();
@@ -79,6 +80,7 @@ export class DebitCardRepositoryImpl implements DebitCardRepository {
     }
     const updatedCard = await this.getDebitCardById(id);
     if (!updatedCard) {
+      await db.closeAsync();
       throw new Error("Card not found after update");
     }
     

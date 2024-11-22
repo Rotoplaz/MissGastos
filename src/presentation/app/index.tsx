@@ -16,8 +16,8 @@ export default function Index() {
 
   useEffect(() => {
     const getUser = async () => {
+      await migrateDbIfNeeded();
       const db = await getDataBase();
-      await migrateDbIfNeeded(db);
       const userRepository = new UserRepositorySqliteImpl();
       const user = await new GetUserUseCase(userRepository).execute();
 

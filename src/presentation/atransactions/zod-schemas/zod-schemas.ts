@@ -1,35 +1,41 @@
 import * as z from "zod";
 
-const cashSchema = z.object({
-  type: z.literal("cash"),
-});
-
-const creditCardSchema = z.object({
+// Definición de la interfaz BaseCard
+const baseCardSchema = z.object({
   id: z.number(),
   name: z.string(),
   lastFourDigits: z.string().length(4, "Debe tener 4 dígitos"),
   debt: z.number().nonnegative(),
+});
+
+// Esquema para CreditCard, extendiendo BaseCard
+const creditCardSchema = baseCardSchema.extend({
   creditLimit: z.number().nonnegative(),
-  dueDate: z.date(),
+  dueDate: z.coerce.date(),
   type: z.literal("credit"),
+  limitDebit: z.null(),  // limitDebit es null para CreditCard
 });
 
-const debitCardSchema = z.object({
-  id: z.number(),
-  name: z.string(),
-  lastFourDigits: z.string().length(4, "Debe tener 4 dígitos"),
-  debt: z.number().nonnegative(),
+// Esquema para DebitCard, extendiendo BaseCard
+const debitCardSchema = baseCardSchema.extend({
   currentBalance: z.number().nonnegative(),
   limitDebit: z.number().nonnegative(),
   type: z.literal("debit"),
 });
 
+// Esquema para Cash
+const cashSchema = z.object({
+  type: z.literal("cash"),
+});
+
+// Unir los tres esquemas (CreditCard, DebitCard, Cash)
 const paymentMethodSchema = z.union([
-  cashSchema,
   creditCardSchema,
   debitCardSchema,
+  cashSchema,
 ]);
 
+// Esquema para la categoría
 const categorySchema = z.object({
   id: z.number(),
   icon: z.string(),
@@ -37,6 +43,7 @@ const categorySchema = z.object({
   type: z.string(),
 });
 
+// Esquema para la transacción
 export const zodSchemaTransaction = z.object({
   amount: z.coerce
     .number()
