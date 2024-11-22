@@ -94,5 +94,7 @@ CREATE TABLE Income (
     await db.execAsync(`PRAGMA user_version = ${DATABASE_VERSION}`);
   } catch (error) {
     console.log(error);
+  }finally {
+    await db.closeAsync();
   }
 }
