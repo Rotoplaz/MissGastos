@@ -20,7 +20,7 @@ describe("CreditCardCrudRepositoryImpl - Validaciones y defectos", () => {
   });
 
   it("debería lanzar un error al intentar actualizar una tarjeta inexistente", async () => {
-    mockDb.getFirstAsync.mockResolvedValueOnce(null); // No encuentra la tarjeta
+    mockDb.getFirstAsync.mockResolvedValueOnce(null); 
 
     await expect(repository.updateDebitCard(99, { name: "UpdatedName" })).rejects.toThrow(
       "card not found"
