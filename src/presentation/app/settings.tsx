@@ -28,13 +28,10 @@ export const config = () => {
           onPress: async () => {
             try {
               const database = await getDataBase();
-  
-              // Close the database before attempting to delete
               await database.closeAsync();
-  
-              // Now delete the database
-              await SqliteDatabase.deleteDatabaseAsync("MissGastosDataBase");
-  
+              
+              await SqliteDatabase.deleteDatabaseAsync(database.databaseName);
+              
               // Reset application state
               resetUserStore();
               resetCardStore();

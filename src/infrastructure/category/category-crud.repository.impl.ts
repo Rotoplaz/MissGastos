@@ -11,6 +11,7 @@ export class CategoryRepositoryImpl implements CategoryRepository {
       [id]
     );
     if (!category) {
+      await db.closeAsync();
       return null;
     }
     await db.closeAsync();
@@ -67,6 +68,7 @@ export class CategoryRepositoryImpl implements CategoryRepository {
     }
     const updatedCategory = await this.getCategoryById(id);
     if (!updatedCategory) {
+      await db.closeAsync();
       throw new Error("Category not found after update");
     }
     await db.closeAsync();
