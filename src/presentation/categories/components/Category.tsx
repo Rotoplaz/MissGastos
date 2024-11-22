@@ -1,42 +1,40 @@
 import { Category as CategoryEntity } from '@/src/domain/entities/category.entity'
-import { Button, Icon, Layout } from '@ui-kitten/components';
+import { Button, Icon, Layout, Text } from '@ui-kitten/components';
 import React from 'react'
-import { StyleSheet } from 'react-native';
+import { GestureResponderEvent, StyleProp, StyleSheet, ViewStyle } from 'react-native';
 
 interface Props {
-    category: CategoryEntity;
+  category: CategoryEntity;
+  style?: StyleProp<ViewStyle>;
+  onPress?: ((event: GestureResponderEvent) => void) | undefined
 }
 
-export const Category = ({category}:Props) => {
+export const Category = ({category, style, onPress}:Props) => {
   return (
-    <Button
-    appearance="ghost"
-    accessoryLeft={() => (
-      <Layout
-        style={[
-          styles.iconCircle,
-          { backgroundColor: category.color  }
-        ]}
-      >
-        <Icon name={category.icon} style={[styles.iconInsideCircle]} />
-      </Layout>
-    )}
-  />
+    <Layout style={{justifyContent: "center", alignItems: "center", gap: 5}}>
+      <Button
+      appearance="ghost"
+      style={[{
+        backgroundColor: category.color,
+        borderRadius: 100,
+        paddingHorizontal: 12,
+        paddingVertical: 12
+      }, style]}
+      onPress={onPress}
+      accessoryLeft={() => (
+          <Icon name={category.icon} style={[styles.iconCircle]} fill="white" />
+      )}
+    />
+    <Text category="c2" appearance='hint'>{category.type}</Text>
+    </Layout>
   )
 }
 
 
 const styles = StyleSheet.create({
     iconCircle: {
-        width: 50,
-        height: 50,
-        borderRadius: 25,
-        alignItems: "center",
-        justifyContent: "center",
+        width: 30,
+        height: 30,
+        borderRadius: 50
     },
-    iconInsideCircle: {
-        width: 24,
-        height: 24,
-        tintColor: "#FFFFFF",
-      },
 });

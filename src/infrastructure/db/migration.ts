@@ -76,7 +76,7 @@ CREATE TABLE Income (
         { color: "#e67e22", icon: "calendar-outline", type: "Alimento" },
         { color: "#884ea0", icon: "camera-outline", type: "Escuela" },
         { color: "#d4ac0d", icon: "compass-outline", type: "Café" },
-        { color: "#229954", icon: "globe-2-outline", type: "Porno" },
+        { color: "#229954", icon: "globe-2-outline", type: "Donaciones" },
       ];
 
       for (const category of categories) {
