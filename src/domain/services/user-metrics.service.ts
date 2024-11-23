@@ -65,8 +65,7 @@ export class UserMetricsService {
         
         if(!expense || expense.length === 0) return null;
         const highExpense = expense.reduce((maxExpense, currentExpense) => 
-        currentExpense.amount > maxExpense.amount ? currentExpense : maxExpense
-        );
+        currentExpense.amount > maxExpense.amount ? currentExpense : maxExpense);
         return {amount: highExpense.amount, category: highExpense.category};
 
     }
