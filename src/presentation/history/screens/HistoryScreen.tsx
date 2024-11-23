@@ -6,7 +6,7 @@ import { Category as CategoryEntity } from "@/src/domain/entities/category.entit
 import { Expense } from "../components/Expense";
 import { Category } from "../../categories/components/Category";
 
-// must be a ExpenseEntity
+// TODO: must be a ExpenseEntity
 const categories: (CategoryEntity & { expense: number })[] = [
   {
     id: 5,
@@ -38,7 +38,7 @@ export const HistoryScreen = () => {
     <Layout style={[styles.mainContainer, { paddingTop: top }]}>
       <ScrollView style={styles.scrollContainer}>
         {categories.map((category) => (
-          // must be a Layout
+          // TODO: must be a Layout not TouchableOpacity
           <TouchableOpacity
             style={styles.itemContainer}
             key={category.id}
