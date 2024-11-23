@@ -250,9 +250,38 @@ export class ExpenseSqliteRepositoryImpl implements ExpenseRepository {
   }
   async getAllExpenses(): Promise<Expense[]> {
     const db = await getDataBase();
-    const allExpense = await db.getAllAsync<Expense>("SELECT * FROM Expense");
+    const query = `
+      SELECT 
+        e.id,
+        e.amount,
+        e.concept,
+        e.date,
+        e.paymentMethod,
+        e.cardId,
+        c.id AS categoryId,
+        c.type AS categoryType,
+        c.color AS categoryColor,
+        c.icon AS categoryIcon
+      FROM Expense e
+      JOIN Category c ON e.categoryId = c.id
+    `;
+    const allExpenses = await db.getAllAsync(query);
     await db.closeAsync();
-    return allExpense;
+
+    return allExpenses.map((row:any) => ({
+      id: row.id,
+      amount: row.amount,
+      concept: row.concept,
+      date: new Date(row.date),
+      paymentMethod: row.paymentMethod,
+      cardId: row.cardId,
+      category: {
+        id: row.categoryId,
+        type: row.categoryType,
+        color: row.categoryColor,
+        icon: row.categoryIcon,
+      },
+    }));
   }
   async getExpensesByCategory?(category: Category): Promise<Expense[]> {
     const db = await getDataBase();

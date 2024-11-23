@@ -12,6 +12,9 @@ import { UserMetricsService } from "@/src/domain/services/user-metrics.service";
 import { Category } from "@/src/domain/entities/category.entity";
 import { EmojiStatus } from "../components/EmojiStatus";
 import { useGetCardsFromDatabase } from "../../cards/cardsScreen/hooks/useGetCardsFromDatabase";
+import { useExpenseStore } from "../../store/expense/useExpenseStore";
+import { ExpenseSqliteRepositoryImpl } from "@/src/infrastructure";
+import { GetAllExpenseUseCase } from "@/src/application/use-cases/expense/get-all-expense.use-case";
 
 export const HomeScreen = () => {
   useGetCardsFromDatabase();
@@ -25,6 +28,9 @@ export const HomeScreen = () => {
     category: Category;
   } | null>(null);
 
+  const expense = useExpenseStore(state=>state.expense);
+  const setExpense = useExpenseStore(state=>state.setExpense);
+
   useEffect(() => {
     const getTotalMoney = () => {
       const metricsService = new UserMetricsService();
@@ -37,11 +43,24 @@ export const HomeScreen = () => {
   useEffect(() => {
     const getMaxCategoryExpense = () => {
       const metricsService = new UserMetricsService();
-      const category = metricsService.highAmountExpense([]);
+      const category = metricsService.highAmountExpense(expense);
+      console.log(expense)
       setMaxCategoryExpense(category);
     };
     getMaxCategoryExpense();
-  }, []);
+  }, [expense]);
+
+  useEffect(() => {
+    
+    const getExpense = async () => {
+      const expenseRepository = new ExpenseSqliteRepositoryImpl();
+      const expense = await new GetAllExpenseUseCase(expenseRepository).execute();
+      setExpense(expense);
+    }
+    getExpense();
+    
+  }, [])
+  
 
 
 
@@ -64,7 +83,7 @@ export const HomeScreen = () => {
           </Text>
           <Text style={style.subText}>
             Este es en lo que más gastas:{" "}
-            {maxCategoryExpense ? maxCategoryExpense.category.type : "Nada"}
+            {maxCategoryExpense ? maxCategoryExpense.category?.type : "Nada"}
           </Text>
 
           <Layout style={{ width: "100%" }}>
@@ -73,7 +92,7 @@ export const HomeScreen = () => {
               <Button
                 size="large"
                 onPress={() =>
-                  new GeneratePDFUseCase().execute(getPDFLayout([], [], user!))
+                  new GeneratePDFUseCase().execute(getPDFLayout([], expense, user!))
                 }
                 accessoryLeft={<Icon name="pie-chart-outline" />}
               >
@@ -82,7 +101,6 @@ export const HomeScreen = () => {
             </Layout>
           </Layout>
 
-          {/* Floating button to add entry/exit */}
           <Button
             onPress={() => router.push("/createTransaction")}
             style={style.fabButton}
