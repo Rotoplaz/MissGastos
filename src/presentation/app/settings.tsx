@@ -13,8 +13,10 @@ export const config = () => {
   const theme = useTheme();
   const resetUserStore = useUserStore(state=>state.resetUserStore);
   const resetCardStore = useCardsStore(state=>state.resetCardStore);
-  const handleDeleteDatabaseInformation = async()=> {
-    Alert.alert("Cuidado", "¿Seguro de eliminar toda tu información?",
+  const handleDeleteDatabaseInformation = async () => {
+    Alert.alert(
+      "Cuidado",
+      "¿Seguro de eliminar toda tu información?",
       [
         {
           text: "Cancelar",
@@ -23,22 +25,32 @@ export const config = () => {
         {
           text: "Confirmar",
           style: "destructive",
-          onPress: async() => {
+          onPress: async () => {
             try {
               const database = await getDataBase();
               await database.closeAsync();
-              await SqliteDatabase.deleteDatabaseAsync("MissGastosDataBase");
+              
+              await SqliteDatabase.deleteDatabaseAsync(database.databaseName);
+              
+              // Reset application state
               resetUserStore();
               resetCardStore();
+  
+              // Redirect to the initial screen
               router.replace("/");
             } catch (error) {
-              console.log(error)
+              console.error("Error while deleting database:", error);
+              Alert.alert(
+                "Error",
+                "No se pudo eliminar la base de datos. Inténtalo de nuevo."
+              );
             }
-          }, 
+          },
         },
       ]
-    )
-  }
+    );
+  };
+  
 
   return (
     <LayoutWithTopNavigation titleScreen="Configuración">

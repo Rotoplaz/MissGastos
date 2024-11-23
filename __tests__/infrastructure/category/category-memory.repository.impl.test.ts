@@ -1,5 +1,6 @@
-import { Category } from "@/domain/entities/category.entity";
-import { CategoryMemoryImpl } from "@/infrastructure/category/category-memory.repository.impl";
+import { Category } from "@/src/domain/entities/category.entity";
+import { CategoryMemoryImpl } from "@/src/infrastructure/category/category-memory.repository.impl";
+
 
 
 describe("Category Repository Memory", () => {
@@ -13,7 +14,8 @@ describe("Category Repository Memory", () => {
     test("should create one",async ()=>{
         const newCategoryData: Omit<Category, "id"> = {
             icon: "Engine",
-            type: "Electronics"
+            type: "Electronics",
+            color: "#fff"
         };
 
         const createdCategory = await categoryRepository.createCategory(newCategoryData);
@@ -21,7 +23,8 @@ describe("Category Repository Memory", () => {
         expect(createdCategory).toEqual({
             id: 1,
             icon: "Engine",
-            type: "Electronics"
+            type: "Electronics",
+            color: "#fff"
         });
 
     });
@@ -29,7 +32,8 @@ describe("Category Repository Memory", () => {
     test("should return a category by id", async () => {
         const newCategory = await categoryRepository.createCategory({
             type: "Books",
-            icon: "library"
+            icon: "library",
+            color: "#fff"
         });
     
         const foundCategory = await categoryRepository.getCategoryById(newCategory.id);
@@ -46,7 +50,8 @@ describe("Category Repository Memory", () => {
         
         await categoryRepository.createCategory({
             type: "Books",
-            icon: "library"
+            icon: "library",
+            color: "#fff"
         });
 
         await categoryRepository.deleteCategory(1);
@@ -60,7 +65,8 @@ describe("Category Repository Memory", () => {
     test("should update a category", async () => {
         const category = await categoryRepository.createCategory({
             type: "Books",
-            icon: "library"
+            icon: "library",
+            color: "#fff"
         });
 
         await categoryRepository.updateCategory(category.id, {
@@ -72,7 +78,8 @@ describe("Category Repository Memory", () => {
         expect(categoryTypeUpdated).toEqual({
                 id: 1,
                 type: "Electronic",
-                icon: "library"
+                icon: "library",
+                color: "#fff"
         });
 
         await categoryRepository.updateCategory(category.id, {
@@ -85,7 +92,8 @@ describe("Category Repository Memory", () => {
         expect(categoryAllUpated).toEqual({
                 id: 1,
                 type: "Electronic",
-                icon: "engine"
+                icon: "engine",
+                color: "#fff"
         });
 
     });

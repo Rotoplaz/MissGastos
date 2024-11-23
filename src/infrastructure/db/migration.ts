@@ -1,6 +1,8 @@
 import { SQLiteDatabase } from "expo-sqlite";
+import { getDataBase } from "./database";
 
-export async function migrateDbIfNeeded(db: SQLiteDatabase) {
+export async function migrateDbIfNeeded() {
+  const db = await getDataBase();
   try {
     const DATABASE_VERSION = 1;
     const userVersion = await db.getFirstAsync<{ user_version: number }>(
@@ -94,5 +96,8 @@ CREATE TABLE Income (
     await db.execAsync(`PRAGMA user_version = ${DATABASE_VERSION}`);
   } catch (error) {
     console.log(error);
+  } 
+  finally{
+    await db.closeAsync();
   }
 }

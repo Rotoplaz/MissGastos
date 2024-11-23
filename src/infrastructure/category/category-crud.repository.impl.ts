@@ -3,7 +3,6 @@ import { CategoryRepository } from "@/src/domain/repositories/category.repositor
 import { getDataBase } from "../db/database";
 
 export class CategoryRepositoryImpl implements CategoryRepository {
-
   async getCategoryById(id: number): Promise<Category | null> {
     const db = await getDataBase();
     const category = await db.getFirstAsync<Category>(
@@ -11,6 +10,7 @@ export class CategoryRepositoryImpl implements CategoryRepository {
       [id]
     );
     if (!category) {
+      await db.closeAsync();
       return null;
     }
     await db.closeAsync();
@@ -40,6 +40,11 @@ export class CategoryRepositoryImpl implements CategoryRepository {
     const fieldsToUpdate: string[] = [];
     const values: any[] = [];
     const db = await getDataBase();
+    const currentCategory = await this.getCategoryById(id);
+
+    if (!currentCategory) {
+      throw new Error("category not found");
+    }
 
     if (category.type !== undefined) {
       fieldsToUpdate.push("type = ?");
@@ -67,6 +72,7 @@ export class CategoryRepositoryImpl implements CategoryRepository {
     }
     const updatedCategory = await this.getCategoryById(id);
     if (!updatedCategory) {
+      await db.closeAsync();
       throw new Error("Category not found after update");
     }
     await db.closeAsync();
@@ -82,7 +88,7 @@ export class CategoryRepositoryImpl implements CategoryRepository {
       return;
     } catch (error) {
       throw new Error("Category doesn't exist");
-    }finally{
+    } finally {
       await db.closeAsync();
     }
   }
