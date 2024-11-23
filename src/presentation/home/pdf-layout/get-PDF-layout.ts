@@ -24,7 +24,7 @@ export function getPDFLayout(
       (expense) =>
         `<tr>
            <td>${expense.id}</td>
-           <td>${expense.concept}</td>
+           <td>${expense.concept === "" ? expense.category.type : expense.concept}</td>
            <td>${expense.amount}</td>
            <td>${expense.date}</td>
            <td>Gasto</td>

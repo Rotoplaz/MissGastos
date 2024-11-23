@@ -7,6 +7,7 @@ import { IncomeFormData, incomeSchema } from "../zod-schemas/income/zod-schemas"
 import { IncomeSqliteRepositoryImpl } from "@/src/infrastructure";
 import { CreateIncomeUseCase } from "@/src/application/use-cases/income/create-income.use-case";
 import { router } from "expo-router";
+import { useIncomeStore } from "../../store/income/useIncomeStore";
 
 
 export const IncomeForm = () => {
@@ -22,21 +23,22 @@ export const IncomeForm = () => {
       date: new Date(),
     },
   });
-
+  const addIncome = useIncomeStore(state=>state.addIncome);
   const onSubmit = async(data: IncomeFormData) => {
     console.log("Ingreso guardado:", data);
     const incomeRepository = new IncomeSqliteRepositoryImpl();
-    const income = new CreateIncomeUseCase(incomeRepository).execute({
+    const income = await new CreateIncomeUseCase(incomeRepository).execute({
       amount: data.amount,
       date: data.date,
       concept: data.concept
     });
+    addIncome(income);
     router.back();
   };
 
   return (
     <Layout style={styles.mainContainer}>
-      {/* Cantidad */}
+
       <Controller
         control={control}
         name="amount"
@@ -53,7 +55,7 @@ export const IncomeForm = () => {
       />
       {errors.amount && <Text style={styles.errorText}>{errors.amount.message}</Text>}
 
-      {/* Concepto */}
+
       <Controller
         control={control}
         name="concept"
@@ -71,7 +73,6 @@ export const IncomeForm = () => {
       />
       {errors.concept && <Text style={styles.errorText}>{errors.concept.message}</Text>}
 
-      {/* Fecha */}
       <Controller
         control={control}
         name="date"
@@ -86,7 +87,7 @@ export const IncomeForm = () => {
       />
       {errors.date && <Text style={styles.errorText}>{errors.date.message}</Text>}
 
-      {/* Botón Guardar */}
+
       <Button style={styles.createButton} onPress={handleSubmit(onSubmit)}>
         Guardar
       </Button>

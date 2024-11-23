@@ -42,11 +42,11 @@ export const HomeScreen = () => {
   useEffect(() => {
     const getTotalMoney = () => {
       const metricsService = new UserMetricsService();
-      const money = metricsService.totalAmountIncomes([]);
+      const money = metricsService.totalAmountIncomes(incomes);
       setMoney(money);
     };
     getTotalMoney();
-  }, []);
+  }, [incomes]);
 
       
   useEffect(() => {
