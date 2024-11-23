@@ -47,6 +47,7 @@ export class CreditCardCrudRepositoryImpl implements CreditCardRepository {
     const currentCard = await this.getCreditCardById(id);
 
     if (!currentCard) {
+      await db.closeAsync();
       throw new Error("card not found");
     }
     if (card.dueDate !== undefined) {
@@ -85,7 +86,7 @@ export class CreditCardCrudRepositoryImpl implements CreditCardRepository {
     if (setClause.length > 0) {
       await db.runAsync(`UPDATE Card SET ${setClause} WHERE id = ?`, ...values);
     }
-
+    
     const updatedCard = await this.getCreditCardById(id);
     if (!updatedCard) {
       await db.closeAsync();

@@ -39,7 +39,7 @@ export const ChartPieHome = () => {
     <Layout style={style.chartContainer}>
       <PieChart data={data} radius={90} />
       <Layout style={{ alignSelf: "center" }}>
-        {data.map((expense) => (
+        {data.slice(0,5).map((expense) => (
           <Layout
             key={expense.color}
             style={{

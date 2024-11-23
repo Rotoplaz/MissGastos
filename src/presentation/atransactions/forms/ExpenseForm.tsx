@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import { StyleSheet } from "react-native";
 import { Category as CategoryEntity } from "@/src/domain/entities/category.entity";
 import { Cash, CreditCard, DebitCard } from "@/src/domain/entities/payment-methods.entity";
-import { zodSchemaTransaction } from "../zod-schemas/zod-schemas";
+import { zodSchemaTransaction } from "../zod-schemas/expense/zod-schemas";
 import { useCardsStore } from "../../store";
 import { CategoryRepositoryImpl, ExpenseSqliteRepositoryImpl } from "@/src/infrastructure";
 import { GetAllCategoriesUseCase } from "@/src/application/use-cases/category/get-all-categories.use-case";
@@ -13,6 +13,7 @@ import { CreateExpenseUseCase } from "@/src/application/use-cases/expense/create
 import { Category } from "../../categories/components/Category";
 import { useExpenseStore } from '../../store/expense/useExpenseStore';
 import { router } from "expo-router";
+import { useCategoryStore } from "../../store/categories/useCategoryStore";
 
 
 interface FormData {
@@ -55,21 +56,9 @@ export const ExpenseForm = () => {
       const [selectedCardIndex, setSelectedCardIndex] = useState<null | number>(
         null
       );
-      const [categories, setCategories] = useState<CategoryEntity[]>([]);
       const cards = useCardsStore(state=>state.cards);
-    
-      useEffect(() => {
-        const getCategories = async () => {
-          const categoriesRepository = new CategoryRepositoryImpl();
-          const categories = await new GetAllCategoriesUseCase(
-            categoriesRepository
-          ).execute();
-          setCategories(categories);
-        };
-        getCategories();
-      }, []);
-    
-    
+      const categories = useCategoryStore(state=>state.categories);
+
       const renderToggleButton = () => (
         <Button onPress={() => setVisible(true)}>
           {selectedCardIndex !== null
@@ -222,7 +211,7 @@ const styles = StyleSheet.create({
       flexDirection: "row",
       justifyContent: "space-around",
       marginVertical: 10,
-      minHeight: 100
+      minHeight: 120
     },
     iconButton: {
       width: 30,

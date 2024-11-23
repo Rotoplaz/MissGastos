@@ -47,6 +47,7 @@ export class DebitCardRepositoryImpl implements DebitCardRepository {
     const currentCard = await this.getDebitCardById(id);
 
     if (!currentCard) {
+      await db.closeAsync();
       throw new Error("card not found");
     }
     if (card.name !== undefined) {

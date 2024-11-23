@@ -1,4 +1,3 @@
-import { SQLiteDatabase } from "expo-sqlite";
 import { getDataBase } from "./database";
 
 export async function migrateDbIfNeeded() {
