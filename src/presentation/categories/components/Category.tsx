@@ -12,9 +12,10 @@ interface Props {
   category: CategoryEntity;
   style?: StyleProp<ViewStyle>;
   onPress?: ((event: GestureResponderEvent) => void) | undefined;
+  showTitle?: boolean;
 }
 
-export const Category = ({ category, style, onPress }: Props) => {
+export const Category = ({ category, style, onPress, showTitle = true }: Props) => {
   return (
     <Layout style={{ justifyContent: "center", alignItems: "center", gap: 5 }}>
       <Button
@@ -33,9 +34,13 @@ export const Category = ({ category, style, onPress }: Props) => {
           <Icon name={category.icon} style={[styles.iconCircle]} fill="white" />
         )}
       />
-      <Text category="c2" appearance="hint">
-        {category.type}
-      </Text>
+      {
+        showTitle && (
+          <Text category="c2" appearance="hint">
+            {category.type}
+          </Text>
+        )
+      }
     </Layout>
   );
 };
