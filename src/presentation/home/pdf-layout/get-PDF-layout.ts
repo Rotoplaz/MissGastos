@@ -11,9 +11,10 @@ export function getPDFLayout(
     .map((income) => {
       return `<tr>
               <td>${income.id}</td>
-              <td>${income.amount}</td>
               <td>${income.concept}</td>
+              <td>${income.amount}</td>
               <td>${income.date}</td>
+              <td>Ingreso</td>
             </tr>`;
     })
     .join("");
@@ -26,6 +27,7 @@ export function getPDFLayout(
            <td>${expense.concept}</td>
            <td>${expense.amount}</td>
            <td>${expense.date}</td>
+           <td>Gasto</td>
          </tr>`
     )
     .join("");
@@ -76,7 +78,7 @@ export function getPDFLayout(
           .table th, .table td {
             border: 1px solid #ddd;
             padding: 8px;
-            text-align: left;
+            text-align: center;
           }
           .table th {
             background-color: #f2f2f2;
@@ -103,13 +105,15 @@ export function getPDFLayout(
           <div class="header">
             <div class="info-right">
               <h2>MissGastos</h2>
-              <p>Centro Universitario de Ciencias Exactas e Ingenierías (CUCEI)</p>
+              <p>Reporte de ingresos y gastos del usuario</p>
             </div>
           </div>
 
           <div class="user-info">
-            <h3>Reporte para el usuario: ${user ? user.name : "N/A"}</h3>
-            <p>Límite global de presupuesto: ${user ? user.globalLimitBudget : "N/A"}</p>
+            <h3>Usuario: ${user ? user.name : "N/A"}</h3>
+            <p>Límite global de presupuesto: ${
+              user ? user.globalLimitBudget : "N/A"
+            }</p>
           </div>
           <div class="invoice-info">
             <h3>Resumen de Ingresos y Gastos</h3>
@@ -117,14 +121,18 @@ export function getPDFLayout(
           </div>
 
           
-          <h3>Ingresos</h3>
+          
           <table class="table">
             <thead>
               <tr>
+                <th colspan="5" style="text-align: center;">Ingresos</th>
+              </tr>
+              <tr>
                 <th>ID</th>
-                <th>Descripción</th>
+                <th>Concepto</th>
                 <th>Monto</th>
                 <th>Fecha</th>
+                <th>Tipo</th>
               </tr>
             </thead>
             <tbody>
@@ -133,14 +141,18 @@ export function getPDFLayout(
           </table>
 
           
-          <h3>Gastos</h3>
+          
           <table class="table">
             <thead>
+              <tr>
+                <th colspan="5" style="text-align: center;">Gastos</th>
+              </tr>
               <tr>
                 <th>ID</th>
                 <th>Concepto</th>
                 <th>Monto</th>
                 <th>Fecha</th>
+                <th>Tipo</th>
               </tr>
             </thead>
             <tbody>
