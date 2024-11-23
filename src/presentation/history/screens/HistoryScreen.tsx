@@ -1,109 +1,64 @@
-import { Button, Icon, Layout, Text } from "@ui-kitten/components";
+import { Layout, Text } from "@ui-kitten/components";
 import React from "react";
-import { ScrollView, StyleSheet, View } from "react-native";
+import { ScrollView, StyleSheet, TouchableOpacity } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { Category as CategoryEntity } from "@/src/domain/entities/category.entity";
+import { Expense } from "../components/Expense";
+import { Category } from "../../categories/components/Category";
+
+const categories: (CategoryEntity & { expense: number })[] = [
+  {
+    id: 5,
+    type: "Casa",
+    color: "#e67e22",
+    icon: "home-outline",
+    expense: -120.5,
+  },
+  {
+    id: 8,
+    type: "Trabajo",
+    color: "#229954",
+    icon: "briefcase-outline",
+    expense: 250.75,
+  },
+  {
+    id: 9,
+    type: "Comida",
+    color: "#d4ac0d",
+    icon: "shopping-cart-outline",
+    expense: -85.3,
+  },
+];
 
 export const HistoryScreen = () => {
   const { top } = useSafeAreaInsets();
-  const circleColors = ["#e67e22", "#229954", "#d4ac0d", "#884ea0"];
 
   return (
-    <Layout style={[style.mainContainer, { paddingTop: top }]}>
-      <ScrollView style={style.scrollContainer}>
-        <Layout style={style.itemContainer}>
-          <Button
-            style={style.itemButton}
-            appearance="ghost"
-            accessoryLeft={() => (
-              <Layout style={style.iconContainer}>
-                <Icon name="image-outline" style={style.icon} />
-              </Layout>
-            )}
+    <Layout style={[styles.mainContainer, { paddingTop: top }]}>
+      <ScrollView style={styles.scrollContainer}>
+        {categories.map((category) => (
+          <TouchableOpacity
+            style={styles.itemContainer}
+            key={category.id}
+            onPress={() => console.log(`Clicked on ${category.type}`)}
           >
-            {() => (
-              <Layout style={style.itemContent}>
-                <Text style={style.itemTitle}>Arte</Text>
-                <Text style={[style.itemAmount, style.expense]}>2000$</Text>
-              </Layout>
-            )}
-          </Button>
-        </Layout>
+            <Category category={category} style={styles.iconContainer} />
+            <Text style={styles.itemTitle}>{category.type}</Text>
 
-        <Layout style={style.itemContainer}>
-          <Button
-            style={style.itemButton}
-            appearance="ghost"
-            accessoryLeft={() => (
-              <Layout style={style.iconContainer}>
-                <Icon name="briefcase-outline" style={style.icon} />
-              </Layout>
-            )}
-          >
-            {() => (
-              <Layout style={style.itemContent}>
-                <Text style={style.itemTitle}>Trabajo</Text>
-                <Text style={[style.itemAmount, style.income]}>12000$</Text>
-              </Layout>
-            )}
-          </Button>
-        </Layout>
-
-        <Layout style={style.itemContainer}>
-          <Button
-            style={style.itemButton}
-            appearance="ghost"
-            accessoryLeft={() => (
-              <Layout style={style.iconContainer}>
-                <Icon name="shopping-cart-outline" style={style.icon} />
-              </Layout>
-            )}
-          >
-            {() => (
-              <Layout style={style.itemContent}>
-                <Text style={style.itemTitle}>Comida</Text>
-                <Text style={[style.itemAmount, style.expense]}>200$</Text>
-              </Layout>
-            )}
-          </Button>
-        </Layout>
-
-        <Layout style={style.itemContainer}>
-          <Button
-            style={style.itemButton}
-            appearance="ghost"
-            accessoryLeft={() => (
-              <Layout style={style.iconContainer}>
-                <Icon name="star-outline" style={style.icon} />
-              </Layout>
-            )}
-          >
-            {() => (
-              <Layout style={style.itemContent}>
-                <Text style={style.itemTitle}>Loteria</Text>
-                <Text style={[style.itemAmount, style.income]}>1000000$</Text>
-              </Layout>
-            )}
-          </Button>
-        </Layout>
+            <Expense
+              expense={category.expense}
+              style={styles.expenseContainer}
+            />
+          </TouchableOpacity>
+        ))}
       </ScrollView>
     </Layout>
   );
 };
 
-const style = StyleSheet.create({
+const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
-  },
-  header: {
-    flexDirection: "row",
-    alignItems: "center",
-    width: "68%",
-    paddingHorizontal: 15,
-    paddingVertical: 50,
-    justifyContent: "space-between",
-  },
-  exit: {
-    width: 50,
   },
   scrollContainer: {
     flex: 1,
@@ -112,37 +67,12 @@ const style = StyleSheet.create({
     flexDirection: "row",
     paddingVertical: 15,
     paddingHorizontal: 20,
-    borderBottomWidth: 1,
-  },
-  itemButton: {
-    flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
-    width: "100%",
-  },
-  itemContent: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    width: "80%",
   },
   itemTitle: {
-    flex: 1,
     fontWeight: "bold",
-  },
-  itemAmount: {
-    fontWeight: "bold",
-    flex: 1,
-    textAlign: "right",
-  },
-  income: {
-    color: "#229954",
-  },
-  expense: {
-    color: "#c0392b",
-  },
-  title: {
-    fontWeight: "bold",
-    fontSize: 30,
+    fontSize: 16,
+    marginLeft: 15,
   },
   iconContainer: {
     width: 40,
@@ -150,11 +80,10 @@ const style = StyleSheet.create({
     borderRadius: 20,
     justifyContent: "center",
     alignItems: "center",
-    borderWidth: 1,
-    marginRight: 15,
   },
-  icon: {
-    width: 25,
-    height: 25,
+  expenseContainer: {
+    flex: 1,
+    justifyContent: "flex-end",
+    alignItems: "flex-end",
   },
 });
