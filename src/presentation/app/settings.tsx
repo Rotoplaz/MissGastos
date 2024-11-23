@@ -32,11 +32,8 @@ export const config = () => {
               
               await SqliteDatabase.deleteDatabaseAsync(database.databaseName);
               
-              // Reset application state
               resetUserStore();
               resetCardStore();
-  
-              // Redirect to the initial screen
               router.replace("/");
             } catch (error) {
               console.error("Error while deleting database:", error);

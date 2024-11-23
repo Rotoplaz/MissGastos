@@ -43,6 +43,7 @@ export class CategoryRepositoryImpl implements CategoryRepository {
     const currentCategory = await this.getCategoryById(id);
 
     if (!currentCategory) {
+      await db.closeAsync();
       throw new Error("category not found");
     }
 

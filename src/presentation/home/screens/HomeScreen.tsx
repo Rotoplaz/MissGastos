@@ -1,5 +1,5 @@
-import { Avatar, Button, Icon, Layout, Text } from "@ui-kitten/components";
 import React, { useEffect, useState } from "react";
+import { Button, Icon, Layout, Text } from "@ui-kitten/components";
 import { TopNavigationHome } from "../../common/navigation/TopNavigationHome";
 import { useUserStore } from "../../store/user/useUserStore";
 import { StyleSheet } from "react-native";
@@ -9,12 +9,14 @@ import { getPDFLayout } from "../pdf-layout/get-PDF-layout";
 import { ChartPieHome } from "../components/chart/ChartPieHome";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { UserMetricsService } from "@/src/domain/services/user-metrics.service";
-import { Category } from "@/src/domain/entities/category.entity";
 import { EmojiStatus } from "../components/EmojiStatus";
 import { useGetCardsFromDatabase } from "../../cards/cardsScreen/hooks/useGetCardsFromDatabase";
-import { useExpenseStore } from "../../store/expense/useExpenseStore";
-import { ExpenseSqliteRepositoryImpl } from "@/src/infrastructure";
-import { GetAllExpenseUseCase } from "@/src/application/use-cases/expense/get-all-expense.use-case";
+import { useExpense } from "../../atransactions/hooks/useExpense";
+import { CategoryRepositoryImpl, IncomeSqliteRepositoryImpl } from "@/src/infrastructure";
+import { GetAllCategoriesUseCase } from "@/src/application/use-cases/category/get-all-categories.use-case";
+import { useCategoryStore } from "../../store/categories/useCategoryStore";
+import { useIncomeStore } from "../../store/income/useIncomeStore";
+import { GetAllIncomeUseCase } from "@/src/application/use-cases/income/get-all-income.use-case";
 
 export const HomeScreen = () => {
   useGetCardsFromDatabase();
@@ -23,13 +25,19 @@ export const HomeScreen = () => {
   const [money, setMoney] = useState(0);
 
   const user = useUserStore((state) => state.user);
-  const [maxCategoryExpense, setMaxCategoryExpense] = useState<{
-    amount: number;
-    category: Category;
-  } | null>(null);
-
-  const expense = useExpenseStore(state=>state.expense);
-  const setExpense = useExpenseStore(state=>state.setExpense);
+  const { maxCategoryExpense, expense } = useExpense();
+  const setCategories = useCategoryStore(state=>state.setCategories);
+  const setIncomes = useIncomeStore(state=>state.setIncomes);
+  const incomes = useIncomeStore(state=>state.incomes);
+  useEffect(() => {
+    const getIncomes = async () => {
+      const incomeRepository = new IncomeSqliteRepositoryImpl();
+      const incomes = await new GetAllIncomeUseCase(incomeRepository).execute();
+      setIncomes(incomes);
+    }
+    getIncomes();
+  }, [])
+  
 
   useEffect(() => {
     const getTotalMoney = () => {
@@ -40,27 +48,18 @@ export const HomeScreen = () => {
     getTotalMoney();
   }, []);
 
+      
   useEffect(() => {
-    const getMaxCategoryExpense = () => {
-      const metricsService = new UserMetricsService();
-      const category = metricsService.highAmountExpense(expense);
-      console.log(expense)
-      setMaxCategoryExpense(category);
+    const getCategories = async () => {
+      const categoriesRepository = new CategoryRepositoryImpl();
+      const categories = await new GetAllCategoriesUseCase(
+        categoriesRepository
+      ).execute();
+      setCategories(categories);
     };
-    getMaxCategoryExpense();
-  }, [expense]);
+    getCategories();
+  }, []);
 
-  useEffect(() => {
-    
-    const getExpense = async () => {
-      const expenseRepository = new ExpenseSqliteRepositoryImpl();
-      const expense = await new GetAllExpenseUseCase(expenseRepository).execute();
-      setExpense(expense);
-    }
-    getExpense();
-    
-  }, [])
-  
 
 
 
@@ -92,7 +91,7 @@ export const HomeScreen = () => {
               <Button
                 size="large"
                 onPress={() =>
-                  new GeneratePDFUseCase().execute(getPDFLayout([], expense, user!))
+                  new GeneratePDFUseCase().execute(getPDFLayout(incomes, expense, user!))
                 }
                 accessoryLeft={<Icon name="pie-chart-outline" />}
               >

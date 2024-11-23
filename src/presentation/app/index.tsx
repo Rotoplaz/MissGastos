@@ -24,6 +24,7 @@ export default function Index() {
       setIsLoadingUser(false);
 
       if (!user) {
+        await db.closeAsync();
         return;
       }
       router.replace({ pathname: "/(home)" });
