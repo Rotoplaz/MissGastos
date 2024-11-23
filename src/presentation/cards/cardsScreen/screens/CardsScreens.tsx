@@ -1,6 +1,6 @@
 import React from "react";
 import { StyleSheet } from "react-native";
-import { Button, Icon, Layout, List } from "@ui-kitten/components";
+import { Button, Icon, Layout, List, Text } from "@ui-kitten/components";
 import { ListCardItem } from "../components/ListCardItem";
 import { useCardsScreens } from "../hooks/useCardsScreen";
 import { router } from "expo-router";
@@ -24,11 +24,23 @@ export const CardsScreens = () => {
       >
         Crear tarjeta
       </Button>
-      <List
-        style={{ backgroundColor: theme.colors.background }}
-        data={cards}
-        renderItem={({ item }) => <ListCardItem item={item} />}
-      />
+
+      {
+        cards.length === 0 ? (
+          <Layout style={{flex: 1, marginTop: "50%", alignItems: "center", opacity: 0.2}}>
+            <Icon name="credit-card-outline" style={{width: 150, height: 150}} fill="#fff"  />
+            <Text category='h3'>Agrega Tarjetas</Text>
+          </Layout>
+        ):(
+          <Layout style={{paddingHorizontal: 10}}>
+            <List
+              style={{ backgroundColor: theme.colors.background }}
+              data={cards}
+              renderItem={({ item }) => <ListCardItem item={item} />}
+            />
+          </Layout>
+        )
+      }
     </Layout>
   );
 };
@@ -37,10 +49,9 @@ const style = StyleSheet.create({
   mainContainer: {
     flex: 1,
     paddingTop: 50,
-    paddingHorizontal: 20,
   },
   button: {
-    width: "90%",
-    margin: 10,
+    width: "100%",
+    paddingVertical: 20
   },
 });

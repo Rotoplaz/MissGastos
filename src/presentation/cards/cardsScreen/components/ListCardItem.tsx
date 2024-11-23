@@ -21,6 +21,7 @@ export const ListCardItem = ({item}:Props) => {
       description={`**** **** **** ${item.lastFourDigits}`}
       accessoryLeft={<Icon name="credit-card-outline" />}
       onPress={() => handleCardPress(item)}
+      style={{borderRadius: 10}}
     />
   );
 };

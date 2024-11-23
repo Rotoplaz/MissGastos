@@ -62,6 +62,7 @@ export const ChartPieHome = () => {
 
 const style = StyleSheet.create({
   chartContainer: {
+    minHeight: 200,
     marginTop: 20,
     display: "flex",
     flexDirection: "row",

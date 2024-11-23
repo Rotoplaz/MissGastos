@@ -85,7 +85,7 @@ export const HomeScreen = () => {
             {maxCategoryExpense ? maxCategoryExpense.category?.type : "Nada"}
           </Text>
 
-          <Layout style={{ width: "100%" }}>
+          <Layout style={{ width: "100%",minHeight: 200 }}>
             <ChartPieHome />
             <Layout style={{ width: "60%", marginTop: 20, paddingLeft: 35 }}>
               <Button
@@ -152,6 +152,7 @@ const style = StyleSheet.create({
   },
 
   chartContainer: {
+    minHeight: 150,
     marginTop: 20,
     display: "flex",
     flexDirection: "row",
