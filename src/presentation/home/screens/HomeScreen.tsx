@@ -14,10 +14,12 @@ import { EmojiStatus } from "../components/EmojiStatus";
 import { useGetCardsFromDatabase } from "../../cards/cardsScreen/hooks/useGetCardsFromDatabase";
 
 export const HomeScreen = () => {
-  const user = useUserStore((state) => state.user);
   useGetCardsFromDatabase();
+
   const [totalMoney] = useState(50000);
   const [money, setMoney] = useState(0);
+
+  const user = useUserStore((state) => state.user);
   const [maxCategoryExpense, setMaxCategoryExpense] = useState<{
     amount: number;
     category: Category;
@@ -40,6 +42,7 @@ export const HomeScreen = () => {
     };
     getMaxCategoryExpense();
   }, []);
+
 
 
   return (
