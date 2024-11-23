@@ -1,22 +1,26 @@
 import { GetExpensesGroupByCategoryUseCase } from "@/src/application/use-cases/expense/get-expense-group-by-category.use-case";
+import { Expense } from "@/src/domain/entities/expense.entity";
 import { UserMetricsService } from "@/src/domain/services/user-metrics.service";
 import { ExpenseSqliteRepositoryImpl } from "@/src/infrastructure/expense/expense-sqlite.repository.impl";
+import { useExpenseStore } from "@/src/presentation/store/expense/useExpenseStore";
 import { Layout, Text } from "@ui-kitten/components";
 import React, { useEffect, useState } from "react";
 import { StyleSheet } from "react-native";
 import { PieChart, pieDataItem } from "react-native-gifted-charts";
 
+
 export const ChartPieHome = () => {
   const [data, setData] = useState<pieDataItem[]>([]);
+  const expense = useExpenseStore(state=> state.expense);
   useEffect(() => {
     const getCategories = async () => {
       const expenseRepository = new ExpenseSqliteRepositoryImpl();
-      const serviceMetrics = new UserMetricsService();
       const expense = await new GetExpensesGroupByCategoryUseCase(
         expenseRepository
       ).execute();
+      const serviceMetrics = new UserMetricsService();
       const metrics = serviceMetrics.getExpenseMetrics(expense);
-
+      
       const data =
         metrics.totalExpensePercentages.length === 0
           ? [{ value: 100, color: "#b3b3b3", text: "Sin Gastos" }]
@@ -29,7 +33,7 @@ export const ChartPieHome = () => {
       setData(data);
     };
     getCategories();
-  }, []);
+  }, [expense]);
 
   return (
     <Layout style={style.chartContainer}>

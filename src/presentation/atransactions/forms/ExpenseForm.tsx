@@ -11,6 +11,8 @@ import { CategoryRepositoryImpl, ExpenseSqliteRepositoryImpl } from "@/src/infra
 import { GetAllCategoriesUseCase } from "@/src/application/use-cases/category/get-all-categories.use-case";
 import { CreateExpenseUseCase } from "@/src/application/use-cases/expense/create-expense.use-case";
 import { Category } from "../../categories/components/Category";
+import { useExpenseStore } from '../../store/expense/useExpenseStore';
+import { router } from "expo-router";
 
 
 interface FormData {
@@ -39,6 +41,8 @@ export const ExpenseForm = () => {
         },
       });
     
+      const addExpenseStore = useExpenseStore(state=>state.addExpense)
+
       const [selectedCategory, setSelectedCategory] = useState<null | CategoryEntity>(null);
     
       const onSelectCategory = (category: CategoryEntity) => {
@@ -77,7 +81,7 @@ export const ExpenseForm = () => {
       const onSelect = (index: number) => {
         setSelectedCardIndex(index);
         setValue("paymentMethod",cards[index]);
-    
+        
         setVisible(false);
       };
       
@@ -91,7 +95,8 @@ export const ExpenseForm = () => {
           paymentMethod: data.paymentMethod!,
           concept: data.concept
         });
-        console.log("Transacción creada", transaction);
+        addExpenseStore(transaction);
+        router.back();
       };
     
       const handleSelectPaymentMethod = (paymentMethod: CreditCard | Cash | DebitCard)=> {

@@ -38,7 +38,6 @@ export const HistoryScreen = () => {
     <Layout style={[styles.mainContainer, { paddingTop: top }]}>
       <ScrollView style={styles.scrollContainer}>
         {categories.map((category) => (
-          // TODO: must be a Layout not TouchableOpacity
           <TouchableOpacity
             style={styles.itemContainer}
             key={category.id}
