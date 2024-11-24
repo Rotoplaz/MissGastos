@@ -49,6 +49,7 @@
     "react-native-screens": "^3.31.1",
     "react-native-svg": "^15.2.0",
     "react-native-web": "~0.19.13",
+    "reanimated-color-picker": "^3.0.5",
     "zod": "^3.23.8",
     "zustand": "^5.0.0"
   },

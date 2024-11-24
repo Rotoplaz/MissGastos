@@ -9,27 +9,30 @@ export function getPDFLayout(
 ) {
   const incomeRows = incomes
     .map((income) => {
+      const formattedDate = new Date(income.date).toISOString().split("T")[0];
       return `<tr>
-              <td>${income.id}</td>
               <td>${income.concept}</td>
               <td>${income.amount}</td>
-              <td>${income.date}</td>
+              <td>${formattedDate}</td>
               <td>Ingreso</td>
             </tr>`;
     })
     .join("");
 
   const expenseRows = expenses
-    .map(
-      (expense) =>
-        `<tr>
-           <td>${expense.id}</td>
-           <td>${expense.concept === "" ? expense.category.type : expense.concept}</td>
-           <td>${expense.amount}</td>
-           <td>${expense.date}</td>
-           <td>Gasto</td>
-         </tr>`
-    )
+    .map((expense) => {
+      const formattedDate = new Date(expense.date).toISOString().split("T")[0];
+      return `<tr>
+                <td>${
+                  expense.concept === ""
+                    ? expense.category.type
+                    : expense.concept
+                }</td>
+                <td>${expense.amount}</td>
+                <td>${formattedDate}</td>
+                <td>Gasto</td>
+              </tr>`;
+    })
     .join("");
 
   const totalIncome = incomes.reduce((sum, income) => sum + income.amount, 0);
@@ -125,10 +128,9 @@ export function getPDFLayout(
           <table class="table">
             <thead>
               <tr>
-                <th colspan="5" style="text-align: center;">Ingresos</th>
+                <th colspan="4" style="text-align: center;">Ingresos</th>
               </tr>
               <tr>
-                <th>ID</th>
                 <th>Concepto</th>
                 <th>Monto</th>
                 <th>Fecha</th>
@@ -145,10 +147,9 @@ export function getPDFLayout(
           <table class="table">
             <thead>
               <tr>
-                <th colspan="5" style="text-align: center;">Gastos</th>
+                <th colspan="4" style="text-align: center;">Gastos</th>
               </tr>
               <tr>
-                <th>ID</th>
                 <th>Concepto</th>
                 <th>Monto</th>
                 <th>Fecha</th>

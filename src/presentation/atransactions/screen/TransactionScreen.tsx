@@ -21,8 +21,10 @@ export const TransactionScreen = () => {
 
   return (
     <LayoutWithTopNavigation titleScreen="Crear Transacción">
-      <TopTabsNavigation index={tabIndex} setTabIndex={setTabIndex} />
-      {tabs[tabIndex]?.component || <Text>Componente no encontrado</Text>}
+
+        <TopTabsNavigation index={tabIndex} setTabIndex={setTabIndex} />
+        {tabs[tabIndex]?.component || <Text>Componente no encontrado</Text>}
+
     </LayoutWithTopNavigation>
   );
 };
