@@ -48,6 +48,7 @@ export default function RootLayout() {
             <Stack.Screen name="debitCard" />
             <Stack.Screen name="remainders" />
             <Stack.Screen name="createTransaction" />
+            <Stack.Screen name="createCategory" />
             
           </Stack>
         </Layout>
