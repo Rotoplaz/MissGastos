@@ -46,7 +46,7 @@ export class UserMetricsService {
         const expensePorcentageLessThanlimit = (user.globalLimitBudget * 80) / 100 ;
         const expensePorcentageAbovelimit = (user.globalLimitBudget * 100) / 100 ;
 
-        if (totalSum >= expensePorcentageLessThanlimit && totalSum <= expensePorcentageAbovelimit){
+        if (totalSum >= expensePorcentageLessThanlimit && totalSum < expensePorcentageAbovelimit){
             return 1;
         }
 
