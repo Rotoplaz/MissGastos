@@ -44,13 +44,12 @@ export class UserMetricsService {
             throw new Error ("User not found");
         }
         const expensePorcentageLessThanlimit = (user.globalLimitBudget * 80) / 100 ;
-        const expensePorcentageAbovelimit = (user.globalLimitBudget * 120) / 100 ;
 
-        if (totalSum > expensePorcentageLessThanlimit && totalSum < expensePorcentageAbovelimit){
+        if (totalSum > expensePorcentageLessThanlimit && totalSum < user.globalLimitBudget){
             return 1;
         }
 
-        if ( totalSum > expensePorcentageAbovelimit){
+        if ( totalSum > user.globalLimitBudget){
             return 2;
         }
         return 0;
