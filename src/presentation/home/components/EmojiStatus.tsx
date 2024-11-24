@@ -8,11 +8,11 @@ interface Props {
 export const EmojiStatus = ({ totalMoney  }:Props) => {
 
     const getAvatarSource = () => {
-        if (totalMoney === 1) {
+        if (totalMoney === 0) {
           return "😁";
-        } else if (totalMoney === 2) {
+        } else if (totalMoney === 1) {
           return "😐";
-        } else if (totalMoney === 0) {
+        } else if (totalMoney === 2) {
           return "😭";
         }
       };
