@@ -44,23 +44,21 @@ export class UserMetricsService {
             throw new Error ("User not found");
         }
         const expensePorcentageLessThanlimit = (user.globalLimitBudget * 80) / 100 ;
+        const expensePorcentageAbovelimit = (user.globalLimitBudget * 100) / 100 ;
 
-        if (totalSum > expensePorcentageLessThanlimit && totalSum < user.globalLimitBudget){
+        if (totalSum >= expensePorcentageLessThanlimit && totalSum <= expensePorcentageAbovelimit){
             return 1;
         }
 
-        if ( totalSum > user.globalLimitBudget){
+        if ( totalSum >= expensePorcentageAbovelimit){
             return 2;
         }
         return 0;
     }
     
-    totalAmountIncomes(income:Income[], expense:Expense[]):number{
+    totalAmountIncomes(income:Income[]):number{
         const totalSum = income.reduce((acc, item) => acc + item.amount, 0);
-        const totalSumExpense = expense.reduce((acc, item) => acc + item.amount, 0);
-        const amountNow = totalSum - totalSumExpense;
-        return amountNow;
-        
+        return totalSum;
     }
 
     highAmountExpense(expense:Expense[]):{amount:number,category:Category} | null{
