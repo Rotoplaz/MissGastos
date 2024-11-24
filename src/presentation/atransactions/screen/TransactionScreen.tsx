@@ -4,7 +4,6 @@ import { TopTabsNavigation } from "../../common/navigation/TopTabsNavigation";
 import { useState } from "react";
 import { Text } from "@ui-kitten/components";
 import { IncomeForm } from "../forms/IncomeForm";
-import { CreateTransactionButton } from "../components/CreateTransactionButton";
 
 const tabs = [
   {
@@ -22,9 +21,10 @@ export const TransactionScreen = () => {
 
   return (
     <LayoutWithTopNavigation titleScreen="Crear Transacción">
-      <TopTabsNavigation index={tabIndex} setTabIndex={setTabIndex} />
-      {tabs[tabIndex]?.component || <Text>Componente no encontrado</Text>}
-      <CreateTransactionButton />
+
+        <TopTabsNavigation index={tabIndex} setTabIndex={setTabIndex} />
+        {tabs[tabIndex]?.component || <Text>Componente no encontrado</Text>}
+
     </LayoutWithTopNavigation>
   );
 };

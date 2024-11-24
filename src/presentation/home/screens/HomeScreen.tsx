@@ -3,7 +3,6 @@ import { Button, Icon, Layout, Text } from "@ui-kitten/components";
 import { TopNavigationHome } from "../../common/navigation/TopNavigationHome";
 import { useUserStore } from "../../store/user/useUserStore";
 import { StyleSheet } from "react-native";
-import { router } from "expo-router";
 import { GeneratePDFUseCase } from "@/src/application/use-cases/reports/generate-pdf.use-case";
 import { getPDFLayout } from "../pdf-layout/get-PDF-layout";
 import { ChartPieHome } from "../components/chart/ChartPieHome";
@@ -43,11 +42,11 @@ export const HomeScreen = () => {
   useEffect(() => {
     const getTotalMoney = () => {
       const metricsService = new UserMetricsService();
-      const money = metricsService.totalAmountIncomes(incomes);
+      const money = metricsService.totalAmountIncomes(incomes, expense);
       setMoney(money);
     };
     getTotalMoney();
-  }, [incomes]);
+  }, [incomes,expense]);
 
       
   useEffect(() => {
@@ -100,10 +99,7 @@ export const HomeScreen = () => {
               </Button>
             </Layout>
           </Layout>
-
-
           <CreateTransactionButton />
-
         </Layout>
       </Layout>
     </SafeAreaView>

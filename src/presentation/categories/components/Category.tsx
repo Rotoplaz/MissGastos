@@ -17,31 +17,31 @@ interface Props {
 
 export const Category = ({ category, style, onPress, showTitle = true }: Props) => {
   return (
-    <Layout style={{ justifyContent: "center", alignItems: "center", gap: 5 }}>
-      <Button
-        appearance="ghost"
-        style={[
-          {
-            backgroundColor: category.color,
-            borderRadius: 100,
-            paddingHorizontal: 12,
-            paddingVertical: 12,
-          },
-          style,
-        ]}
-        onPress={onPress}
-        accessoryLeft={() => (
-          <Icon name={category.icon} style={[styles.iconCircle]} fill="white" />
-        )}
-      />
-      {
-        showTitle && (
-          <Text category="c2" appearance="hint">
-            {category.type}
-          </Text>
-        )
-      }
-    </Layout>
+      <Layout style={{ justifyContent: "center", alignItems: "center", gap: 5 }}>
+        <Button
+          appearance="ghost"
+          style={[
+            {
+              backgroundColor: category.color,
+              borderRadius: 100,
+              paddingHorizontal: 12,
+              paddingVertical: 12,
+            },
+            style,
+          ]}
+          onPress={onPress}
+          accessoryLeft={() => (
+            <Icon name={category.icon} style={[styles.iconCircle]} fill="white" />
+          )}
+        />
+        {
+          showTitle && (
+            <Text category="c2" appearance="hint">
+              {category.type}
+            </Text>
+          )
+        }
+      </Layout>
   );
 };
 

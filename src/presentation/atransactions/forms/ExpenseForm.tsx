@@ -210,8 +210,7 @@ const styles = StyleSheet.create({
     iconRow: {
       flexDirection: "row",
       justifyContent: "space-around",
-      marginVertical: 10,
-      minHeight: 120
+      marginVertical: 10
     },
     iconButton: {
       width: 30,

@@ -2,11 +2,10 @@ import { Layout, Text } from "@ui-kitten/components";
 import React from "react";
 import { ScrollView, StyleSheet, TouchableOpacity } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { Category as CategoryEntity } from "@/src/domain/entities/category.entity";
 import { Expense } from "../components/Expense";
 import { Category } from "../../categories/components/Category";
 import { Expense as ExpenseEntity } from "@/src/domain/entities/expense.entity";
-import { date } from "zod";
+import { CreateTransactionButton } from "../../atransactions/components/CreateTransactionButton";
 
 const categories: ExpenseEntity[] = [
   {
@@ -25,7 +24,7 @@ const categories: ExpenseEntity[] = [
     },
   },
   {
-    id: 5,
+    id: 52,
     amount: 70,
     concept: "Cafe",
     category: {
@@ -40,7 +39,7 @@ const categories: ExpenseEntity[] = [
     },
   },
   {
-    id: 5,
+    id: 56,
     amount: 70,
     concept: "Cafe",
     category: {
@@ -70,7 +69,6 @@ export const HistoryScreen = () => {
           >
             <Category
               category={expense.category}
-              style={styles.iconContainer}
               showTitle={false}
             />
             <Text style={styles.itemTitle}>{expense.category.type}</Text>
@@ -78,7 +76,9 @@ export const HistoryScreen = () => {
             <Expense expense={expense.amount} style={styles.expenseContainer} />
           </TouchableOpacity>
         ))}
+        
       </ScrollView>
+      <CreateTransactionButton />
     </Layout>
   );
 };
@@ -101,13 +101,6 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     fontSize: 16,
     marginLeft: 15,
-  },
-  iconContainer: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    justifyContent: "center",
-    alignItems: "center",
   },
   expenseContainer: {
     flex: 1,
