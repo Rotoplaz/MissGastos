@@ -56,9 +56,12 @@ export class UserMetricsService {
         return 0;
     }
     
-    totalAmountIncomes(income:Income[]):number{
+    totalAmountIncomes(income:Income[], expense:Expense[]):number{
         const totalSum = income.reduce((acc, item) => acc + item.amount, 0);
-        return totalSum;
+        const totalSumExpense = expense.reduce((acc, item) => acc + item.amount, 0);
+        const amountNow = totalSum - totalSumExpense;
+        return amountNow;
+        
     }
 
     highAmountExpense(expense:Expense[]):{amount:number,category:Category} | null{
