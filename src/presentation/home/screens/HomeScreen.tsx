@@ -17,6 +17,7 @@ import { GetAllCategoriesUseCase } from "@/src/application/use-cases/category/ge
 import { useCategoryStore } from "../../store/categories/useCategoryStore";
 import { useIncomeStore } from "../../store/income/useIncomeStore";
 import { GetAllIncomeUseCase } from "@/src/application/use-cases/income/get-all-income.use-case";
+import { CreateTransactionButton } from "../../atransactions/components/CreateTransactionButton";
 
 export const HomeScreen = () => {
   useGetCardsFromDatabase();
@@ -100,17 +101,9 @@ export const HomeScreen = () => {
             </Layout>
           </Layout>
 
-          <Button
-            onPress={() => router.push("/createTransaction")}
-            style={style.fabButton}
-            accessoryLeft={
-              <Icon
-                name="plus-outline"
-                fill="white"
-                style={{ width: 24, height: 24 }}
-              />
-            }
-          ></Button>
+
+          <CreateTransactionButton />
+
         </Layout>
       </Layout>
     </SafeAreaView>
@@ -141,14 +134,6 @@ const style = StyleSheet.create({
   },
   subText: {
     marginBottom: 20,
-  },
-  fabButton: {
-    position: "absolute",
-    right: 15,
-    bottom: 30,
-    borderRadius: 50,
-    padding: 20,
-    height: 60,
   },
 
   chartContainer: {
