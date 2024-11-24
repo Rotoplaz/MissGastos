@@ -5,29 +5,54 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Category as CategoryEntity } from "@/src/domain/entities/category.entity";
 import { Expense } from "../components/Expense";
 import { Category } from "../../categories/components/Category";
+import { Expense as ExpenseEntity } from "@/src/domain/entities/expense.entity";
+import { date } from "zod";
 
-// TODO: must be a ExpenseEntity
-const categories: (CategoryEntity & { expense: number })[] = [
+const categories: ExpenseEntity[] = [
   {
     id: 5,
-    type: "Casa",
-    color: "#e67e22",
-    icon: "home-outline",
-    expense: -120.5,
+    amount: 70,
+    concept: "Cafe",
+    category: {
+      id: 8,
+      type: "Trabajo",
+      color: "#229954",
+      icon: "briefcase-outline",
+    },
+    date: new Date(),
+    paymentMethod: {
+      type: "cash",
+    },
   },
   {
-    id: 8,
-    type: "Trabajo",
-    color: "#229954",
-    icon: "briefcase-outline",
-    expense: 250.75,
+    id: 5,
+    amount: 70,
+    concept: "Cafe",
+    category: {
+      id: 8,
+      type: "Trabajo",
+      color: "#229954",
+      icon: "briefcase-outline",
+    },
+    date: new Date(),
+    paymentMethod: {
+      type: "cash",
+    },
   },
   {
-    id: 9,
-    type: "Comida",
-    color: "#d4ac0d",
-    icon: "shopping-cart-outline",
-    expense: -85.3,
+    id: 5,
+    amount: 70,
+    concept: "Cafe",
+    category: {
+      id: 8,
+      type: "Trabajo",
+      color: "#229954",
+      icon: "briefcase-outline",
+    },
+    date: new Date(),
+    paymentMethod: {
+      type: "cash",
+    },
   },
 ];
 
@@ -37,19 +62,20 @@ export const HistoryScreen = () => {
   return (
     <Layout style={[styles.mainContainer, { paddingTop: top }]}>
       <ScrollView style={styles.scrollContainer}>
-        {categories.map((category) => (
+        {categories.map((expense) => (
           <TouchableOpacity
             style={styles.itemContainer}
-            key={category.id}
-            onPress={() => console.log(`Clicked on ${category.type}`)}
+            key={expense.id}
+            onPress={() => console.log(`Clicked on ${expense.category.type}`)}
           >
-            <Category category={category} style={styles.iconContainer} showTitle={false} />
-            <Text style={styles.itemTitle}>{category.type}</Text>
-
-            <Expense
-              expense={category.expense}
-              style={styles.expenseContainer}
+            <Category
+              category={expense.category}
+              style={styles.iconContainer}
+              showTitle={false}
             />
+            <Text style={styles.itemTitle}>{expense.category.type}</Text>
+
+            <Expense expense={expense.amount} style={styles.expenseContainer} />
           </TouchableOpacity>
         ))}
       </ScrollView>
@@ -69,7 +95,7 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
     paddingHorizontal: 20,
     alignItems: "center",
-    marginVertical: 10
+    marginVertical: 10,
   },
   itemTitle: {
     fontWeight: "bold",
