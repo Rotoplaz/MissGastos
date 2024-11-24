@@ -6,6 +6,7 @@ import { Expense } from "../components/Expense";
 import { Category } from "../../categories/components/Category";
 import { Expense as ExpenseEntity } from "@/src/domain/entities/expense.entity";
 import { CreateTransactionButton } from "../../atransactions/components/CreateTransactionButton";
+import { Income as IncomeEntity } from "@/src/domain/entities/income.entity";
 
 const categories: ExpenseEntity[] = [
   {
@@ -45,12 +46,6 @@ const categorie: IncomeEntity[] = [
     id: 56,
     amount: 70,
     concept: "Cafe",
-    category: {
-      id: 8,
-      type: "Trabajo",
-      color: "#229954",
-      icon: "briefcase-outline",
-    },
     date: new Date(),
   },
 ];
@@ -67,8 +62,7 @@ export const HistoryScreen = () => {
           >
             <Category category={expense.category} showTitle={false} />
             <Text style={styles.itemTitle}>{expense.category.type}</Text>
-
-            <Expense expense={expense.amount} style={styles.expenseContainer} />
+            <Expense expense={expense} />
           </TouchableOpacity>
         ))}
       </ScrollView>
