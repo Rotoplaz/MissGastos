@@ -1,31 +1,28 @@
-import { Expense as ExpenseEntity } from "@/src/domain/entities/expense.entity";
+import { Income as IncomeEntity } from "@/src/domain/entities/income.entity";
 import { Layout, Text } from "@ui-kitten/components";
 import React from "react";
 import { StyleSheet, TouchableOpacity, ViewStyle } from "react-native";
-import { Category } from "../../categories/components/Category";
 
-interface ExpenseProps {
-  expense: ExpenseEntity;
+interface IncomeProps {
+  income: IncomeEntity;
   style?: ViewStyle;
 }
 
-export const Expense = ({ expense }: ExpenseProps) => {
+export const Income = ({ income }: IncomeProps) => {
   return (
     <TouchableOpacity
       style={styles.itemContainer}
-      key={expense.id}
-      onPress={() => console.log(`Clicked on ${expense.category.type}`)}
+      key={income.id}
+      onPress={() => console.log(`Clicked on Income ${income.concept}`)}
     >
-      <Category
-        category={expense.category}
-        style={styles.iconContainer}
-        showTitle={false}
-      />
-      <Text style={styles.itemTitle}>{expense.category.type}</Text>
+      <Layout style={styles.iconContainer}>
+        <Text style={styles.iconText}>💵</Text>
+      </Layout>
+      <Text style={styles.itemTitle}>{income.concept}</Text>
 
       <Layout style={[styles.expenseContainer]}>
         <Text style={styles.expenseText} appearance="default">
-          Gasto: ${Math.abs(expense.amount).toFixed(2)}
+          Ingreso: ${income.amount.toFixed(2)}
         </Text>
       </Layout>
     </TouchableOpacity>
@@ -39,7 +36,7 @@ const styles = StyleSheet.create({
   },
   expenseText: {
     fontSize: 16,
-    color: "red",
+    color: "green",
   },
   itemContainer: {
     flexDirection: "row",
@@ -54,6 +51,11 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     justifyContent: "center",
     alignItems: "center",
+    backgroundColor: "#dd9d24",
+  },
+  iconText: {
+    fontSize: 30,
+    color: "white",
   },
   itemTitle: {
     fontWeight: "bold",

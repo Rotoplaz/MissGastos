@@ -7,6 +7,8 @@ import { Expense } from "../components/Expense";
 import { Category } from "../../categories/components/Category";
 import { Expense as ExpenseEntity } from "@/src/domain/entities/expense.entity";
 import { date } from "zod";
+import { Income } from "../components/Income";
+import { Income as IncomeEntity } from "@/src/domain/entities/income.entity";
 
 const categories: ExpenseEntity[] = [
   {
@@ -25,29 +27,14 @@ const categories: ExpenseEntity[] = [
     },
   },
   {
-    id: 5,
-    amount: 70,
-    concept: "Cafe",
+    id: 2,
+    amount: 20,
+    concept: "Alimento",
     category: {
-      id: 8,
-      type: "Trabajo",
-      color: "#229954",
-      icon: "briefcase-outline",
-    },
-    date: new Date(),
-    paymentMethod: {
-      type: "cash",
-    },
-  },
-  {
-    id: 5,
-    amount: 70,
-    concept: "Cafe",
-    category: {
-      id: 8,
-      type: "Trabajo",
-      color: "#229954",
-      icon: "briefcase-outline",
+      id: 4,
+      type: "Alimento",
+      color: "#3e84e9",
+      icon: "shopping-cart-outline",
     },
     date: new Date(),
     paymentMethod: {
@@ -56,27 +43,30 @@ const categories: ExpenseEntity[] = [
   },
 ];
 
+const categorie: IncomeEntity[] = [
+  {
+    id: 5,
+    amount: 100,
+    concept: "Abono",
+    date: new Date(),
+  },
+  {
+    id: 5,
+    amount: 702,
+    concept: "Rifa",
+    date: new Date(),
+  },
+];
 export const HistoryScreen = () => {
   const { top } = useSafeAreaInsets();
-
   return (
     <Layout style={[styles.mainContainer, { paddingTop: top }]}>
       <ScrollView style={styles.scrollContainer}>
         {categories.map((expense) => (
-          <TouchableOpacity
-            style={styles.itemContainer}
-            key={expense.id}
-            onPress={() => console.log(`Clicked on ${expense.category.type}`)}
-          >
-            <Category
-              category={expense.category}
-              style={styles.iconContainer}
-              showTitle={false}
-            />
-            <Text style={styles.itemTitle}>{expense.category.type}</Text>
-
-            <Expense expense={expense.amount} style={styles.expenseContainer} />
-          </TouchableOpacity>
+          <Expense expense={expense} />
+        ))}
+        {categorie.map((income) => (
+          <Income income={income} />
         ))}
       </ScrollView>
     </Layout>
@@ -89,29 +79,5 @@ const styles = StyleSheet.create({
   },
   scrollContainer: {
     flex: 1,
-  },
-  itemContainer: {
-    flexDirection: "row",
-    paddingVertical: 15,
-    paddingHorizontal: 20,
-    alignItems: "center",
-    marginVertical: 10,
-  },
-  itemTitle: {
-    fontWeight: "bold",
-    fontSize: 16,
-    marginLeft: 15,
-  },
-  iconContainer: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  expenseContainer: {
-    flex: 1,
-    justifyContent: "flex-end",
-    alignItems: "flex-end",
   },
 });
