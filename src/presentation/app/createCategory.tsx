@@ -11,8 +11,8 @@ import { CreateCategoryUseCase } from "@/src/application/use-cases/category/crea
 import { CategoryRepositoryImpl } from "@/src/infrastructure";
 import { router } from "expo-router";
 
-
-export const emojiRegex = /^[\u{1F600}-\u{1F64F}]|[\u{1F300}-\u{1F5FF}]|[\u{1F680}-\u{1F6FF}]|[\u{1F1E6}-\u{1F1FF}]|[\u{2600}-\u{26FF}]|[\u{2700}-\u{27BF}]|[\u{FE00}-\u{FE0F}]|[\u{1F900}-\u{1F9FF}]|[\u{1FA70}-\u{1FAFF}]|[\u{1F000}-\u{1F02F}]$/u;
+export const emojiRegex =
+  /^[\u{1F600}-\u{1F64F}]|[\u{1F300}-\u{1F5FF}]|[\u{1F680}-\u{1F6FF}]|[\u{1F1E6}-\u{1F1FF}]|[\u{2600}-\u{26FF}]|[\u{2700}-\u{27BF}]|[\u{FE00}-\u{FE0F}]|[\u{1F900}-\u{1F9FF}]|[\u{1FA70}-\u{1FAFF}]|[\u{1F000}-\u{1F02F}]$/u;
 
 const categorySchema = z.object({
   icon: z
@@ -50,12 +50,12 @@ export const CreateCategory = () => {
     setValue("color", hex);
   };
 
-  const onSubmit = async(data: CategoryFormData) => {
+  const onSubmit = async (data: CategoryFormData) => {
     const repository = new CategoryRepositoryImpl();
     const category = await new CreateCategoryUseCase(repository).execute({
-        color: data.color,
-        icon: data.icon,
-        type: data.name,
+      color: data.color,
+      icon: data.icon,
+      type: data.name,
     });
     addCategoryToStore(category);
     router.back();
@@ -78,8 +78,9 @@ export const CreateCategory = () => {
             />
           )}
         />
-        {errors.icon && <Text style={styles.errorText}>{errors.icon.message}</Text>}
-
+        {errors.icon && (
+          <Text style={styles.errorText}>{errors.icon.message}</Text>
+        )}
 
         <Controller
           name="name"
@@ -96,11 +97,31 @@ export const CreateCategory = () => {
             />
           )}
         />
-        {errors.name && <Text style={styles.errorText}>{errors.name.message}</Text>}
+        {errors.name && (
+          <Text style={styles.errorText}>{errors.name.message}</Text>
+        )}
 
-        <Layout style={{ flexDirection: "row", alignItems: "center", marginTop: 10, gap: 25 }}>
-          <Button onPress={() => setShowColorPicker(true)}>Seleccionar color</Button>
-          <Button appearance='ghost' onPress={() => setShowColorPicker(true)} style={{ backgroundColor: color, width: 50, height: 50, borderRadius: 5 }} />
+        <Layout
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            marginTop: 10,
+            gap: 25,
+          }}
+        >
+          <Button onPress={() => setShowColorPicker(true)}>
+            Seleccionar color
+          </Button>
+          <Button
+            appearance="ghost"
+            onPress={() => setShowColorPicker(true)}
+            style={{
+              backgroundColor: color,
+              width: 50,
+              height: 50,
+              borderRadius: 5,
+            }}
+          />
         </Layout>
         {showColorPicker && (
           <Layout
@@ -115,11 +136,18 @@ export const CreateCategory = () => {
               borderRadius: 50,
             }}
           >
-            <ColorPicker style={{ width: "80%" }} value="#fff" onComplete={onSelectColor}>
+            <ColorPicker
+              style={{ width: "80%" }}
+              value="#fff"
+              onComplete={onSelectColor}
+            >
               <Panel1 />
               <HueSlider />
             </ColorPicker>
-            <Button style={{ marginTop: 10 }} onPress={() => setShowColorPicker(false)}>
+            <Button
+              style={{ marginTop: 10 }}
+              onPress={() => setShowColorPicker(false)}
+            >
               Ok
             </Button>
           </Layout>
@@ -134,7 +162,6 @@ export const CreateCategory = () => {
 };
 
 export default CreateCategory;
-
 
 const styles = StyleSheet.create({
   container: {
