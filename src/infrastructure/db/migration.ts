@@ -71,13 +71,12 @@ CREATE TABLE Income (
     date DATE NOT NULL,  -- Add date field
     concept TEXT
 );
-  `);
-      
+  `);        
       const categories = [
-        { color: "#e67e22", icon: "calendar-outline", type: "Alimento" },
-        { color: "#884ea0", icon: "camera-outline", type: "Escuela" },
-        { color: "#d4ac0d", icon: "compass-outline", type: "Café" },
-        { color: "#229954", icon: "globe-2-outline", type: "Donaciones" },
+        { color: "#e67e22", icon: '🍔', type: "Alimento" },
+        { color: "#884ea0", icon: '🚗', type: 'Transporte' },
+        { color: "#d4ac0d", icon: '🎉', type: 'Entretenimiento' },
+        { color: "#229954", icon: '👗', type: 'Ropa' },
       ];
 
       for (const category of categories) {

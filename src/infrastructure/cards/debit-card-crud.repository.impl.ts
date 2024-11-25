@@ -30,11 +30,10 @@ export class DebitCardRepositoryImpl implements DebitCardRepository {
       currentBalance,
       limitDebit
     );
+    const createdCard = await this.getDebitCardById(debitCard.lastInsertRowId)
     await db.closeAsync();
-    return {
-      id: debitCard.lastInsertRowId,
-      ...card,
-    };
+
+    return createdCard!;
   }
 
   async updateDebitCard(
