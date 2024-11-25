@@ -12,9 +12,10 @@ import { TouchableWebElement } from "@ui-kitten/components/devsupport";
 
 interface Props {
   titleScreen: string;
+  accessoryRight?: (() => React.ReactElement) | undefined;
 }
 
-export const TopNavigationGeneric = ({ titleScreen }:Props): React.ReactElement => {
+export const TopNavigationGeneric = ({ titleScreen, accessoryRight }:Props): React.ReactElement => {
   const router = useRouter();
   
   const renderBackAction = (): TouchableWebElement => (
@@ -26,7 +27,7 @@ export const TopNavigationGeneric = ({ titleScreen }:Props): React.ReactElement 
 
   return (
     <Layout style={styles.container}>
-      <TopNavigation alignment="center" accessoryLeft={renderBackAction} title={titleScreen} />
+      <TopNavigation alignment="center" accessoryLeft={renderBackAction} title={titleScreen} accessoryRight={accessoryRight} />
     </Layout>
   );
 };

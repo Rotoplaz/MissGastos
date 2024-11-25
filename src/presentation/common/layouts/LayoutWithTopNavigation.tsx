@@ -12,18 +12,20 @@ interface Props {
   titleScreen: string;
   children: React.ReactNode;
   style?: StyleProp<ViewStyle>;
+  accessoryRight?: (() => React.ReactElement) | undefined;
 }
 
 export const LayoutWithTopNavigation = ({
   titleScreen,
   children,
   style,
+  accessoryRight
 }: Props) => {
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <KeyboardAvoidingView style={{ flex: 1 }} behavior={"padding"}>
         <Layout style={{ flex: 1 }}>
-          <TopNavigationGeneric titleScreen={titleScreen} />
+          <TopNavigationGeneric titleScreen={titleScreen} accessoryRight={accessoryRight}/>
           <Layout style={[{ flex: 1 }, style]}>{children}</Layout>
         </Layout>
       </KeyboardAvoidingView>
