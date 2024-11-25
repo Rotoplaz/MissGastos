@@ -1,5 +1,5 @@
 import { Income as IncomeEntity } from "@/src/domain/entities/income.entity";
-import { Layout, Text } from "@ui-kitten/components";
+import { Layout, Text, Icon } from "@ui-kitten/components";
 import React from "react";
 import { StyleSheet, TouchableOpacity, ViewStyle } from "react-native";
 
@@ -16,7 +16,7 @@ export const Income = ({ income }: IncomeProps) => {
       onPress={() => console.log(`Clicked on Income ${income.concept}`)}
     >
       <Layout style={styles.iconContainer}>
-        <Text style={styles.iconText}>💵</Text>
+        <Icon name="trending-up-outline" fill="white" style={styles.icon} />
       </Layout>
       <Text style={styles.itemTitle}>{income.concept}</Text>
 
@@ -53,9 +53,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "#dd9d24",
   },
-  iconText: {
-    fontSize: 30,
-    color: "white",
+  icon: {
+    width: 28,
+    height: 28,
+    tintColor: "white",
   },
   itemTitle: {
     fontWeight: "bold",

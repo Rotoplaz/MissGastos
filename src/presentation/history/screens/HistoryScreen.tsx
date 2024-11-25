@@ -7,6 +7,7 @@ import { Category } from "../../categories/components/Category";
 import { Expense as ExpenseEntity } from "@/src/domain/entities/expense.entity";
 import { CreateTransactionButton } from "../../atransactions/components/CreateTransactionButton";
 import { Income as IncomeEntity } from "@/src/domain/entities/income.entity";
+import { Income } from "../components/Income";
 
 const categories: ExpenseEntity[] = [
   {
@@ -45,7 +46,13 @@ const categorie: IncomeEntity[] = [
   {
     id: 56,
     amount: 70,
-    concept: "Cafe",
+    concept: "Rifa",
+    date: new Date(),
+  },
+  {
+    id: 97,
+    amount: 765,
+    concept: "Abono",
     date: new Date(),
   },
 ];
@@ -55,15 +62,10 @@ export const HistoryScreen = () => {
     <Layout style={[styles.mainContainer, { paddingTop: top }]}>
       <ScrollView style={styles.scrollContainer}>
         {categories.map((expense) => (
-          <TouchableOpacity
-            style={styles.itemContainer}
-            key={expense.id}
-            onPress={() => console.log(`Clicked on ${expense.category.type}`)}
-          >
-            <Category category={expense.category} showTitle={false} />
-            <Text style={styles.itemTitle}>{expense.category.type}</Text>
-            <Expense expense={expense} />
-          </TouchableOpacity>
+          <Expense key={expense.id} expense={expense} />
+        ))}
+        {categorie.map((income) => (
+          <Income key={income.id} income={income} />
         ))}
       </ScrollView>
       <CreateTransactionButton />
