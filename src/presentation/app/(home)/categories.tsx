@@ -10,12 +10,9 @@ import { useTheme } from "@react-navigation/native";
 export const Categories = () => {
   const categories = useCategoryStore((state) => state.categories);
   const theme = useTheme();
-  const data = [
-    ...categories,
-    { id: "add-button", isAddButton: true },
-  ];
+  const data = [...categories, { id: "add-button", isAddButton: true }];
 
-  const renderItem = ({ item }:any) => {
+  const renderItem = ({ item }: any) => {
     if (item.isAddButton) {
       return (
         <Layout style={styles.gridItem}>
@@ -31,19 +28,26 @@ export const Categories = () => {
 
     return (
       <Layout style={styles.gridItem}>
-        <Category category={item} />
+        <Category
+          category={item}
+          onPress={() =>
+            router.push({
+              pathname: "/categoryInformation",
+              params: { id: item.id },
+            })
+          }
+        />
       </Layout>
     );
   };
 
   return (
-    <SafeAreaView style={{ flex: 1,  }}>
+    <SafeAreaView style={{ flex: 1 }}>
       <List
-      
         style={{ backgroundColor: theme.colors.background }}
         data={data}
         renderItem={renderItem}
-        numColumns={4} 
+        numColumns={4}
       />
     </SafeAreaView>
   );
@@ -52,7 +56,7 @@ export const Categories = () => {
 const styles = StyleSheet.create({
   gridItem: {
     flex: 1,
-    maxWidth: "25%", 
+    maxWidth: "25%",
     justifyContent: "center",
     alignItems: "center",
     marginVertical: 10,

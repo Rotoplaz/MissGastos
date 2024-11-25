@@ -7,18 +7,15 @@ import { GetCategoryByIdUseCase } from '@/src/application/use-cases/category/get
 import { FullLoaderScreen } from '../common/screens/loaders/FullLoaderScreen';
 import { CategoryForm } from '../categories/components/CategoryForm';
 
-interface Props {
-    id: number;
-}
 
-export const categoryInformation = ({ id }:Props) => {
+export const categoryInformation = () => {
     const params = useLocalSearchParams<{ id: string }>();
     const [category, setCategory] = useState<Category |null >(null);
 
     useEffect(()=>{
         const getCategory = async () => {
             const repository = new CategoryRepositoryImpl();
-            const category = await new GetCategoryByIdUseCase(repository).execute(+id);
+            const category = await new GetCategoryByIdUseCase(repository).execute(+params.id);
             setCategory(category);
         }
         getCategory();
