@@ -3,6 +3,7 @@ import React from "react";
 import { StyleSheet, TouchableOpacity, ViewStyle } from "react-native";
 import { Category } from "../../categories/components/Category";
 import { Expense as ExpenseEntity } from "@/src/domain/entities/expense.entity"
+import { router } from "expo-router";
 interface ExpenseProps {
   expense: ExpenseEntity;
   style?: ViewStyle;
@@ -13,7 +14,7 @@ export const Expense = ({ expense, style }: ExpenseProps) => {
     <TouchableOpacity
     style={styles.itemContainer}
     key={expense.id}
-    onPress={() => console.log(`Clicked on ${expense.category.type}`)}
+    onPress={()=>router.push({pathname: "/ExpenseInformation", params: {id:expense.id}})}
   >
     <Category
       category={expense.category}
