@@ -7,6 +7,7 @@ import {
   StyleSheet,
   ViewStyle,
 } from "react-native";
+import { emojiRegex } from "../../app/createCategory";
 
 interface Props {
   category: CategoryEntity;
@@ -31,7 +32,8 @@ export const Category = ({ category, style, onPress, showTitle = true }: Props) 
           ]}
           onPress={onPress}
           accessoryLeft={() => (
-            <Icon name={category.icon} style={[styles.iconCircle]} fill="white" />
+            emojiRegex.test(category.icon) 
+             ? <Text style={{padding:0, fontSize: 25}}>{category.icon}</Text>:<Icon name={category.icon} style={[styles.iconCircle]} fill="white" />
           )}
         />
         {
