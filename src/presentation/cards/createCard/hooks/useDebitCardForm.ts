@@ -7,7 +7,10 @@ import { DebitCardRepositoryImpl } from "@/src/infrastructure";
 import { Alert } from "react-native";
 import { router } from "expo-router";
 import { useCardsStore } from "@/src/presentation/store";
-import { CreateDebitCardUseCase, UpdateDebitCardUseCase } from "@/src/application";
+import {
+  CreateDebitCardUseCase,
+  UpdateDebitCardUseCase,
+} from "@/src/application";
 
 const debitCardSchema = z.object({
   name: z.string().min(1, "Alias es requerido"),
@@ -47,7 +50,6 @@ export const useDebitCardForm = (debitCard: DebitCard | null) => {
   const updateCardStore = useCardsStore((state) => state.updateCard);
 
   const onSubmit = async (data: FormData) => {
-
     if (!debitCard) {
       const newCard = await new CreateDebitCardUseCase(
         debitCardRepository.current
@@ -60,10 +62,10 @@ export const useDebitCardForm = (debitCard: DebitCard | null) => {
         type: "debit",
       });
       addCardInStore(newCard);
-      Alert.alert("Éxito", "Formulario enviado correctamente.");
+      Alert.alert("Éxito", "Tarjeta agregada correctamente.");
       router.back();
     }
-    
+
     const newCard = await new UpdateDebitCardUseCase(
       debitCardRepository.current
     ).execute(debitCard!.id, {
@@ -75,8 +77,8 @@ export const useDebitCardForm = (debitCard: DebitCard | null) => {
     });
 
     updateCardStore(newCard);
-    
-    Alert.alert("Éxito", "Formulario enviado correctamente.");
+
+    Alert.alert("Éxito", "Tarjeta actualizada correctamente.");
     router.back();
     return;
   };
