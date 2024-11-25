@@ -115,7 +115,3 @@ export class CreditCardCrudRepositoryImpl implements CreditCardRepository {
   }
 }
 
-
-// {"creditLimit": 9000, "currentBalance": null, "debt": 0, "dueDate": "2024-11-25", "id": 1, "lastFourDigits": "6066", "limitDebit": null, "name": "Nu", "type": "credit"}
-
-// {"creditLimit": 6000, "debt": 0, "dueDate": 2024-11-25T03:39:32.602Z, "id": 1, "lastFourDigits": "6066", "name": "Nu", "type": "credit"}

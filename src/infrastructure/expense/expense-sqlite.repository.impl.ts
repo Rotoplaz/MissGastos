@@ -18,17 +18,81 @@ export class ExpenseSqliteRepositoryImpl implements ExpenseRepository {
 
   async getExpenseById(id: number): Promise<Expense | null> {
     const db = await getDataBase();
-    const expense = await db.getFirstAsync<Expense>(
-      "SELECT * FROM Expense WHERE id = ?",
-      [id]
-    );
-    if (!expense) {
-      await db.closeAsync();
-      return null;
-    }
+    const query = `
+      SELECT 
+          e.id AS expenseId,
+          e.amount,
+          e.concept,
+          e.date,
+          e.paymentMethod,
+          c.id AS categoryId,
+          c.type AS categoryName,
+          c.color AS categoryColor,
+          c.icon AS categoryIcon,
+          ca.id AS cardId,
+          ca.name AS cardName,
+          ca.lastFourDigits,
+          ca.type AS cardType,
+          ca.debt AS cardDebt,
+          ca.creditLimit,
+          ca.dueDate,
+          ca.currentBalance,
+          ca.limitDebit
+      FROM 
+          Expense e
+      LEFT JOIN 
+          Category c ON e.categoryId = c.id
+      LEFT JOIN 
+          Card ca ON e.cardId = ca.id
+      WHERE 
+          e.id = ?
+    `;
+    const expenseRow = await db.getFirstAsync<any>(query, [id]); // Cambiamos a "any" para mapear el resultado.
     await db.closeAsync();
+  
+    if (!expenseRow) {
+      return null; // Si no hay datos, retorna null.
+    }
+  
+    // Mapeamos el resultado a un objeto Expense.
+    const expense: Expense = {
+      id: expenseRow.expenseId,
+      amount: expenseRow.amount,
+      concept: expenseRow.concept,
+      date: new Date(expenseRow.date),
+      paymentMethod: expenseRow.paymentMethod === "cash"
+        ? { type: "cash" }
+        : expenseRow.paymentMethod === "credit"
+        ? {
+            id: expenseRow.cardId,
+            name: expenseRow.cardName,
+            lastFourDigits: expenseRow.lastFourDigits,
+            debt: expenseRow.cardDebt,
+            creditLimit: expenseRow.creditLimit,
+            dueDate: expenseRow.dueDate ? new Date(expenseRow.dueDate) : new Date(),
+            type: "credit",
+          }
+        : {
+            id: expenseRow.cardId,
+            name: expenseRow.cardName,
+            lastFourDigits: expenseRow.lastFourDigits,
+            debt: expenseRow.cardDebt,
+            currentBalance: expenseRow.currentBalance,
+            limitDebit: expenseRow.limitDebit,
+            type: "debit",
+          },
+      category: {
+        id: expenseRow.categoryId,
+        type: expenseRow.categoryName,
+        color: expenseRow.categoryColor,
+        icon: expenseRow.categoryIcon,
+      },
+      type: "expense",
+    };
+    console.log(expense)
     return expense;
   }
+  
   async createExpense(expense: Omit<Expense, "id">): Promise<Expense> {
     const { amount, concept, category, date } = expense;
 
