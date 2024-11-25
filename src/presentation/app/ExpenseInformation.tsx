@@ -7,6 +7,7 @@ import { GetExpenseByIdUseCase } from "@/src/application/use-cases/expense/get-e
 import { Layout, Text, Spinner } from "@ui-kitten/components";
 import { StyleSheet, View } from "react-native";
 import { Category } from "../categories/components/Category";
+import { FullLoaderScreen } from "../common/screens/loaders/FullLoaderScreen";
 
 export const ExpenseInformation = () => {
   const params = useLocalSearchParams<{ id: string }>();
@@ -32,7 +33,7 @@ export const ExpenseInformation = () => {
     <LayoutWithTopNavigation titleScreen="Detalles del Gasto">
       <Layout style={styles.container}>
         {loading ? (
-          <Spinner size="large" />
+          <FullLoaderScreen />
         ) : expense ? (
           <Layout style={styles.card}>
             <Text category="h1" style={styles.amount}>
@@ -89,13 +90,13 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontSize: 32,
     marginBottom: 12,
-    color: "#2C7D59", // Greenish color to make the amount pop
+    color: "#2C7D59", 
   },
   concept: {
     textAlign: "center",
     marginBottom: 24,
     fontSize: 18,
-    color: "#888", // Greyish color for the concept
+    color: "#888", 
   },
   details: {
     flexDirection: "row",

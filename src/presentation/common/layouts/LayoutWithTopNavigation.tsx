@@ -10,7 +10,7 @@ import {
 
 interface Props {
   titleScreen: string;
-  children: React.ReactNode;
+  children?: React.ReactNode;
   style?: StyleProp<ViewStyle>;
   accessoryRight?: (() => React.ReactElement) | undefined;
 }
