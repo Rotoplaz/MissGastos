@@ -6,8 +6,6 @@ import { Expense } from "../components/Expense";
 import { Category } from "../../categories/components/Category";
 import { Expense as ExpenseEntity } from "@/src/domain/entities/expense.entity";
 import { CreateTransactionButton } from "../../atransactions/components/CreateTransactionButton";
-import { Income as IncomeEntity } from "@/src/domain/entities/income.entity";
-import { Income } from "../components/Income";
 
 const categories: ExpenseEntity[] = [
   {
@@ -30,10 +28,25 @@ const categories: ExpenseEntity[] = [
     amount: 70,
     concept: "Cafe",
     category: {
-      id: 4,
-      type: "Alimento",
-      color: "#3e84e9",
-      icon: "shopping-cart-outline",
+      id: 8,
+      type: "Trabajo",
+      color: "#229954",
+      icon: "briefcase-outline",
+    },
+    date: new Date(),
+    paymentMethod: {
+      type: "cash",
+    },
+  },
+  {
+    id: 56,
+    amount: 70,
+    concept: "Cafe",
+    category: {
+      id: 8,
+      type: "Trabajo",
+      color: "#229954",
+      icon: "briefcase-outline",
     },
     date: new Date(),
     paymentMethod: {
@@ -42,31 +55,28 @@ const categories: ExpenseEntity[] = [
   },
 ];
 
-const categorie: IncomeEntity[] = [
-  {
-    id: 56,
-    amount: 70,
-    concept: "Rifa",
-    date: new Date(),
-  },
-  {
-    id: 97,
-    amount: 765,
-    concept: "Abono",
-    date: new Date(),
-  },
-];
 export const HistoryScreen = () => {
   const { top } = useSafeAreaInsets();
+
   return (
     <Layout style={[styles.mainContainer, { paddingTop: top }]}>
       <ScrollView style={styles.scrollContainer}>
         {categories.map((expense) => (
-          <Expense key={expense.id} expense={expense} />
+          <TouchableOpacity
+            style={styles.itemContainer}
+            key={expense.id}
+            onPress={() => console.log(`Clicked on ${expense.category.type}`)}
+          >
+            <Category
+              category={expense.category}
+              showTitle={false}
+            />
+            <Text style={styles.itemTitle}>{expense.category.type}</Text>
+
+            <Expense expense={expense.amount} style={styles.expenseContainer} />
+          </TouchableOpacity>
         ))}
-        {categorie.map((income) => (
-          <Income key={income.id} income={income} />
-        ))}
+        
       </ScrollView>
       <CreateTransactionButton />
     </Layout>

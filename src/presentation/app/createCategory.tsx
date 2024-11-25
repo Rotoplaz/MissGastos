@@ -1,20 +1,7 @@
-import { Button, Input, Layout } from "@ui-kitten/components";
-import { LayoutWithTopNavigation } from "../common/layouts/LayoutWithTopNavigation";
-
-import ColorPicker, { Panel1, HueSlider } from "reanimated-color-picker";
 import { Button, Input, Layout, Text } from "@ui-kitten/components";
 import { LayoutWithTopNavigation } from "../common/layouts/LayoutWithTopNavigation";
 import ColorPicker, { Panel1, HueSlider } from "reanimated-color-picker";
 import { useState } from "react";
-
-export const createCategory = () => {
-  const [showColorPicker, setShowColorPicker] = useState(false);
-  const [color, setColor] = useState("#fff");
-  const onSelectColor = ({ hex }: any) => {
-    console.log(hex);
-    setColor(hex);
-  };
-
 import { StyleSheet } from "react-native";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -24,8 +11,8 @@ import { CreateCategoryUseCase } from "@/src/application/use-cases/category/crea
 import { CategoryRepositoryImpl } from "@/src/infrastructure";
 import { router } from "expo-router";
 
-
-export const emojiRegex = /^[\u{1F600}-\u{1F64F}]|[\u{1F300}-\u{1F5FF}]|[\u{1F680}-\u{1F6FF}]|[\u{1F1E6}-\u{1F1FF}]|[\u{2600}-\u{26FF}]|[\u{2700}-\u{27BF}]|[\u{FE00}-\u{FE0F}]|[\u{1F900}-\u{1F9FF}]|[\u{1FA70}-\u{1FAFF}]|[\u{1F000}-\u{1F02F}]$/u;
+export const emojiRegex =
+  /^[\u{1F600}-\u{1F64F}]|[\u{1F300}-\u{1F5FF}]|[\u{1F680}-\u{1F6FF}]|[\u{1F1E6}-\u{1F1FF}]|[\u{2600}-\u{26FF}]|[\u{2700}-\u{27BF}]|[\u{FE00}-\u{FE0F}]|[\u{1F900}-\u{1F9FF}]|[\u{1FA70}-\u{1FAFF}]|[\u{1F000}-\u{1F02F}]$/u;
 
 const categorySchema = z.object({
   icon: z
@@ -63,32 +50,79 @@ export const CreateCategory = () => {
     setValue("color", hex);
   };
 
-  const onSubmit = async(data: CategoryFormData) => {
+  const onSubmit = async (data: CategoryFormData) => {
     const repository = new CategoryRepositoryImpl();
     const category = await new CreateCategoryUseCase(repository).execute({
-        color: data.color,
-        icon: data.icon,
-        type: data.name,
+      color: data.color,
+      icon: data.icon,
+      type: data.name,
     });
     addCategoryToStore(category);
     router.back();
   };
 
   return (
-    <LayoutWithTopNavigation titleScreen="Crear Categoria">
-      <Layout style={{ paddingHorizontal: 20 }}>
-        <Input label="icono de la categoria" placeholder="💦" />
-        <Input label="Nombre" placeholder="nombre de la categoria ej (playa)" />
-        <Input label="Nombre" placeholder="nombre de la categoria ej (playa)" />
+    <LayoutWithTopNavigation titleScreen="Crear Categoría">
+      <Layout style={styles.container}>
+        <Controller
+          name="icon"
+          control={control}
+          render={({ field: { onChange, onBlur, value } }) => (
+            <Input
+              label="Ícono de la categoría"
+              placeholder="Ejemplo: 💦"
+              onBlur={onBlur}
+              onChangeText={onChange}
+              value={value}
+              status={errors.icon ? "danger" : "basic"}
+            />
+          )}
+        />
+        {errors.icon && (
+          <Text style={styles.errorText}>{errors.icon.message}</Text>
+        )}
+
+        <Controller
+          name="name"
+          control={control}
+          render={({ field: { onChange, onBlur, value } }) => (
+            <Input
+              label="Nombre"
+              placeholder="Ejemplo: Playa"
+              onBlur={onBlur}
+              onChangeText={onChange}
+              value={value}
+              status={errors.name ? "danger" : "basic"}
+              style={styles.input}
+            />
+          )}
+        />
+        {errors.name && (
+          <Text style={styles.errorText}>{errors.name.message}</Text>
+        )}
+
         <Layout
-          style={{ backgroundColor: color, width: 25, height: 25 }}
-        ></Layout>
-        <Button
-          style={{ marginTop: 20 }}
-          onPress={() => setShowColorPicker(true)}
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            marginTop: 10,
+            gap: 25,
+          }}
         >
-          Seleccionar color{" "}
-        </Button>
+          <Button onPress={() => setShowColorPicker(true)}>
+            Seleccionar color
+          </Button>
+          <Button
+            appearance="ghost"
+            onPress={() => setShowColorPicker(true)}
+            style={{
+              backgroundColor: color,
+              width: 50,
+              height: 50,
+              borderRadius: 5,
+            }}
+          />
+        </Layout>
         {showColorPicker && (
           <Layout
             style={{
@@ -110,74 +144,10 @@ export const CreateCategory = () => {
               <Panel1 />
               <HueSlider />
             </ColorPicker>
-
             <Button
               style={{ marginTop: 10 }}
               onPress={() => setShowColorPicker(false)}
             >
-              Ok{" "}
-            </Button>
-          </Layout>
-        )}
-      </Layout>
-    <LayoutWithTopNavigation titleScreen="Crear Categoría">
-      <Layout style={styles.container}>
-        <Controller
-          name="icon"
-          control={control}
-          render={({ field: { onChange, onBlur, value } }) => (
-            <Input
-              label="Ícono de la categoría"
-              placeholder="Ejemplo: 💦"
-              onBlur={onBlur}
-              onChangeText={onChange}
-              value={value}
-              status={errors.icon ? "danger" : "basic"}
-            />
-          )}
-        />
-        {errors.icon && <Text style={styles.errorText}>{errors.icon.message}</Text>}
-
-
-        <Controller
-          name="name"
-          control={control}
-          render={({ field: { onChange, onBlur, value } }) => (
-            <Input
-              label="Nombre"
-              placeholder="Ejemplo: Playa"
-              onBlur={onBlur}
-              onChangeText={onChange}
-              value={value}
-              status={errors.name ? "danger" : "basic"}
-              style={styles.input}
-            />
-          )}
-        />
-        {errors.name && <Text style={styles.errorText}>{errors.name.message}</Text>}
-
-        <Layout style={{ flexDirection: "row", alignItems: "center", marginTop: 10, gap: 25 }}>
-          <Button onPress={() => setShowColorPicker(true)}>Seleccionar color</Button>
-          <Button appearance='ghost' onPress={() => setShowColorPicker(true)} style={{ backgroundColor: color, width: 50, height: 50, borderRadius: 5 }} />
-        </Layout>
-        {showColorPicker && (
-          <Layout
-            style={{
-              margin: "auto",
-              width: "90%",
-              marginTop: 10,
-              justifyContent: "center",
-              alignItems: "center",
-              padding: 20,
-              backgroundColor: "#151515",
-              borderRadius: 50,
-            }}
-          >
-            <ColorPicker style={{ width: "80%" }} value="#fff" onComplete={onSelectColor}>
-              <Panel1 />
-              <HueSlider />
-            </ColorPicker>
-            <Button style={{ marginTop: 10 }} onPress={() => setShowColorPicker(false)}>
               Ok
             </Button>
           </Layout>
@@ -191,13 +161,7 @@ export const CreateCategory = () => {
   );
 };
 
-export default createCategory;
-
-  );
-};
-
 export default CreateCategory;
-
 
 const styles = StyleSheet.create({
   container: {
