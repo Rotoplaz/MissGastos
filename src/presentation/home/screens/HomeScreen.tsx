@@ -72,7 +72,7 @@ export const HomeScreen = () => {
     );
 
     setEmojiStatus(emojiValue);
-  }, [user,expense]);
+  }, [user, expense]);
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -81,7 +81,7 @@ export const HomeScreen = () => {
 
         <Layout style={style.mainContainer}>
           <Text category="h1" style={style.welcomeText}>
-            Hola {!user ? "" : user.name} bienvenido
+            Hola {!user ? "" : user.name}, bienvenido
           </Text>
 
           <EmojiStatus totalMoney={emojiStatus} />
@@ -91,7 +91,7 @@ export const HomeScreen = () => {
             ${money}
           </Text>
           <Text style={style.subText}>
-            Este es en lo que más gastas:{" "}
+            Esto es en lo que más gastas:{" "}
             {maxCategoryExpense ? maxCategoryExpense.category?.type : "Nada"}
           </Text>
 
