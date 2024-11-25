@@ -1,4 +1,4 @@
-import { Layout, Text } from "@ui-kitten/components";
+import { Icon, Layout, Text } from "@ui-kitten/components";
 import { Income } from "../../domain/entities/income.entity";
 import { LayoutWithTopNavigation } from "../common/layouts/LayoutWithTopNavigation";
 import { StyleSheet } from "react-native";
@@ -17,6 +17,8 @@ export const incomeInformation = () => {
       const income = await new GetIncomeByIdUseCase(repository).execute(+params.id);
       setIncome(income);
     }
+    getIncome();
+
   },[]);
 
   if(!income) {
@@ -31,7 +33,13 @@ export const incomeInformation = () => {
             ${income.amount.toFixed(2)}
           </Text>
           <Text category="s1" style={styles.concept}>
-                {income.concept}
+              concepto: {income.concept!}
+          </Text>
+          <Layout style={styles.iconContainer}>
+        <Icon name="trending-up-outline" fill="white" style={styles.icon} />
+      </Layout>
+          <Text appearance='hint' style={{marginVertical: 10}}>
+            Fecha: {new Date(income.date).toLocaleDateString()}
           </Text>
         </Layout>
       </Layout>
@@ -45,6 +53,7 @@ const styles = StyleSheet.create({
   card: {
     width: "100%",
     padding: 24,
+    alignItems: "center"
   },
   container: {
     flex: 1,
@@ -62,8 +71,23 @@ const styles = StyleSheet.create({
   },
   concept: {
     textAlign: "center",
-    marginBottom: 24,
+    marginBottom: 10,
     fontSize: 18,
     color: "#888",
+  },
+  icon: {
+    width: 30,
+    height: 30,
+    borderRadius: 50,
+  },
+  iconContainer: {
+    width: 55,
+    margin: "auto",
+    borderRadius: 100,
+    paddingHorizontal: 12,
+    paddingVertical: 12,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#dd9d24",
   },
 });
