@@ -28,7 +28,13 @@ export const useCategoryStore = create<CategoryStoreState>()((set,get)=>({
     },
     updateCategory: (category:Category) => {
         const categoriesList = get().categories;
-        const newCategories = categoriesList.filter(categoryInStore => categoryInStore.id ===category.id);
+        const newCategories = categoriesList.map(categoryInStore => {
+            
+            if ( categoryInStore.id === category.id ){
+                return category
+            }
+            return categoryInStore;
+        })
 
         set({categories: newCategories});
 
