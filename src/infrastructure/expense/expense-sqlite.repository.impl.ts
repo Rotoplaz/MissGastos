@@ -31,7 +31,7 @@ export class ExpenseSqliteRepositoryImpl implements ExpenseRepository {
   }
   async createExpense(expense: Omit<Expense, "id">): Promise<Expense> {
     const { amount, concept, category, date } = expense;
-    // console.log(expense)
+
     const db = await getDataBase();
     switch (expense.paymentMethod.type) {
       case "credit": {
@@ -52,6 +52,7 @@ export class ExpenseSqliteRepositoryImpl implements ExpenseRepository {
           paymentMethod: expense.paymentMethod,
           concept,
           date,
+          type: "expense"
         };
       }
       case "cash": {
@@ -72,6 +73,7 @@ export class ExpenseSqliteRepositoryImpl implements ExpenseRepository {
           paymentMethod: expense.paymentMethod,
           concept,
           date,
+          type: "expense"
         };
       }
       case "debit": {
@@ -92,6 +94,7 @@ export class ExpenseSqliteRepositoryImpl implements ExpenseRepository {
           paymentMethod: expense.paymentMethod,
           concept,
           date,
+          type: "expense"
         };
       }
 
@@ -281,6 +284,7 @@ export class ExpenseSqliteRepositoryImpl implements ExpenseRepository {
         color: row.categoryColor,
         icon: row.categoryIcon,
       },
+      type: "expense"
     }));
   }
   async getExpensesByCategory?(category: Category): Promise<Expense[]> {

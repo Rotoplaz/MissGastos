@@ -30,11 +30,9 @@ export class CreditCardCrudRepositoryImpl implements CreditCardRepository {
       creditLimit,
       dueDate.toISOString().split("T")[0]
     );
+    const cardCreated = await this.getCreditCardById(creditCard.lastInsertRowId);
     await db.closeAsync();
-    return {
-      id: creditCard.lastInsertRowId,
-      ...card,
-    };
+    return cardCreated!;
   }
 
   async updateCreditCard(
@@ -116,3 +114,8 @@ export class CreditCardCrudRepositoryImpl implements CreditCardRepository {
     return allCreditCards;
   }
 }
+
+
+// {"creditLimit": 9000, "currentBalance": null, "debt": 0, "dueDate": "2024-11-25", "id": 1, "lastFourDigits": "6066", "limitDebit": null, "name": "Nu", "type": "credit"}
+
+// {"creditLimit": 6000, "debt": 0, "dueDate": 2024-11-25T03:39:32.602Z, "id": 1, "lastFourDigits": "6066", "name": "Nu", "type": "credit"}

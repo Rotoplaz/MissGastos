@@ -8,4 +8,5 @@ export interface Expense {
     category: Category;
     paymentMethod: CreditCard | Cash | DebitCard;
     date: Date;
+    type: "expense";
 }

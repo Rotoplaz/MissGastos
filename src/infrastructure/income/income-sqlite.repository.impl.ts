@@ -13,7 +13,7 @@ export class IncomeSqliteRepositoryImpl implements IncomeRepository {
       return null;
     }
     await db.closeAsync();
-    return Income;
+    return {...Income, type: "income"};
   }
 
   async createIncome(income: Omit<Income, "id">): Promise<Income> {
@@ -29,6 +29,7 @@ export class IncomeSqliteRepositoryImpl implements IncomeRepository {
     return {
       id: newIncome.lastInsertRowId,
       ...income,
+      type: "income"
     };
   }
 
@@ -72,7 +73,7 @@ export class IncomeSqliteRepositoryImpl implements IncomeRepository {
       throw new Error("Error updating Income with id ${id}.");
     }
     await db.closeAsync();
-    return updatedIncome;
+    return {...updatedIncome, type: "income"};
   }
 
   async deleteIncome(id: number): Promise<void> {
@@ -88,7 +89,7 @@ export class IncomeSqliteRepositoryImpl implements IncomeRepository {
       "SELECT * FROM Income"
     );
     await db.closeAsync();
-    return allIncomes;
+    return allIncomes.map(income => ({...income, type: "income"}));
   }
 
   async getIncomesByDateRange(
@@ -103,6 +104,6 @@ export class IncomeSqliteRepositoryImpl implements IncomeRepository {
       [formattedStartDate, formattedEndDate]
     );
     await db.closeAsync();
-    return dateIncomes;
+    return dateIncomes.map(income => ({...income, type: "income"}));
   }
 }

@@ -4,4 +4,5 @@ export interface Income {
     amount: number;
     concept?: string;
     date: Date;
+    type: "income";
 }

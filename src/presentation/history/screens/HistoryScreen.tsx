@@ -1,82 +1,54 @@
-import { Layout, Text } from "@ui-kitten/components";
+import { Icon, Layout, Text } from "@ui-kitten/components";
 import React from "react";
-import { ScrollView, StyleSheet, TouchableOpacity } from "react-native";
+import { ScrollView, StyleSheet } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Expense } from "../components/Expense";
-import { Category } from "../../categories/components/Category";
-import { Expense as ExpenseEntity } from "@/src/domain/entities/expense.entity";
 import { CreateTransactionButton } from "../../atransactions/components/CreateTransactionButton";
-
-const categories: ExpenseEntity[] = [
-  {
-    id: 5,
-    amount: 70,
-    concept: "Cafe",
-    category: {
-      id: 8,
-      type: "Trabajo",
-      color: "#229954",
-      icon: "briefcase-outline",
-    },
-    date: new Date(),
-    paymentMethod: {
-      type: "cash",
-    },
-  },
-  {
-    id: 52,
-    amount: 70,
-    concept: "Cafe",
-    category: {
-      id: 8,
-      type: "Trabajo",
-      color: "#229954",
-      icon: "briefcase-outline",
-    },
-    date: new Date(),
-    paymentMethod: {
-      type: "cash",
-    },
-  },
-  {
-    id: 56,
-    amount: 70,
-    concept: "Cafe",
-    category: {
-      id: 8,
-      type: "Trabajo",
-      color: "#229954",
-      icon: "briefcase-outline",
-    },
-    date: new Date(),
-    paymentMethod: {
-      type: "cash",
-    },
-  },
-];
+import { useExpenseStore } from "../../store/expense/useExpenseStore";
+import { useIncomeStore } from "../../store/income/useIncomeStore";
+import { Expense as ExpenseEntity} from "@/src/domain/entities/expense.entity";
+import { Income as IncomeEntity } from "@/src/domain/entities/income.entity";
+import { Income } from "../components/Income";
 
 export const HistoryScreen = () => {
   const { top } = useSafeAreaInsets();
 
+  const expense = useExpenseStore((state) => state.expense);
+  const incomes = useIncomeStore(state=>state.incomes);
+
+  const transactions: Array<ExpenseEntity | IncomeEntity> = [
+    ...expense,
+    ...incomes
+  ];
+
   return (
     <Layout style={[styles.mainContainer, { paddingTop: top }]}>
       <ScrollView style={styles.scrollContainer}>
-        {categories.map((expense) => (
-          <TouchableOpacity
-            style={styles.itemContainer}
-            key={expense.id}
-            onPress={() => console.log(`Clicked on ${expense.category.type}`)}
+        {transactions.length === 0 ? (
+          <Layout
+            style={{
+              flex: 1,
+              marginTop: "70%",
+              alignItems: "center",
+              opacity: 0.2,
+            }}
           >
-            <Category
-              category={expense.category}
-              showTitle={false}
+            <Icon
+              name="swap-outline"
+              style={{ width: 150, height: 150 }}
+              fill="#fff"
             />
-            <Text style={styles.itemTitle}>{expense.category.type}</Text>
-
-            <Expense expense={expense.amount} style={styles.expenseContainer} />
-          </TouchableOpacity>
-        ))}
-        
+            <Text category="h3">Agrega Movimientos</Text>
+          </Layout>
+        ) : (
+          transactions.map((transaction, index) => (
+            transaction.type === "income" ? (
+              <Income key={`income-${index}`} income={transaction} />
+            ) : (
+              <Expense key={`expense-${index}`} expense={transaction} />
+            )
+          ))
+        )}
       </ScrollView>
       <CreateTransactionButton />
     </Layout>
