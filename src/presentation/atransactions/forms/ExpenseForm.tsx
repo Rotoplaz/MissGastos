@@ -1,97 +1,113 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Button, Icon, Input, Layout, MenuItem, OverflowMenu, Text } from "@ui-kitten/components";
-import React, { useEffect, useState } from "react";
+import {
+  Button,
+  Icon,
+  Input,
+  Layout,
+  MenuItem,
+  OverflowMenu,
+  Text,
+} from "@ui-kitten/components";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { StyleSheet } from "react-native";
 import { Category as CategoryEntity } from "@/src/domain/entities/category.entity";
-import { Cash, CreditCard, DebitCard } from "@/src/domain/entities/payment-methods.entity";
+import {
+  Cash,
+  CreditCard,
+  DebitCard,
+} from "@/src/domain/entities/payment-methods.entity";
 import { zodSchemaTransaction } from "../zod-schemas/expense/zod-schemas";
 import { useCardsStore } from "../../store";
-import { CategoryRepositoryImpl, ExpenseSqliteRepositoryImpl } from "@/src/infrastructure";
-import { GetAllCategoriesUseCase } from "@/src/application/use-cases/category/get-all-categories.use-case";
+import { ExpenseSqliteRepositoryImpl } from "@/src/infrastructure";
 import { CreateExpenseUseCase } from "@/src/application/use-cases/expense/create-expense.use-case";
 import { Category } from "../../categories/components/Category";
-import { useExpenseStore } from '../../store/expense/useExpenseStore';
+import { useExpenseStore } from "../../store/expense/useExpenseStore";
 import { router } from "expo-router";
 import { useCategoryStore } from "../../store/categories/useCategoryStore";
 
-
 interface FormData {
-    amount: string;
-    concept: string;
-    selectedCategory: CategoryEntity | null;
-    paymentMethod: CreditCard | Cash | DebitCard | null;
-  }
-  
-
+  amount: string;
+  concept: string;
+  selectedCategory: CategoryEntity | null;
+  paymentMethod: CreditCard | Cash | DebitCard | null;
+}
 
 export const ExpenseForm = () => {
-    const {
-        register,
-        handleSubmit,
-        formState: { errors },
-        setValue,
-        watch,
-      } = useForm<FormData>({
-        resolver: zodResolver(zodSchemaTransaction),
-        defaultValues: {
-          amount: "",
-          concept: "",
-          selectedCategory: null,
-          paymentMethod: null
-        },
-      });
-    
-      const addExpenseStore = useExpenseStore(state=>state.addExpense)
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    setValue,
+    watch,
+  } = useForm<FormData>({
+    resolver: zodResolver(zodSchemaTransaction),
+    defaultValues: {
+      amount: "",
+      concept: "",
+      selectedCategory: null,
+      paymentMethod: null,
+    },
+  });
 
-      const [selectedCategory, setSelectedCategory] = useState<null | CategoryEntity>(null);
-    
-      const onSelectCategory = (category: CategoryEntity) => {
-        setSelectedCategory(category);
-        setValue("selectedCategory", category);
-      };
-    
-      const [paymentMethod, setPaymentMethod] = useState<'cash'|'card' | null>(null);
-      const [visible, setVisible] = useState(false);
-      const [selectedCardIndex, setSelectedCardIndex] = useState<null | number>(
-        null
-      );
-      const cards = useCardsStore(state=>state.cards);
-      const categories = useCategoryStore(state=>state.categories);
+  const addExpenseStore = useExpenseStore((state) => state.addExpense);
 
-      const renderToggleButton = () => (
-        <Button onPress={() => setVisible(true)}>
-          {selectedCardIndex !== null
-            ? cards[selectedCardIndex].name
-            : "Selecciona tu tarjeta"}
-        </Button>
-      );
-    
-      const onSelect = (index: number) => {
-        setSelectedCardIndex(index);
-        setValue("paymentMethod",cards[index]);
-        
-        setVisible(false);
-      };
-      
-      const onSubmit = async (data: FormData) => {
-        
-        const expensesRepository = new ExpenseSqliteRepositoryImpl();
-        const transaction = await new CreateExpenseUseCase(expensesRepository).execute({
-          amount: +data.amount,
-          category: data.selectedCategory!,
-          date: new Date(),
-          paymentMethod: data.paymentMethod!,
-          concept: data.concept
-        });
-        addExpenseStore(transaction);
-        router.back();
-      };
-    
-      const handleSelectPaymentMethod = (paymentMethod: CreditCard | Cash | DebitCard)=> {
-        setPaymentMethod("cash")
-        setValue("paymentMethod", paymentMethod);
-      }
+  const [selectedCategory, setSelectedCategory] =
+    useState<null | CategoryEntity>(null);
+
+  const onSelectCategory = (category: CategoryEntity) => {
+    setSelectedCategory(category);
+    setValue("selectedCategory", category);
+  };
+
+  const [paymentMethod, setPaymentMethod] = useState<"cash" | "card" | null>(
+    null
+  );
+  const [visible, setVisible] = useState(false);
+  const [selectedCardIndex, setSelectedCardIndex] = useState<null | number>(
+    null
+  );
+  const cards = useCardsStore((state) => state.cards);
+  const categories = useCategoryStore((state) => state.categories);
+
+  const renderToggleButton = () => (
+    <Button onPress={() => setVisible(true)}>
+      {selectedCardIndex !== null
+        ? cards[selectedCardIndex].name
+        : "Selecciona tu tarjeta"}
+    </Button>
+  );
+
+  const onSelect = (index: number) => {
+    setSelectedCardIndex(index);
+    console.log(cards[index])
+    setValue("paymentMethod", cards[index]);
+
+    setVisible(false);
+  };
+
+  const onSubmit = async (data: FormData) => {
+    const expensesRepository = new ExpenseSqliteRepositoryImpl();
+    const transaction = await new CreateExpenseUseCase(
+      expensesRepository
+    ).execute({
+      amount: +data.amount,
+      category: data.selectedCategory!,
+      date: new Date(),
+      paymentMethod: data.paymentMethod!,
+      concept: data.concept,
+      type: "expense",
+    });
+    addExpenseStore(transaction);
+    router.back();
+  };
+
+  const handleSelectPaymentMethod = (
+    paymentMethod: CreditCard | Cash | DebitCard
+  ) => {
+    setPaymentMethod("cash");
+    setValue("paymentMethod", paymentMethod);
+  };
   return (
     <Layout style={styles.mainContainer}>
       <Layout style={styles.amountContainer}>
@@ -113,7 +129,7 @@ export const ExpenseForm = () => {
 
       <Text style={styles.sectionTitle}>Tipo de gasto:</Text>
       <Layout style={styles.iconRow}>
-        {categories.map((category) => (
+        {categories.slice(0, 4).map((category) => (
           <Category
             key={category.id}
             category={category}
@@ -203,73 +219,72 @@ export const ExpenseForm = () => {
 export default ExpenseForm;
 
 const styles = StyleSheet.create({
-    iconBar: {
-      width: 24,
-      height: 24,
-    },
-    iconRow: {
-      flexDirection: "row",
-      justifyContent: "space-around",
-      marginVertical: 10
-    },
-    iconButton: {
-      width: 30,
-      height: 30,
-    },
-    sectionTitle: {
-      fontSize: 18,
-      marginVertical: 10,
-    },
-    createButton: {
-      position: "absolute",
-      bottom: 0,
-      width: "120%",
-      alignSelf: "center",
-      marginBottom: 0,
-      paddingVertical: 16,
-    },
-  
-    dollarSign: {
-      fontSize: 18,
-      marginLeft: -20,
-      marginHorizontal: 20,
-      marginTop: 20,
-    },
-    amountContainer: {
-      marginVertical: 10,
-    },
-    container: {
-      flexDirection: "row",
-      alignItems: "center",
-      justifyContent: "center",
-    },
-    paymentButton: {
-      marginHorizontal: 8,
-      width: "42%",
-      marginTop: 20,
-    },
-    selectedPaymentButton: {
-      borderWidth: 2,
-    },
-    cardMenuItem: {
-      flexDirection: "row",
-      alignItems: "center",
-    },
-    cardName: {
-      fontWeight: "bold",
-      marginRight: 10,
-    },
-    cardLastFour: {
-      fontSize: 12,
-    },
-    mainContainer: {
-      flex: 1,
-      paddingTop: 20,
-      paddingHorizontal: 20,
-    },
-    errorText: {
-      color: "red",
-      fontSize: 12,
-    },
-  });
-  
+  iconBar: {
+    width: 24,
+    height: 24,
+  },
+  iconRow: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    marginVertical: 10,
+  },
+  iconButton: {
+    width: 30,
+    height: 30,
+  },
+  sectionTitle: {
+    fontSize: 18,
+    marginVertical: 10,
+  },
+  createButton: {
+    position: "absolute",
+    bottom: 0,
+    width: "120%",
+    alignSelf: "center",
+    marginBottom: 0,
+    paddingVertical: 16,
+  },
+
+  dollarSign: {
+    fontSize: 18,
+    marginLeft: -20,
+    marginHorizontal: 20,
+    marginTop: 20,
+  },
+  amountContainer: {
+    marginVertical: 10,
+  },
+  container: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  paymentButton: {
+    marginHorizontal: 8,
+    width: "42%",
+    marginTop: 20,
+  },
+  selectedPaymentButton: {
+    borderWidth: 2,
+  },
+  cardMenuItem: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  cardName: {
+    fontWeight: "bold",
+    marginRight: 10,
+  },
+  cardLastFour: {
+    fontSize: 12,
+  },
+  mainContainer: {
+    flex: 1,
+    paddingTop: 20,
+    paddingHorizontal: 20,
+  },
+  errorText: {
+    color: "red",
+    fontSize: 12,
+  },
+});

@@ -7,7 +7,7 @@ import {
   StyleSheet,
   ViewStyle,
 } from "react-native";
-import { emojiRegex } from "../../app/createCategory";
+import { emojiRegex } from "./CategoryForm";
 
 interface Props {
   category: CategoryEntity;

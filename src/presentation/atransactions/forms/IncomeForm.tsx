@@ -30,7 +30,8 @@ export const IncomeForm = () => {
     const income = await new CreateIncomeUseCase(incomeRepository).execute({
       amount: data.amount,
       date: data.date,
-      concept: data.concept
+      concept: data.concept,
+      type: "income"
     });
     addIncome(income);
     router.back();

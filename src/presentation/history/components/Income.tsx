@@ -46,17 +46,17 @@ const styles = StyleSheet.create({
     marginVertical: 10,
   },
   iconContainer: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    borderRadius: 100,
+    paddingHorizontal: 12,
+    paddingVertical: 12,
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "#dd9d24",
   },
   icon: {
-    width: 28,
-    height: 28,
-    tintColor: "white",
+    width: 30,
+    height: 30,
+    borderRadius: 50,
   },
   itemTitle: {
     fontWeight: "bold",
