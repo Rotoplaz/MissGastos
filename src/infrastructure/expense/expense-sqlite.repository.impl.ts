@@ -89,7 +89,6 @@ export class ExpenseSqliteRepositoryImpl implements ExpenseRepository {
       },
       type: "expense",
     };
-    console.log(expense)
     return expense;
   }
   

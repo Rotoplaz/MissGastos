@@ -9,7 +9,6 @@ import { CreateCategoryUseCase } from "@/src/application/use-cases/category/crea
 import { CategoryRepositoryImpl } from "@/src/infrastructure";
 import { router } from "expo-router";
 import { useCategoryStore } from "../../store/categories/useCategoryStore";
-import { LayoutWithTopNavigation } from "../../common/layouts/LayoutWithTopNavigation";
 import { Category } from "@/src/domain/entities/category.entity";
 import { UpdateCategoryUseCase } from "@/src/application/use-cases/category/update-category.use-case";
 
@@ -73,7 +72,6 @@ export const CategoryForm = ({ category }: Props) => {
 
       updateCategoryInStore(updatedCategory);
     } else {
-      // Modo creación
       const newCategory = await new CreateCategoryUseCase(repository).execute({
         color: data.color,
         icon: data.icon,
@@ -90,12 +88,12 @@ export const CategoryForm = ({ category }: Props) => {
     style={{flex: 1}}
     >
       <Layout style={styles.container}>
-        {/* Campo Icon */}
         <Controller
           name="icon"
           control={control}
           render={({ field: { onChange, onBlur, value } }) => (
             <Input
+              size='large'
               label="Ícono de la categoría"
               placeholder="Ejemplo: 💦"
               onBlur={onBlur}
@@ -115,6 +113,7 @@ export const CategoryForm = ({ category }: Props) => {
           control={control}
           render={({ field: { onChange, onBlur, value } }) => (
             <Input
+              size='large'
               label="Nombre"
               placeholder="Ejemplo: Playa"
               onBlur={onBlur}

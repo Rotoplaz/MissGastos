@@ -45,6 +45,7 @@ export const IncomeForm = () => {
         name="amount"
         render={({ field: { onChange, onBlur, value } }) => (
           <Input
+            size='large'
             style={styles.input}
             label="Cantidad del ingreso"
             placeholder="Cantidad"
@@ -62,6 +63,7 @@ export const IncomeForm = () => {
         name="concept"
         render={({ field: { onChange, onBlur, value } }) => (
           <Input
+            size='large'
             style={styles.input}
             label="Concepto"
             placeholder="Hasta 25 caracteres"
@@ -79,6 +81,7 @@ export const IncomeForm = () => {
         name="date"
         render={({ field: { onChange, value } }) => (
           <Datepicker
+            size='large'
             style={styles.input}
             label="Fecha del ingreso"
             date={value}
