@@ -107,7 +107,6 @@ export const CategoryForm = ({ category }: Props) => {
           <Text style={styles.errorText}>{errors.icon.message}</Text>
         )}
 
-        {/* Campo Nombre */}
         <Controller
           name="name"
           control={control}
