@@ -7,6 +7,7 @@ import { GetExpenseByIdUseCase } from "@/src/application/use-cases/expense/get-e
 import { Layout, Text, Spinner } from "@ui-kitten/components";
 import { StyleSheet, View } from "react-native";
 import { Category } from "../categories/components/Category";
+import { FullLoaderScreen } from "../common/screens/loaders/FullLoaderScreen";
 
 export const ExpenseInformation = () => {
   const params = useLocalSearchParams<{ id: string }>();
@@ -32,7 +33,7 @@ export const ExpenseInformation = () => {
     <LayoutWithTopNavigation titleScreen="Detalles del Gasto">
       <Layout style={styles.container}>
         {loading ? (
-          <Spinner size="large" />
+          <FullLoaderScreen />
         ) : expense ? (
           <Layout style={styles.card}>
             <Text category="h1" style={styles.amount}>
@@ -44,20 +45,20 @@ export const ExpenseInformation = () => {
               </Text>
             )}
             <View style={styles.details}>
-              <Text category="label">Categoría:</Text>
+              <Text style={{fontSize: 20}} >Categoría:</Text>
               <Category category={expense.category} showTitle={false} />
             </View>
             <View style={styles.details}>
-              <Text category="label">Método de Pago:</Text>
-              <Text>
+              <Text style={{fontSize: 20}}>Método de Pago:</Text>
+              <Text style={{fontSize: 20}}>
                 {expense.paymentMethod.type === "cash"
                   ? "Efectivo"
                   : expense.paymentMethod.name}
               </Text>
             </View>
             <View style={styles.details}>
-              <Text category="label">Fecha:</Text>
-              <Text>{new Date(expense.date).toLocaleDateString()}</Text>
+              <Text style={{fontSize: 20}}>Fecha:</Text>
+              <Text style={{fontSize: 20}}>{new Date(expense.date).toLocaleDateString()}</Text>
             </View>
 
           </Layout>
@@ -83,23 +84,25 @@ const styles = StyleSheet.create({
   card: {
     width: "100%",
     padding: 24,
+    gap: 10,
   },
   amount: {
     fontWeight: "bold",
     textAlign: "center",
-    fontSize: 32,
+    fontSize: 50,
     marginBottom: 12,
-    color: "#2C7D59", // Greenish color to make the amount pop
+    color: "#2C7D59", 
   },
   concept: {
     textAlign: "center",
     marginBottom: 24,
-    fontSize: 18,
-    color: "#888", // Greyish color for the concept
+    fontSize:25,
+    color: "#888", 
   },
   details: {
     flexDirection: "row",
     justifyContent: "space-between",
+    alignItems: "center",
     marginBottom: 16,
   },
   backButton: {

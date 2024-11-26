@@ -25,6 +25,8 @@ import { Category } from "../../categories/components/Category";
 import { useExpenseStore } from "../../store/expense/useExpenseStore";
 import { router } from "expo-router";
 import { useCategoryStore } from "../../store/categories/useCategoryStore";
+import { List, ListItem } from "@ui-kitten/components";
+import { useTheme } from "@react-navigation/native";
 
 interface FormData {
   amount: string;
@@ -49,6 +51,8 @@ export const ExpenseForm = () => {
       paymentMethod: null,
     },
   });
+
+  const theme = useTheme();
 
   const addExpenseStore = useExpenseStore((state) => state.addExpense);
 
@@ -80,7 +84,7 @@ export const ExpenseForm = () => {
 
   const onSelect = (index: number) => {
     setSelectedCardIndex(index);
-    console.log(cards[index])
+    console.log(cards[index]);
     setValue("paymentMethod", cards[index]);
 
     setVisible(false);
@@ -108,10 +112,25 @@ export const ExpenseForm = () => {
     setPaymentMethod("cash");
     setValue("paymentMethod", paymentMethod);
   };
+
+  const renderCategory = ({ item }: { item: CategoryEntity }) => (
+    <Layout style={{ padding: 10 }}>
+      <Category
+        category={item}
+        onPress={() => onSelectCategory(item)}
+        style={{
+          backgroundColor:
+            selectedCategory?.id === item.id ? "#000" : item.color,
+        }}
+      />
+    </Layout>
+  );
+
   return (
     <Layout style={styles.mainContainer}>
       <Layout style={styles.amountContainer}>
         <Input
+          size='large'
           label={"Dinero gastado"}
           placeholder="Cantidad"
           keyboardType="numeric"
@@ -129,7 +148,7 @@ export const ExpenseForm = () => {
 
       <Text style={styles.sectionTitle}>Tipo de gasto:</Text>
       <Layout style={styles.iconRow}>
-        {categories.slice(0, 4).map((category) => (
+        {/* {categories.slice(0, 4).map((category) => (
           <Category
             key={category.id}
             category={category}
@@ -139,12 +158,21 @@ export const ExpenseForm = () => {
             }}
             onPress={() => onSelectCategory(category)}
           />
-        ))}
+        ))} */}
+        <List
+          style={{ maxHeight: 300, backgroundColor: theme.colors.background }}
+          horizontal
+          data={categories}
+          renderItem={renderCategory}
+          keyExtractor={(item, index) => `${item.id}-${index}`}
+          showsHorizontalScrollIndicator={false}
+        />
       </Layout>
       {errors.selectedCategory && (
         <Text style={styles.errorText}>{errors.selectedCategory.message}</Text>
       )}
       <Input
+        size='large'
         label={"Concepto:"}
         placeholder="Hasta 25 caracteres"
         maxLength={25}

@@ -1,5 +1,6 @@
 import { Income as IncomeEntity } from "@/src/domain/entities/income.entity";
 import { Layout, Text, Icon } from "@ui-kitten/components";
+import { router } from "expo-router";
 import React from "react";
 import { StyleSheet, TouchableOpacity, ViewStyle } from "react-native";
 
@@ -13,7 +14,7 @@ export const Income = ({ income }: IncomeProps) => {
     <TouchableOpacity
       style={styles.itemContainer}
       key={income.id}
-      onPress={() => console.log(`Clicked on Income ${income.concept}`)}
+      onPress={() => router.push({"pathname": "/incomeInformation", params: {id: income.id}})}
     >
       <Layout style={styles.iconContainer}>
         <Icon name="trending-up-outline" fill="white" style={styles.icon} />
