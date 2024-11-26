@@ -25,7 +25,7 @@ export const IncomeForm = () => {
   });
   const addIncome = useIncomeStore(state=>state.addIncome);
   const onSubmit = async(data: IncomeFormData) => {
-    console.log("Ingreso guardado:", data);
+    
     const incomeRepository = new IncomeSqliteRepositoryImpl();
     const income = await new CreateIncomeUseCase(incomeRepository).execute({
       amount: data.amount,

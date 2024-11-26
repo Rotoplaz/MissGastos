@@ -19,6 +19,7 @@ export const Expense = ({ expense, style }: ExpenseProps) => {
     <Category
       category={expense.category}
       showTitle={false}
+      onPress={()=>router.push({pathname: "/ExpenseInformation", params: {id:expense.id}})}
     />
     <Text style={styles.itemTitle}>{expense.category.type}</Text>
 
