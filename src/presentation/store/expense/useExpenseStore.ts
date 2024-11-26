@@ -8,6 +8,7 @@ interface ExpenseStoreState {
     expense: Expense[];
     setExpense: (expense: Expense[]) => Expense[];
     addExpense: (expense:Expense) => Expense[];
+    deleteExpense: (id:number)=>void;
 }
 
 const initialData = {
@@ -24,5 +25,10 @@ export const useExpenseStore = create<ExpenseStoreState>()((set,get)=>({
         const expenseList = get().expense;
         set({expense: [...expenseList, expense]});
         return get().expense;
+    },
+    deleteExpense: (id: number) => {
+        const expenseList = get().expense;
+        set({expense: expenseList.filter(expense => expense.id !== id)});
+        
     }
 }));
