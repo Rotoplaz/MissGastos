@@ -127,7 +127,6 @@ export const CategoryForm = ({ category }: Props) => {
           <Text style={styles.errorText}>{errors.name.message}</Text>
         )}
 
-        {/* Color Picker */}
         <Layout style={styles.colorRow}>
           <Button onPress={() => setShowColorPicker(true)}>
             Seleccionar color

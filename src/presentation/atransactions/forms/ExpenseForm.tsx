@@ -84,7 +84,6 @@ export const ExpenseForm = () => {
 
   const onSelect = (index: number) => {
     setSelectedCardIndex(index);
-    console.log(cards[index]);
     setValue("paymentMethod", cards[index]);
 
     setVisible(false);

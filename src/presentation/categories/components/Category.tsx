@@ -18,7 +18,7 @@ interface Props {
 
 export const Category = ({ category, style, onPress, showTitle = true }: Props) => {
   return (
-      <Layout style={{ justifyContent: "center", alignItems: "center", gap: 5 }}>
+      <Layout style={{ justifyContent: "center", alignItems: "center", gap: 5}}>
         <Button
           appearance="ghost"
           style={[

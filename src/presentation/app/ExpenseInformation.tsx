@@ -4,12 +4,7 @@ import { Expense } from "../../domain/entities/expense.entity";
 import { useEffect, useState } from "react";
 import { ExpenseSqliteRepositoryImpl } from "@/src/infrastructure";
 import { GetExpenseByIdUseCase } from "@/src/application/use-cases/expense/get-expense-by-id.use-case";
-import {
-  Layout,
-  Text,
-  Icon,
-  TopNavigationAction,
-} from "@ui-kitten/components";
+import { Layout, Text, Icon, TopNavigationAction } from "@ui-kitten/components";
 import { Alert, StyleSheet, View } from "react-native";
 import { Category } from "../categories/components/Category";
 import { FullLoaderScreen } from "../common/screens/loaders/FullLoaderScreen";
@@ -20,7 +15,9 @@ export const ExpenseInformation = () => {
   const params = useLocalSearchParams<{ id: string }>();
   const [expense, setExpense] = useState<Expense | null>(null);
   const [loading, setLoading] = useState(true);
+  const expenseStore = useExpenseStore(state=>state.expense);
   const deleteExpenseStore = useExpenseStore((state) => state.deleteExpense);
+
   useEffect(() => {
     const getExpense = async () => {
       try {
@@ -36,47 +33,39 @@ export const ExpenseInformation = () => {
       }
     };
     getExpense();
-  }, []);
+  }, [expenseStore]);
 
   const deleteExpense = (id: number) => {
-
-    Alert.alert(
-      "Cuidado",
-      "¿Seguro de eliminar la categoria",
-      [
-        {
-          text: "Cancelar",
-          style: "cancel",
+    Alert.alert("Cuidado", "¿Seguro de eliminar la categoria", [
+      {
+        text: "Cancelar",
+        style: "cancel",
+      },
+      {
+        text: "Confirmar",
+        style: "destructive",
+        onPress: async () => {
+          try {
+            const repository = new ExpenseSqliteRepositoryImpl();
+            await new DeleteExpenseUseCase(repository).execute(id);
+            deleteExpenseStore(id);
+            router.back();
+          } catch (error) {
+            console.error("Error while deleting database:", error);
+          }
         },
-        {
-          text: "Confirmar",
-          style: "destructive",
-          onPress: async () => {
-            try {
-              const repository = new ExpenseSqliteRepositoryImpl();
-              await new DeleteExpenseUseCase(repository).execute(id);
-              deleteExpenseStore(id);
-              router.back();
-            } catch (error) {
-              console.error("Error while deleting database:", error);
-
-            }
-          },
-        },
-      ]
-    );
-
-
+      },
+    ]);
   };
 
-  if(!expense) return <FullLoaderScreen />
+  if (!expense) return <FullLoaderScreen />;
 
   return (
     <LayoutWithTopNavigation
       titleScreen="Detalles del Gasto"
       accessoryRight={() => (
         <TopNavigationAction
-          onPress={()=>deleteExpense(expense.id)}
+          onPress={() => deleteExpense(expense.id)}
           icon={<Icon name="trash-outline" fill="red" />}
         />
       )}
@@ -94,24 +83,28 @@ export const ExpenseInformation = () => {
                 {expense.concept}
               </Text>
             )}
-            <View style={styles.details}>
+            <Layout style={styles.details}>
               <Text style={{ fontSize: 20 }}>Categoría:</Text>
-              <Category category={expense.category} showTitle={false} />
-            </View>
-            <View style={styles.details}>
+              <Category
+                category={expense.category}
+                showTitle={false}
+                onPress={() => router.push({pathname: "/categoryInformation", params: {id:expense.category.id}})}
+              />
+            </Layout>
+            <Layout style={styles.details}>
               <Text style={{ fontSize: 20 }}>Método de Pago:</Text>
               <Text style={{ fontSize: 20 }}>
                 {expense.paymentMethod.type === "cash"
                   ? "Efectivo"
                   : expense.paymentMethod.name}
               </Text>
-            </View>
-            <View style={styles.details}>
+            </Layout>
+            <Layout style={styles.details}>
               <Text style={{ fontSize: 20 }}>Fecha:</Text>
               <Text style={{ fontSize: 20 }}>
                 {new Date(expense.date).toLocaleDateString()}
               </Text>
-            </View>
+            </Layout>
           </Layout>
         ) : (
           <Text category="s1">No se encontró información del gasto.</Text>
