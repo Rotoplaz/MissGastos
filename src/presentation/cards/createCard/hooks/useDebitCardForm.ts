@@ -1,6 +1,6 @@
 import { DebitCard } from "@/src/domain/entities/payment-methods.entity";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { DebitCardRepositoryImpl } from "@/src/infrastructure";
@@ -18,6 +18,7 @@ const debitCardSchema = z.object({
   debt: z.coerce.number().optional().default(0),
   limit: z.coerce.number().min(1, "Debe ser un número válido"),
   currentBalance: z.coerce.number().optional().default(0),
+  color: z.string().min(1, "Debes seleccionar un color."),
 });
 
 interface FormData {
@@ -26,9 +27,12 @@ interface FormData {
   debt: string;
   limit: string;
   currentBalance: string;
+  color: string;
 }
 
 export const useDebitCardForm = (debitCard: DebitCard | null) => {
+  const [showColorPicker, setShowColorPicker] = useState(false);
+  const [color, setColor] = useState(debitCard?.color || "#fff");
   const {
     handleSubmit,
     setValue,
@@ -42,9 +46,13 @@ export const useDebitCardForm = (debitCard: DebitCard | null) => {
       debt: debitCard?.debt.toString() || "",
       limit: debitCard?.limitDebit.toString() || "",
       currentBalance: debitCard?.currentBalance.toString() || "",
+      color: debitCard?.color || "#fff",
     },
   });
-
+  const onSelectColor = ({ hex }: any) => {
+    setColor(hex);
+    setValue("color", hex);
+  };
   const debitCardRepository = useRef(new DebitCardRepositoryImpl());
   const addCardInStore = useCardsStore((state) => state.addCard);
   const updateCardStore = useCardsStore((state) => state.updateCard);
@@ -60,6 +68,7 @@ export const useDebitCardForm = (debitCard: DebitCard | null) => {
         limitDebit: +data.limit,
         name: data.name,
         type: "debit",
+        color: data.color,
       });
       addCardInStore(newCard);
       Alert.alert("Éxito", "Tarjeta agregada correctamente.");
@@ -75,6 +84,7 @@ export const useDebitCardForm = (debitCard: DebitCard | null) => {
       limitDebit: +data.limit,
       lastFourDigits: data.lastFourDigits,
       name: data.name,
+      color: data.color,
     });
 
     updateCardStore(newCard);
@@ -90,5 +100,10 @@ export const useDebitCardForm = (debitCard: DebitCard | null) => {
     watch,
     errors,
     onSubmit,
+    showColorPicker,
+    setShowColorPicker,
+    color,
+    setColor,
+    onSelectColor,
   };
 };

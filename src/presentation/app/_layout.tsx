@@ -1,12 +1,10 @@
 import { Stack } from "expo-router";
-import { useColorScheme } from "react-native";
 import { ApplicationProvider, IconRegistry, Layout } from "@ui-kitten/components";
 import * as eva from "@eva-design/eva";
 import { EvaIconsPack } from "@ui-kitten/eva-icons";
 import { ThemeProvider } from "@react-navigation/native";
 import { default as customThemeDark } from "../theme/custom-theme-dark.json";
-import { default as customThemeLight } from "../theme/theme-light.json";
-import { useState } from "react";
+import { default as customThemeLight } from "../theme/theme-light.json"
 import { useThemeStore } from "../store/theme/useColorThemeStore";
 
 export default function RootLayout() {
@@ -57,6 +55,8 @@ export default function RootLayout() {
             <Stack.Screen name="ExpenseInformation" />
             <Stack.Screen name="incomeInformation" />
             <Stack.Screen name="updateExpense" />
+            <Stack.Screen name="createRemainder" />
+            <Stack.Screen name="updateReminder" />
             
           </Stack>
         </Layout>

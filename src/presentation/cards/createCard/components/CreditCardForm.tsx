@@ -3,6 +3,7 @@ import { StyleSheet } from "react-native";
 import { Button, Datepicker, Input, Layout, Text } from "@ui-kitten/components";
 import { CreditCard } from "@/src/domain/entities/payment-methods.entity";
 import { useCreditCardForm } from "../hooks/useCreditCardForm";
+import ColorPicker, { HueSlider, Panel1 } from "reanimated-color-picker";
 
 interface Props {
   creditCard: CreditCard | null;
@@ -10,7 +11,7 @@ interface Props {
 
 export const CreditCardForm = ({ creditCard }: Props) => {
 
-  const { errors, handleSubmit, setValue, watch, onSubmit } = useCreditCardForm(creditCard);
+  const { errors, handleSubmit, setValue, watch, onSubmit, color, onSelectColor, setShowColorPicker, showColorPicker } = useCreditCardForm(creditCard);
 
   return (
     <>
@@ -72,6 +73,45 @@ export const CreditCardForm = ({ creditCard }: Props) => {
           <Text style={style.error}>{errors.dueDate.message}</Text>
         )}
       </Layout>
+      <Layout style={style.colorRow}>
+        <Button onPress={() => setShowColorPicker(true)}>
+          Seleccionar color
+        </Button>
+        <Button
+          appearance="ghost"
+          style={[style.colorPreview, { backgroundColor: color }]}
+          onPress={() => setShowColorPicker(true)}
+        />
+      </Layout>
+      {showColorPicker && (
+        <Layout
+          style={{
+            margin: "auto",
+            width: "90%",
+            marginTop: 10,
+            justifyContent: "center",
+            alignItems: "center",
+            padding: 20,
+            backgroundColor: "#151515",
+            borderRadius: 50,
+          }}
+        >
+          <ColorPicker
+            style={{ width: "80%" }}
+            value="#fff"
+            onComplete={onSelectColor}
+          >
+            <Panel1 />
+            <HueSlider />
+          </ColorPicker>
+          <Button
+            style={{ marginTop: 10 }}
+            onPress={() => setShowColorPicker(false)}
+          >
+            Ok
+          </Button>
+        </Layout>
+      )}
 
       <Layout style={{ alignSelf: "center", marginTop: 20 }}>
         <Button onPress={handleSubmit(onSubmit)}>Guardar</Button>
@@ -92,5 +132,22 @@ const style = StyleSheet.create({
     color: "red",
     fontSize: 12,
     marginBottom: 5,
+  },
+  colorRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginTop: 20,
+    gap: 25,
+  },
+  colorPreview: {
+    width: 50,
+    height: 50,
+    borderRadius: 5,
+  },
+  colorPickerContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.8)",
   },
 });

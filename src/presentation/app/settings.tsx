@@ -12,6 +12,7 @@ import { useThemeStore } from "../store/theme/useColorThemeStore";
 import { useIncomeStore } from "../store/income/useIncomeStore";
 import { useExpenseStore } from "../store/expense/useExpenseStore";
 import { useCategoryStore } from "../store/categories/useCategoryStore";
+import { useRemindersStore } from "../store/remainders/useStoreRemainders";
 
 export const config = () => {
   const theme = useTheme();
@@ -21,6 +22,7 @@ export const config = () => {
   const resetStoreExpense = useExpenseStore((state) => state.resetStoreExpense);
   const resetCategoryStore = useCategoryStore(state => state.resetStoreCategory);
   const toggleTheme = useThemeStore((state) => state.toggleTheme);
+  const resetStoreReminder = useRemindersStore(state=>state.resetStoreReminder);
 
   const handleDeleteDatabaseInformation = async () => {
     Alert.alert("Cuidado", "¿Seguro de eliminar toda tu información?", [
@@ -43,6 +45,8 @@ export const config = () => {
             resetStoreIncome();
             resetStoreExpense();
             resetCategoryStore();
+            resetStoreReminder();
+
             router.replace("/");
           } catch (error) {
             console.error("Error while deleting database:", error);
@@ -76,11 +80,11 @@ export const config = () => {
             accessoryLeft={<Icon name="clock-outline" />}
             onPress={() => router.push("/remainders")}
           />
-          <MenuItem
+          {/* <MenuItem
             title="Rango de metricas"
             accessoryLeft={<Icon name="calendar-outline" />}
             onPress={() => router.push("/remainders")}
-          />
+          /> */}
           <MenuItem
             title={`Tema: ${theme.dark ? "oscuro" : "claro"}`}
             accessoryLeft={<Icon name="color-palette-outline" />}

@@ -19,16 +19,17 @@ export class CreditCardCrudRepositoryImpl implements CreditCardRepository {
   }
 
   async createCreditCard(card: Omit<CreditCard, "id">): Promise<CreditCard> {
-    const { name, lastFourDigits, debt, creditLimit, type, dueDate } = card;
+    const { name, lastFourDigits, debt, creditLimit, type, dueDate, color } = card;
     const db = await getDataBase();
     const creditCard = await db.runAsync(
-      "INSERT INTO Card (name, lastFourDigits, debt, type, creditLimit, dueDate) VALUES (?,?,?,?,?,?)",
+      "INSERT INTO Card (name, lastFourDigits, debt, type, creditLimit, dueDate, color) VALUES (?,?,?,?,?,?,?)",
       name,
       lastFourDigits,
       debt,
       type,
       creditLimit,
-      dueDate.toISOString().split("T")[0]
+      dueDate.toISOString().split("T")[0],
+      color
     );
     const cardCreated = await this.getCreditCardById(creditCard.lastInsertRowId);
     await db.closeAsync();
@@ -56,6 +57,11 @@ export class CreditCardCrudRepositoryImpl implements CreditCardRepository {
     if (card.name !== undefined) {
       fieldsToUpdate.push("name = ?");
       values.push(card.name);
+    }
+
+    if (card.color !== undefined) {
+      fieldsToUpdate.push("color = ?");
+      values.push(card.color);
     }
 
     if (card.lastFourDigits !== undefined) {

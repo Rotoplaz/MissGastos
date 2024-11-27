@@ -10,12 +10,13 @@ import {
 } from "@/src/application";
 import { DebitCardRepositoryImpl } from "@/src/infrastructure";
 import { DebitCardInformtaion } from "../components/DebitCardInfo";
-import { Alert, ScrollView, StyleSheet } from "react-native";
+import { Alert, StyleSheet } from "react-native";
 import { useCardsStore } from "../../../store";
 import { DebitCardForm } from "../../createCard/components/DebitCardForm";
 import { Card } from "../../creditCard/components/Card";
 import { usePreventScreenCapture } from "expo-screen-capture";
 import { useTheme } from "@react-navigation/native";
+import { GestureHandlerRootView, ScrollView } from 'react-native-gesture-handler';
 
 export const DebitCardScreen = () => {
   usePreventScreenCapture();
@@ -67,27 +68,30 @@ export const DebitCardScreen = () => {
       <Layout style={style.mainContainer}>
         <Layout style={style.cardContainer}>
           {isEditing ? (
-            <ScrollView>
-              <Layout
-                style={{
-                  width: "100%",
-                  flex: 1,
-                  justifyContent: "flex-start",
-                  paddingHorizontal: 10,
-                  gap: 20,
-                }}
-              >
-                <Button
-                  appearance="ghost"
-                  status="basic"
-                  style={{ alignSelf: "flex-end" }}
-                  onPress={() => setIsEditing(false)}
+            <GestureHandlerRootView>
+              
+              <ScrollView>
+                <Layout
+                  style={{
+                    width: "100%",
+                    flex: 1,
+                    justifyContent: "flex-start",
+                    paddingHorizontal: 10,
+                    gap: 20,
+                  }}
                 >
-                  Cancelar
-                </Button>
-                <DebitCardForm debitCard={debitCard} />
-              </Layout>
-            </ScrollView>
+                  <Button
+                    appearance="ghost"
+                    status="basic"
+                    style={{ alignSelf: "flex-end" }}
+                    onPress={() => setIsEditing(false)}
+                  >
+                    Cancelar
+                  </Button>
+                  <DebitCardForm debitCard={debitCard} />
+                </Layout>
+              </ScrollView>
+            </GestureHandlerRootView>
           ) : (
             <Layout
               style={{
@@ -97,6 +101,7 @@ export const DebitCardScreen = () => {
               }}
             >
               <Card
+                color={debitCard.color}
                 lastFourDigits={debitCard.lastFourDigits}
                 name={debitCard.name}
               />

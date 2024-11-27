@@ -166,7 +166,6 @@ export const CategoryForm = ({ category }: Props) => {
             </Button>
           </Layout>
         )}
-        {/* Botón de acción */}
         <Button style={styles.createButton} onPress={handleSubmit(onSubmit)}>
           {category ? "Guardar Cambios" : "Crear"}
         </Button>

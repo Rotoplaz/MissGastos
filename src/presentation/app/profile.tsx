@@ -1,7 +1,10 @@
 import { Button, Icon, Input, Layout } from "@ui-kitten/components";
-import { Image, StyleSheet } from "react-native";
+import { Image, StyleSheet, Text } from "react-native";
 import { useUserStore } from "../store/user/useUserStore";
-import { useRef, useState, useCallback } from "react";
+import { useRef, useCallback } from "react";
+import { useForm, Controller } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { router } from "expo-router";
 import { PickImageUseCase } from "@/src/application/use-cases/profilePicture/profile-picture.use-case";
 import { UserRepositorySqliteImpl } from "@/src/infrastructure/user/user-sqli.repository.impl";
@@ -9,67 +12,76 @@ import { UpdateUserUseCase } from "@/src/application/use-cases/user/update-user.
 import { CreateUserUseCase } from "@/src/application/use-cases/user/create-suer.use-case";
 import { LayoutWithTopNavigation } from "../common/layouts/LayoutWithTopNavigation";
 
+// Esquema de validación
+const userSchema = z.object({
+  name: z
+    .string()
+    .min(1, "El nombre es requerido")
+    .max(10, "Máximo 10 caracteres")
+    .trim(),
+  globalLimitBudget: z.string().regex(/^\d+$/, "Debe ser un número"),
+});
+
+type UserFormValues = z.infer<typeof userSchema>;
+
 export default function Profile() {
   const user = useUserStore((state) => state.user);
   const setUser = useUserStore((state) => state.setUser);
-  const isNewUser = useRef(!user);
-  const [form, setForm] = useState({
-    globalLimitBudget: user?.globalLimitBudget?.toString() || "",
-    name: user?.name || "",
-  });
 
   const userRepository = useRef(new UserRepositorySqliteImpl()).current;
 
-  const handleSaveUser = useCallback(async () => {
-    if (form.name.trim() === "" || form.globalLimitBudget.trim() === "") return;
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<UserFormValues>({
+    resolver: zodResolver(userSchema),
+    defaultValues: {
+      name: user?.name || "",
+      globalLimitBudget: user?.globalLimitBudget?.toString() || "",
+    },
+  });
 
-    try {
-      const userUpdated = user
-        ? await new UpdateUserUseCase(userRepository).execute({
-            name: form.name,
-            globalLimitBudget: Number(form.globalLimitBudget),
-          })
-        : await new CreateUserUseCase(userRepository).execute({
-            ...form,
-            globalLimitBudget: Number(form.globalLimitBudget),
-          });
+  const handleSaveUser = useCallback(
+    async (data: UserFormValues) => {
+      try {
+        const userUpdated = user
+          ? await new UpdateUserUseCase(userRepository).execute({
+              name: data.name,
+              globalLimitBudget: Number(data.globalLimitBudget),
+            })
+          : await new CreateUserUseCase(userRepository).execute({
+              ...data,
+              globalLimitBudget: Number(data.globalLimitBudget),
+            });
 
-      setUser(userUpdated);
-
-      router.replace("/(home)");
-    } catch (error) {
-      console.error("Error al guardar el usuario:", error);
-    }
-  }, [form, user, setUser, userRepository]);
+        setUser(userUpdated);
+        router.replace("/(home)");
+      } catch (error) {
+        console.error("Error al guardar el usuario:", error);
+      }
+    },
+    [user, setUser, userRepository]
+  );
 
   const handlePickImage = useCallback(async () => {
-    const newUser = !user
-      ? await new CreateUserUseCase(userRepository).execute({
-          ...form,
-          globalLimitBudget: Number(form.globalLimitBudget),
-        })
-      : user;
-
-    if (!user) setUser(newUser);
-
-    const image = await new PickImageUseCase().execute();
-    if (!image) return;
-
     try {
-      const userWithImage = await new UpdateUserUseCase(userRepository).execute(
-        {
-          profilePictureUrl: image,
-        }
-      );
+      const image = await new PickImageUseCase().execute();
+      if (!image) return;
+
+      const userWithImage = await new UpdateUserUseCase(userRepository).execute({
+        profilePictureUrl: image,
+      });
       setUser(userWithImage);
     } catch (error) {
       console.error("Error al actualizar la imagen de perfil:", error);
     }
-  }, [user, form, setUser, userRepository]);
+  }, [user, setUser, userRepository]);
 
   return (
     <LayoutWithTopNavigation titleScreen="Perfil">
       <Layout style={styles.mainContainer}>
+        {/* Avatar */}
         <Layout style={styles.avatarContainer}>
           <Image
             style={styles.avatar}
@@ -87,26 +99,44 @@ export default function Profile() {
           />
         </Layout>
 
-        <Input
-          style={styles.input}
-          status="basic"
-          placeholder="Escribe tu nombre"
-          value={form.name}
-          onChangeText={(text) => setForm((prev) => ({ ...prev, name: text }))}
+        {/* Inputs */}
+        <Controller
+          control={control}
+          name="name"
+          render={({ field: { onChange, onBlur, value } }) => (
+            <Input
+              style={styles.input}
+              status="basic"
+              placeholder="Escribe tu nombre"
+              value={value}
+              onBlur={onBlur}
+              onChangeText={onChange}
+            />
+          )}
         />
+        {errors.name && <Text style={styles.errorText}>{errors.name.message}</Text>}
 
-        <Input
-          style={styles.input}
-          keyboardType="numeric"
-          status="basic"
-          placeholder="Limite de gastos"
-          value={form.globalLimitBudget}
-          onChangeText={(text) =>
-            setForm((prev) => ({ ...prev, globalLimitBudget: text }))
-          }
+        <Controller
+          control={control}
+          name="globalLimitBudget"
+          render={({ field: { onChange, onBlur, value } }) => (
+            <Input
+              style={styles.input}
+              keyboardType="numeric"
+              status="basic"
+              placeholder="Límite de gastos"
+              value={value}
+              onBlur={onBlur}
+              onChangeText={onChange}
+            />
+          )}
         />
+        {errors.globalLimitBudget && (
+          <Text style={styles.errorText}>{errors.globalLimitBudget.message}</Text>
+        )}
 
-        <Button style={styles.saveButton} onPress={handleSaveUser}>
+        {/* Botón Guardar */}
+        <Button style={styles.saveButton} onPress={handleSubmit(handleSaveUser)}>
           Guardar
         </Button>
       </Layout>
@@ -140,6 +170,11 @@ const styles = StyleSheet.create({
   },
   input: {
     width: "80%",
+  },
+  errorText: {
+    color: "red",
+    alignSelf: "flex-start",
+    marginLeft: "10%",
   },
   saveButton: {
     marginTop: 10,

@@ -33,6 +33,7 @@ CREATE TABLE Category (
 CREATE TABLE Card (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT NOT NULL,
+    color TEXT,
     lastFourDigits TEXT NOT NULL,
     debt REAL NOT NULL,
     type TEXT CHECK(type IN ('credit', 'debit')), -- Defines whether it is a credit or debit card

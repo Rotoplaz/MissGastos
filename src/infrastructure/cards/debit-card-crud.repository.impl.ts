@@ -18,17 +18,18 @@ export class DebitCardRepositoryImpl implements DebitCardRepository {
   }
 
   async createDebitCard(card: Omit<DebitCard, "id">): Promise<DebitCard> {
-    const { name, lastFourDigits, debt, currentBalance, type, limitDebit } =
+    const { name, lastFourDigits, debt, currentBalance, type, limitDebit, color } =
       card;
     const db = await getDataBase();
     const debitCard = await db.runAsync(
-      "INSERT INTO Card (name, lastFourDigits, debt, type, currentBalance, limitDebit) VALUES (?,?,?,?,?,?)",
+      "INSERT INTO Card (name, lastFourDigits, debt, type, currentBalance, limitDebit,color) VALUES (?,?,?,?,?,?,?)",
       name,
       lastFourDigits,
       debt,
       type,
       currentBalance,
-      limitDebit
+      limitDebit,
+      color
     );
     
     const createdCard = await this.getDebitCardById(debitCard.lastInsertRowId)
@@ -62,6 +63,11 @@ export class DebitCardRepositoryImpl implements DebitCardRepository {
     if (card.debt !== undefined) {
       fieldsToUpdate.push("debt = ?");
       values.push(card.debt);
+    }
+
+    if (card.color !== undefined) {
+      fieldsToUpdate.push("color = ?");
+      values.push(card.color);
     }
 
     if (card.currentBalance !== undefined) {
