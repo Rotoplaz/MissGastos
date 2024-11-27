@@ -40,11 +40,19 @@ export const HomeScreen = () => {
     const getIncomes = async () => {
       const incomeRepository = new IncomeSqliteRepositoryImpl();
       const incomes = await new GetAllIncomeUseCase(incomeRepository).execute();
-      setIncomes(incomes);
+  
+      const filteredIncomes = incomes.filter(income => {
+        const incomeDate = new Date(income.date);
+        const thirtyDaysAgo = new Date();
+        thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+        return incomeDate >= thirtyDaysAgo;
+      });
+  
+      setIncomes(filteredIncomes);
     };
     getIncomes();
   }, []);
-
+  
   useEffect(() => {
     const getTotalMoney = () => {
       const metricsService = new UserMetricsService();
@@ -67,14 +75,20 @@ export const HomeScreen = () => {
 
   useEffect(() => {
     if (!user) return;
+    
     const emojiValue = new UserMetricsService().globalMetrics(
       user!,
-      expense.map((expense) => ({
+      expense.filter((expense) => {
+        const expenseDate = new Date(expense.date);
+        const thirtyDaysAgo = new Date();
+        thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+        return expenseDate >= thirtyDaysAgo;
+      }).map((expense) => ({
         type: expense.category.type,
         totalExpense: expense.amount,
       }))
     );
-
+  
     setEmojiStatus(emojiValue);
   }, [user, expense]);
 
@@ -87,7 +101,7 @@ export const HomeScreen = () => {
     }
     getReminders();
   },[]);
-  
+
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <Layout style={{ flex: 1 }}>

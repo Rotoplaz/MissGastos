@@ -8,6 +8,7 @@ interface RemaindersStoreState {
     deleteReminder: (id: number) => void;
     updateReminder: (reminder: Reminder) =>  Reminder[];
     setReminders: (reminders: Reminder[]) => Reminder[];
+    resetStoreReminder: ()=>void;
 }
 
 const initialData = {
@@ -38,5 +39,8 @@ export const useRemindersStore = create<RemaindersStoreState>()((set, get)=>({
         set({reminders: reminders});
 
         return get().reminders;
+    },
+    resetStoreReminder: () => {
+        set({...initialData});
     }
 }));
