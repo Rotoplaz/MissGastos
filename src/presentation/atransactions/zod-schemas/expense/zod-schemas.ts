@@ -11,7 +11,6 @@ const creditCardSchema = baseCardSchema.extend({
   creditLimit: z.number().nonnegative(),
   dueDate: z.coerce.date(),
   type: z.literal("credit"),
-  limitDebit: z.null(),  
 });
 
 const debitCardSchema = baseCardSchema.extend({

@@ -97,7 +97,7 @@ export const HomeScreen = () => {
 
           <Layout style={{ width: "100%", minHeight: 200 }}>
             <ChartPieHome />
-            <Layout style={{ width: "60%", marginTop: 20, paddingLeft: 35 }}>
+            <Layout style={{ width: "60%", paddingLeft: 35 }}>
               <Button
                 size="large"
                 onPress={() =>
@@ -131,17 +131,18 @@ const style = StyleSheet.create({
     fontSize: 30,
   },
   totalMoney: {
-    fontSize: 20,
+    fontSize: 25,
     marginBottom: 5,
     fontWeight: "bold",
   },
   money: {
-    fontSize: 40,
+    fontSize: 45,
     color: "#229954",
     marginBottom: 5,
   },
   subText: {
     marginBottom: 20,
+    fontSize: 18
   },
 
   chartContainer: {

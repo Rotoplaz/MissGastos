@@ -8,7 +8,7 @@ import { IncomeForm } from "../forms/IncomeForm";
 const tabs = [
   {
     index: 0,
-    component: <ExpenseForm />,
+    component: <ExpenseForm expense={null} />,
   },
   {
     index: 1,

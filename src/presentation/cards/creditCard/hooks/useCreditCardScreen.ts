@@ -31,8 +31,8 @@ export const useCreditCardScreen = (id: number) => {
   const confirmDelete = () => {
     const creditCardRepository = new CreditCardCrudRepositoryImpl();
     Alert.alert(
-      "Confirmar Eliminación",
       "¿Estás seguro de que quieres eliminar esta tarjeta?",
+      "Se borrara todo lo relacionado a ella.",
       [
         { text: "Cancelar", style: "cancel" },
         {

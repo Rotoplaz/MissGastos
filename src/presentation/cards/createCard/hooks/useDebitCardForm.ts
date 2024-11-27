@@ -64,6 +64,7 @@ export const useDebitCardForm = (debitCard: DebitCard | null) => {
       addCardInStore(newCard);
       Alert.alert("Éxito", "Tarjeta agregada correctamente.");
       router.back();
+      return;
     }
 
     const newCard = await new UpdateDebitCardUseCase(

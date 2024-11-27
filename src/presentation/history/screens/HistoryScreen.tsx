@@ -9,21 +9,22 @@ import { useIncomeStore } from "../../store/income/useIncomeStore";
 import { Expense as ExpenseEntity} from "@/src/domain/entities/expense.entity";
 import { Income as IncomeEntity } from "@/src/domain/entities/income.entity";
 import { Income } from "../components/Income";
+import { useTheme } from "@react-navigation/native";
 
 export const HistoryScreen = () => {
   const { top } = useSafeAreaInsets();
-
+  const theme = useTheme();
   const expense = useExpenseStore((state) => state.expense);
   const incomes = useIncomeStore(state=>state.incomes);
 
   const transactions: Array<ExpenseEntity | IncomeEntity> = [
     ...expense,
     ...incomes
-  ];
+  ].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()).reverse();
 
   return (
     <Layout style={[styles.mainContainer, { paddingTop: top }]}>
-      <ScrollView style={styles.scrollContainer}>
+      <Layout style={styles.scrollContainer}>
         {transactions.length === 0 ? (
           <Layout
             style={{
@@ -36,7 +37,7 @@ export const HistoryScreen = () => {
             <Icon
               name="swap-outline"
               style={{ width: 150, height: 150 }}
-              fill="#fff"
+              fill={theme.dark ? "#fff" : "#000"}
             />
             <Text category="h3">Agrega Movimientos</Text>
           </Layout>
@@ -49,7 +50,7 @@ export const HistoryScreen = () => {
             )
           ))
         )}
-      </ScrollView>
+      </Layout>
       <CreateTransactionButton />
     </Layout>
   );

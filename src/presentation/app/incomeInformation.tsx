@@ -1,16 +1,20 @@
-import { Icon, Layout, Text } from "@ui-kitten/components";
+import { Icon, Layout, Text, TopNavigationAction } from "@ui-kitten/components";
 import { Income } from "../../domain/entities/income.entity";
 import { LayoutWithTopNavigation } from "../common/layouts/LayoutWithTopNavigation";
-import { StyleSheet } from "react-native";
+import { Alert, StyleSheet } from "react-native";
 import { useEffect, useState } from "react";
-import { useLocalSearchParams } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import { IncomeSqliteRepositoryImpl } from "@/src/infrastructure";
 import { GetIncomeByIdUseCase } from "@/src/application/use-cases/income/get-income-by-id.use-case";
 import { FullLoaderScreen } from "../common/screens/loaders/FullLoaderScreen";
+import { DeleteIncomeUseCase } from "@/src/application/use-cases/income/delete-income.use-case";
+import { useIncomeStore } from "../store/income/useIncomeStore";
 
 export const incomeInformation = () => {
   const params = useLocalSearchParams<{ id: string }>();
   const [income, setIncome] = useState<Income|null>(null);
+  const deleteIncomeStore = useIncomeStore(state=>state.deleteIncome);
+
   useEffect(()=>{
     const getIncome = async() => {
       const repository = new IncomeSqliteRepositoryImpl();
@@ -21,12 +25,42 @@ export const incomeInformation = () => {
 
   },[]);
 
+  
+  
   if(!income) {
     return <FullLoaderScreen />
   }
+  
+  const deleteIncome = async () => {
+    Alert.alert("Cuidado", "¿Seguro de eliminar el ingreso?", [
+      {
+        text: "Cancelar",
+        style: "cancel",
+      },
+      {
+        text: "Confirmar",
+        style: "destructive",
+        onPress: async () => {
+          try {
+            const repository = new IncomeSqliteRepositoryImpl();
+            await new DeleteIncomeUseCase(repository).execute(income.id);
+            deleteIncomeStore(income.id);
+            router.back();
+          } catch (error) {
+            console.error("Error while deleting database:", error);
+          }
+        },
+      },
+    ]);
 
+  }
   return (
-    <LayoutWithTopNavigation titleScreen="Ingreso">
+    <LayoutWithTopNavigation titleScreen="Ingreso"  accessoryRight={() => (
+      <TopNavigationAction
+        onPress={deleteIncome}
+        icon={<Icon name="trash-outline" fill="red" />}
+      />
+    )}>
       <Layout style={styles.container}>
         <Layout style={styles.card}>
           <Text category="h1" style={styles.amount}>

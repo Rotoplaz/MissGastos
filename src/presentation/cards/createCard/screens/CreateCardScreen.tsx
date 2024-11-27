@@ -74,7 +74,6 @@ const style = StyleSheet.create({
     alignItems: "center",
   },
   text: {
-    color: "white",
     fontSize: 20,
     marginBottom: 20,
     marginLeft: "10%",

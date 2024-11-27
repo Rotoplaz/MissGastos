@@ -37,8 +37,8 @@ export const categoryInformation = () => {
   const deleteCategory = () => {
 
     Alert.alert(
-        "Cuidado",
-        "¿Seguro de eliminar la categoria",
+        "¿Seguro de eliminar la categoria?",
+        "Se eliminara todo lo relacionado a ella.",
         [
           {
             text: "Cancelar",
