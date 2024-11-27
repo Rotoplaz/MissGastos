@@ -3,8 +3,8 @@ import { Button, Icon, Layout } from "@ui-kitten/components";
 import { Card } from "../components/Card";
 import { CardInformation } from "../components/CardInformation";
 import { router, useLocalSearchParams } from "expo-router";
-
-import { ScrollView, StyleSheet } from "react-native";
+import { GestureHandlerRootView, ScrollView } from 'react-native-gesture-handler';
+import { StyleSheet } from "react-native";
 import { useCreditCardScreen } from "../hooks/useCreditCardScreen";
 import { CreditCardForm } from "../../createCard/components/CreditCardForm";
 import { FullLoaderScreen } from "@/src/presentation/common/screens/loaders/FullLoaderScreen";
@@ -33,30 +33,32 @@ export const CreditCardScreen = () => {
       <Layout style={style.mainContainer}>
         <Layout style={style.cardContainer}>
           {isEditing ? (
-            <ScrollView>
-              <Layout
-                style={{
-                  width: "100%",
-                  flex: 1,
-                  justifyContent: "flex-start",
-                  paddingHorizontal: 10,
-                  gap: 20,
-                }}
-              >
-                <Button
-                  appearance="ghost"
-                  status="basic"
-                  style={{ alignSelf: "flex-end" }}
-                  onPress={() => setIsEditing(false)}
+            <GestureHandlerRootView>
+              <ScrollView>
+                <Layout
+                  style={{
+                    width: "100%",
+                    flex: 1,
+                    justifyContent: "flex-start",
+                    paddingHorizontal: 10,
+                    gap: 20,
+                  }}
                 >
-                  Cancelar
-                </Button>
-                <CreditCardForm creditCard={creditCard} />
-              </Layout>
-            </ScrollView>
+                  <Button
+                    appearance="ghost"
+                    status="basic"
+                    style={{ alignSelf: "flex-end" }}
+                    onPress={() => setIsEditing(false)}
+                  >
+                    Cancelar
+                  </Button>
+                  <CreditCardForm creditCard={creditCard} />
+                </Layout>
+              </ScrollView>
+            </GestureHandlerRootView>
           ) : (
             <Layout style={{height: "80%",justifyContent: "center", alignItems: "center"}}>
-              <Card lastFourDigits={creditCard.lastFourDigits} name={creditCard.name}/>
+              <Card lastFourDigits={creditCard.lastFourDigits} name={creditCard.name} color={creditCard.color} />
               <CardInformation creditCard={creditCard} />
               <Layout style={style.actionsContainer}>
                 <Button

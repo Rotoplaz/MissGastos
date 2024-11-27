@@ -4,6 +4,7 @@ export interface BaseCard {
     name: string;
     lastFourDigits: string;
     debt: number;
+    color: string;
 }
 
 export interface CreditCard extends BaseCard {

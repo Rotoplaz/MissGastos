@@ -5,11 +5,13 @@ import { StyleSheet } from "react-native";
 interface Props {
   lastFourDigits: string;
   name: string;
+  color: string;
 }
 
-export const Card = ({ lastFourDigits, name }: Props) => {
+export const Card = ({ lastFourDigits, name, color }: Props) => {
+
   return (
-    <Layout style={style.card}>
+    <Layout style={[style.card, {backgroundColor: color}]}>
       <Layout
         style={{
           backgroundColor: "transparent",
@@ -30,7 +32,6 @@ export const Card = ({ lastFourDigits, name }: Props) => {
 
 const style = StyleSheet.create({
   card: {
-    backgroundColor: "#1A5FAD",
     borderRadius: 12,
     width: 300,
     height: 180,

@@ -7,7 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { router } from "expo-router";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { Alert } from "react-native";
 import { CreditCardCrudRepositoryImpl } from "@/src/infrastructure";
 import { useCardsStore } from "@/src/presentation/store";
@@ -18,6 +18,7 @@ interface FormData {
   debt: string;
   creditLimit: string;
   dueDate: Date;
+  color: string;
 }
 
 const creditCardSchema = z.object({
@@ -26,9 +27,12 @@ const creditCardSchema = z.object({
   debt: z.coerce.number().optional().default(0),
   creditLimit: z.coerce.number().min(1, "Debe ser un número válido"),
   dueDate: z.coerce.date(),
+  color: z.string().min(1, "Debes seleccionar un color."),
 });
 
 export const useCreditCardForm = (creditCard: CreditCard | null) => {
+  const [showColorPicker, setShowColorPicker] = useState(false);
+  const [color, setColor] = useState(creditCard?.color || "#fff");
   const {
     handleSubmit,
     setValue,
@@ -47,8 +51,13 @@ export const useCreditCardForm = (creditCard: CreditCard | null) => {
               creditCard.dueDate.getTimezoneOffset() * 60 * 1000
           )
         : new Date(),
+      color: creditCard?.color || "#fff"
     },
   });
+  const onSelectColor = ({ hex }: any) => {
+    setColor(hex);
+    setValue("color", hex);
+  };
   const creditCardRepository = useRef(new CreditCardCrudRepositoryImpl());
 
   const addCardInStore = useCardsStore((state) => state.addCard);
@@ -65,6 +74,7 @@ export const useCreditCardForm = (creditCard: CreditCard | null) => {
         lastFourDigits: data.lastFourDigits,
         name: data.name,
         type: "credit",
+        color: data.color,
       });
       addCardInStore(newCard);
       Alert.alert("Éxito", "Tarjeta agregada correctamente.");
@@ -80,6 +90,7 @@ export const useCreditCardForm = (creditCard: CreditCard | null) => {
       dueDate: new Date(data.dueDate),
       lastFourDigits: data.lastFourDigits,
       name: data.name,
+      color: data.color,
     });
 
     updateCardInStore(creditCardUpdated);
@@ -93,5 +104,9 @@ export const useCreditCardForm = (creditCard: CreditCard | null) => {
     watch,
     errors,
     onSubmit,
+    showColorPicker,
+    setShowColorPicker,
+    color,
+    onSelectColor,
   };
 };
