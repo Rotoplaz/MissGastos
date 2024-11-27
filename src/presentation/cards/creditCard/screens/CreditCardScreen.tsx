@@ -10,9 +10,11 @@ import { CreditCardForm } from "../../createCard/components/CreditCardForm";
 import { FullLoaderScreen } from "@/src/presentation/common/screens/loaders/FullLoaderScreen";
 import { LayoutWithTopNavigation } from "@/src/presentation/common/layouts/LayoutWithTopNavigation";
 import { usePreventScreenCapture } from "expo-screen-capture";
+import { useTheme } from "@react-navigation/native";
 
 export const CreditCardScreen = () => {
   usePreventScreenCapture();
+  const theme = useTheme();
   const params = useLocalSearchParams<{ id: string }>();
   const { confirmDelete, confirmEdit, creditCard, isEditing, setIsEditing } =
     useCreditCardScreen(+params.id);
@@ -68,7 +70,7 @@ export const CreditCardScreen = () => {
                   style={style.exit}
                   appearance="ghost"
                   size="large"
-                  accessoryLeft={<Icon name="edit-outline" fill="white" />}
+                  accessoryLeft={<Icon name="edit-outline" fill={theme.dark ? "#fff": "#000"} />}
                   onPress={confirmEdit}
                 />
               </Layout>

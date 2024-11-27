@@ -4,7 +4,10 @@ import { FullLoaderScreen } from "../../../common/screens/loaders/FullLoaderScre
 import { router, useLocalSearchParams } from "expo-router";
 import { Button, Icon, Layout, Text } from "@ui-kitten/components";
 import { DebitCard } from "@/src/domain/entities/payment-methods.entity";
-import { DeleteDebitCardUseCase, GetDebitCardByIdUseCase } from "@/src/application";
+import {
+  DeleteDebitCardUseCase,
+  GetDebitCardByIdUseCase,
+} from "@/src/application";
 import { DebitCardRepositoryImpl } from "@/src/infrastructure";
 import { DebitCardInformtaion } from "../components/DebitCardInfo";
 import { Alert, ScrollView, StyleSheet } from "react-native";
@@ -12,6 +15,7 @@ import { useCardsStore } from "../../../store";
 import { DebitCardForm } from "../../createCard/components/DebitCardForm";
 import { Card } from "../../creditCard/components/Card";
 import { usePreventScreenCapture } from "expo-screen-capture";
+import { useTheme } from "@react-navigation/native";
 
 export const DebitCardScreen = () => {
   usePreventScreenCapture();
@@ -19,11 +23,10 @@ export const DebitCardScreen = () => {
   const [debitCard, setDebitCard] = useState<DebitCard | null>(null);
   const [isEditing, setIsEditing] = useState(false);
   const debitCardRepository = useRef(new DebitCardRepositoryImpl());
-  const deleteCard = useCardsStore(state=>state.deleteCard);
-
+  const deleteCard = useCardsStore((state) => state.deleteCard);
+  const theme = useTheme();
   useEffect(() => {
     const getDebitCard = async () => {
-      
       const card = await new GetDebitCardByIdUseCase(
         debitCardRepository.current
       ).execute(+params.id);
@@ -33,7 +36,6 @@ export const DebitCardScreen = () => {
   }, []);
 
   const handleDelete = async () => {
-    
     Alert.alert(
       "Confirmar Eliminación",
       "¿Estás seguro de que quieres eliminar esta tarjeta?",
@@ -43,7 +45,9 @@ export const DebitCardScreen = () => {
           text: "Confirmar",
           onPress: async () => {
             try {
-              await new DeleteDebitCardUseCase(debitCardRepository.current).execute(debitCard!.id);
+              await new DeleteDebitCardUseCase(
+                debitCardRepository.current
+              ).execute(debitCard!.id);
               deleteCard(debitCard!.id);
               router.back();
             } catch (error) {
@@ -53,13 +57,13 @@ export const DebitCardScreen = () => {
         },
       ]
     );
-  }
+  };
 
   if (!debitCard) {
     return <FullLoaderScreen />;
   }
-  return(
-<LayoutWithTopNavigation titleScreen={debitCard.name}>
+  return (
+    <LayoutWithTopNavigation titleScreen={debitCard.name}>
       <Layout style={style.mainContainer}>
         <Layout style={style.cardContainer}>
           {isEditing ? (
@@ -85,8 +89,17 @@ export const DebitCardScreen = () => {
               </Layout>
             </ScrollView>
           ) : (
-            <Layout style={{height: "80%",justifyContent: "center", alignItems: "center"}}>
-              <Card lastFourDigits={debitCard.lastFourDigits} name={debitCard.name} />
+            <Layout
+              style={{
+                height: "80%",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <Card
+                lastFourDigits={debitCard.lastFourDigits}
+                name={debitCard.name}
+              />
               <DebitCardInformtaion debitCard={debitCard!} />
               <Layout style={style.actionsContainer}>
                 <Button
@@ -100,8 +113,13 @@ export const DebitCardScreen = () => {
                   size="large"
                   style={style.exit}
                   appearance="ghost"
-                  accessoryLeft={<Icon name="edit-outline" fill="white" />}
-                  onPress={()=>setIsEditing(true)}
+                  accessoryLeft={
+                    <Icon
+                      name="edit-outline"
+                      fill={theme.dark ? "#fff" : "#000"}
+                    />
+                  }
+                  onPress={() => setIsEditing(true)}
                 />
               </Layout>
             </Layout>
@@ -111,7 +129,6 @@ export const DebitCardScreen = () => {
     </LayoutWithTopNavigation>
   );
 };
-
 
 const style = StyleSheet.create({
   mainContainer: {
@@ -128,7 +145,7 @@ const style = StyleSheet.create({
   exit: {
     borderRadius: 50,
     paddingHorizontal: 20,
-    paddingVertical:30
+    paddingVertical: 30,
   },
   cardContainer: {
     marginTop: 10,

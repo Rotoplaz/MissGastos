@@ -21,7 +21,7 @@ export const Card = ({ lastFourDigits, name }: Props) => {
         }}
       >
         <Layout style={style.chip} />
-        <Text style={{fontSize: 30, fontWeight: "bold"}}>{name}</Text>
+        <Text style={{fontSize: 30, fontWeight: "bold", color: "#fff"}}>{name}</Text>
       </Layout>
       <Text style={style.cardText}>**** **** **** {lastFourDigits}</Text>
     </Layout>
