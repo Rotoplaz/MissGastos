@@ -348,7 +348,7 @@ export class ExpenseSqliteRepositoryImpl implements ExpenseRepository {
             expense.paymentMethod.id!,
           );
           const totalDebt = (debtRow as any)[0].totalDebt || 0;
-          console.log(totalDebt)
+
           const updateCreditCardQuery = `
             UPDATE Card 
             SET debt = ?,
@@ -383,13 +383,56 @@ export class ExpenseSqliteRepositoryImpl implements ExpenseRepository {
   async deleteExpense(id: number): Promise<void> {
     const db = await getDataBase();
     try {
-      await db.runAsync("DELETE FROM Expense WHERE id = $id", { $id: id });
+      const expense = await this.getExpenseById(id);
+  
+      if (!expense) {
+        throw new Error(`Expense with id ${id} not found.`);
+      }
+  
+
+      await db.runAsync("DELETE FROM Expense WHERE id = ?", id);
+  
+      if (expense.paymentMethod.type !== "cash" && 'id' in expense.paymentMethod) {
+        
+        if(expense.paymentMethod.type === "credit"){
+
+  
+          const updateCreditCardQuery = `
+          UPDATE Card 
+          SET debt = debt - ? 
+          WHERE id = ? AND type = 'credit'
+        `;
+            await db.runAsync(
+              updateCreditCardQuery,
+              expense.amount,
+              expense.paymentMethod.id
+            );
+  
+        }
+        if(expense.paymentMethod.type === "debit"){
+          const updateCreditCardQuery = `
+            UPDATE Card 
+            SET debt = debt - ?,
+            currentBalance = currentBalance + ?
+            WHERE id = ? AND type = 'debit'
+          `;
+          await db.runAsync(
+            updateCreditCardQuery,
+            expense.amount,
+            expense.amount,
+            expense.paymentMethod.id
+          );
+        }
+  
+
+      }
     } catch (error) {
       throw new Error("Error deleting expense: " + error);
     } finally {
       await db.closeAsync();
     }
   }
+  
 
   async getAllExpenses(): Promise<Expense[]> {
     const db = await getDataBase();
