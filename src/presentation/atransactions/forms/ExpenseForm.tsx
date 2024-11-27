@@ -57,7 +57,6 @@ export const ExpenseForm = ({ expense }: Props) => {
       paymentMethod: expense?.paymentMethod || null,
     },
   });
-
   const theme = useTheme();
   const addExpenseStore = useExpenseStore((state) => state.addExpense);
   const updateExpenseStore = useExpenseStore((state) => state.updateExpense);
@@ -98,17 +97,14 @@ export const ExpenseForm = ({ expense }: Props) => {
   );
 
   const onSelect = (index: number) => {
-    console.log(cards[index])
-    console.log(expense?.paymentMethod)
 
     setSelectedCardIndex(index);
     setValue("paymentMethod", cards[index]);
     setVisible(false);
   };
-
   const onSubmit = async (data: FormData) => {
     const expensesRepository = new ExpenseSqliteRepositoryImpl();
-
+    
     if (expense) {
       const expenseUpdated = await new UpdateExpenseUseCase(expensesRepository).execute(expense.id,{
         amount: +data.amount,
