@@ -14,12 +14,15 @@ import { useExpense } from "../../atransactions/hooks/useExpense";
 import {
   CategoryRepositoryImpl,
   IncomeSqliteRepositoryImpl,
+  ReminderSqliteRepositoryImpl,
 } from "@/src/infrastructure";
 import { GetAllCategoriesUseCase } from "@/src/application/use-cases/category/get-all-categories.use-case";
 import { useCategoryStore } from "../../store/categories/useCategoryStore";
 import { useIncomeStore } from "../../store/income/useIncomeStore";
 import { GetAllIncomeUseCase } from "@/src/application/use-cases/income/get-all-income.use-case";
 import { CreateTransactionButton } from "../../atransactions/components/CreateTransactionButton";
+import { useRemindersStore } from "../../store/remainders/useStoreRemainders";
+import { GetAllRemindersUseCase } from "@/src/application/use-cases/reminders/get-all-reminders.use-case";
 
 export const HomeScreen = () => {
   useGetCardsFromDatabase();
@@ -32,6 +35,7 @@ export const HomeScreen = () => {
   const setCategories = useCategoryStore((state) => state.setCategories);
   const setIncomes = useIncomeStore((state) => state.setIncomes);
   const incomes = useIncomeStore((state) => state.incomes);
+  const setReminders = useRemindersStore(state=>state.setReminders);
   useEffect(() => {
     const getIncomes = async () => {
       const incomeRepository = new IncomeSqliteRepositoryImpl();
@@ -74,6 +78,16 @@ export const HomeScreen = () => {
     setEmojiStatus(emojiValue);
   }, [user, expense]);
 
+
+  useEffect(()=> {
+    const getReminders = async () => {
+      const repository = new ReminderSqliteRepositoryImpl();
+      const reminders = await new GetAllRemindersUseCase(repository).execute();
+      setReminders(reminders);
+    }
+    getReminders();
+  },[]);
+  
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <Layout style={{ flex: 1 }}>

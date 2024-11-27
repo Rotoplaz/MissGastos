@@ -60,7 +60,7 @@ export class ReminderSqliteRepositoryImpl implements RemindersRepository {
       updates.push("isItPaid = ?");
       values.push(reminder.isItPaid);
     }
-    const updateQuery = `UPDATE Income SET ${updates.join(", ")} WHERE id = ?`;
+    const updateQuery = `UPDATE Reminder SET ${updates.join(", ")} WHERE id = ?`;
     values.push(id);
 
     await db.runAsync(updateQuery, ...values);
