@@ -51,7 +51,8 @@
     "react-native-web": "~0.19.13",
     "reanimated-color-picker": "^3.0.5",
     "zod": "^3.23.8",
-    "zustand": "^5.0.0"
+    "zustand": "^5.0.0",
+    "@react-native-async-storage/async-storage": "1.23.1"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
