@@ -6,12 +6,16 @@ import { EvaIconsPack } from "@ui-kitten/eva-icons";
 import { ThemeProvider } from "@react-navigation/native";
 import { default as customThemeDark } from "../theme/custom-theme-dark.json";
 import { default as customThemeLight } from "../theme/theme-light.json";
+import { useState } from "react";
+import { useThemeStore } from "../store/theme/useColorThemeStore";
 
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
-  const theme = colorScheme === "dark" ? {...eva.dark, ...customThemeDark} : {...eva.light, ...customThemeLight};
+  const { theme: themeScheme } = useThemeStore(); 
+  const isDarkTheme = themeScheme === "dark"; 
+
+  const theme = isDarkTheme ? {...eva.dark, ...customThemeDark} : {...eva.light, ...customThemeLight};
   const backgroundColor =
-    colorScheme === "dark"
+    isDarkTheme
       ? theme["color-basic-800"]
       : theme["color-basic-100"];
 
@@ -20,7 +24,7 @@ export default function RootLayout() {
       <IconRegistry icons={EvaIconsPack} />
       <ThemeProvider
         value={{
-          dark: colorScheme === "dark",
+          dark: isDarkTheme,
           colors: {
             primary: theme["color-primary-500"],
             background: backgroundColor,

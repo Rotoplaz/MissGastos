@@ -188,6 +188,7 @@ export const ExpenseForm = () => {
             paymentMethod === "cash" && styles.selectedPaymentButton,
           ]}
           status={paymentMethod === "cash" ? "primary" : "basic"}
+          appearance={paymentMethod === "cash" ? "filled": 'outline'}
         >
           Efectivo
         </Button>
@@ -198,6 +199,7 @@ export const ExpenseForm = () => {
             paymentMethod === "card" && styles.selectedPaymentButton,
           ]}
           status={paymentMethod === "card" ? "primary" : "basic"}
+          appearance={paymentMethod === "card" ? "filled": 'outline'}
         >
           Tarjeta
         </Button>

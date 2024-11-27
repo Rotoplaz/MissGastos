@@ -9,10 +9,11 @@ import { useIncomeStore } from "../../store/income/useIncomeStore";
 import { Expense as ExpenseEntity} from "@/src/domain/entities/expense.entity";
 import { Income as IncomeEntity } from "@/src/domain/entities/income.entity";
 import { Income } from "../components/Income";
+import { useTheme } from "@react-navigation/native";
 
 export const HistoryScreen = () => {
   const { top } = useSafeAreaInsets();
-
+  const theme = useTheme();
   const expense = useExpenseStore((state) => state.expense);
   const incomes = useIncomeStore(state=>state.incomes);
 
@@ -36,7 +37,7 @@ export const HistoryScreen = () => {
             <Icon
               name="swap-outline"
               style={{ width: 150, height: 150 }}
-              fill="#fff"
+              fill={theme.dark ? "#fff" : "#000"}
             />
             <Text category="h3">Agrega Movimientos</Text>
           </Layout>

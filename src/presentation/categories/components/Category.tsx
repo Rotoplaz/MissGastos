@@ -38,7 +38,7 @@ export const Category = ({ category, style, onPress, showTitle = true }: Props) 
         />
         {
           showTitle && (
-            <Text category="c2" appearance="hint">
+            <Text category="c2">
               {category.type}
             </Text>
           )

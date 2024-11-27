@@ -8,11 +8,14 @@ import { LayoutWithTopNavigation } from "../common/layouts/LayoutWithTopNavigati
 import { Alert } from "react-native";
 import { getDataBase } from "@/src/infrastructure/db/database";
 import { useCardsStore } from "../store";
+import { useThemeStore } from "../store/theme/useColorThemeStore";
 
 export const config = () => {
   const theme = useTheme();
   const resetUserStore = useUserStore(state=>state.resetUserStore);
   const resetCardStore = useCardsStore(state=>state.resetCardStore);
+  const toggleTheme = useThemeStore(state => state.toggleTheme);
+
   const handleDeleteDatabaseInformation = async () => {
     Alert.alert(
       "Cuidado",
@@ -47,6 +50,10 @@ export const config = () => {
       ]
     );
   };
+
+  const changeTheme = () => {
+    toggleTheme();
+  }
   
 
   return (
@@ -73,7 +80,7 @@ export const config = () => {
                     <MenuItem
             title={`Tema: ${theme.dark ? "oscuro": "claro"}`}
             accessoryLeft={<Icon name="color-palette-outline" />}
-            onPress={() => {}}
+            onPress={changeTheme}
           />
           <MenuItem
             style={{justifyContent: "flex-start"}}

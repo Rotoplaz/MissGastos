@@ -28,7 +28,7 @@ export const CardsScreens = () => {
       {
         cards.length === 0 ? (
           <Layout style={{flex: 1, marginTop: "50%", alignItems: "center", opacity: 0.2}}>
-            <Icon name="credit-card-outline" style={{width: 150, height: 150}} fill="#fff"  />
+            <Icon name="credit-card-outline" style={{width: 150, height: 150}} fill={theme.dark ? "#fff" : "#000"}  />
             <Text category='h3'>Agrega Tarjetas</Text>
           </Layout>
         ):(
