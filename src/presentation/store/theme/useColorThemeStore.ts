@@ -9,7 +9,6 @@ interface ThemeStoreState {
   toggleTheme: () => void;
 }
 
-// Adaptador para cumplir con los tipos de PersistStorage
 const asyncStorageAdapter: PersistStorage<ThemeStoreState> = {
   getItem: async (name) => {
     const item = await AsyncStorage.getItem(name);
@@ -26,15 +25,15 @@ const asyncStorageAdapter: PersistStorage<ThemeStoreState> = {
 export const useThemeStore = create<ThemeStoreState>()(
   persist(
     (set, get) => ({
-      theme: "light", // Valor inicial
+      theme: "light", 
       toggleTheme: () => {
         const newTheme = get().theme === "dark" ? "light" : "dark";
         set({ theme: newTheme });
       },
     }),
     {
-      name: "theme-storage", // Clave en AsyncStorage
-      storage: asyncStorageAdapter, // Usar el adaptador personalizado
+      name: "theme-storage", 
+      storage: asyncStorageAdapter, 
     }
   )
 );
