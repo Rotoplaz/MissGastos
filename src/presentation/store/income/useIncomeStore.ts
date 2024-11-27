@@ -8,6 +8,7 @@ interface IncomeStoreState {
     incomes: Income[];
     setIncomes: (income: Income[]) => Income[];
     addIncome: (income:Income) => Income[];
+    deleteIncome: (id: number) => void;
 }
 
 const initialData = {
@@ -24,5 +25,9 @@ export const useIncomeStore = create<IncomeStoreState>()((set,get)=>({
         const incomesList = get().incomes;
         set({incomes: [...incomesList, income]});
         return get().incomes;
+    },
+    deleteIncome: (id: number) => {
+        const incomesList = get().incomes;
+        set({incomes: incomesList.filter(income=> income.id !== id)});
     }
 }));

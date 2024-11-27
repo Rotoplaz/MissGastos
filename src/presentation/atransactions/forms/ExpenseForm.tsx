@@ -171,8 +171,7 @@ export const ExpenseForm = () => {
         <Text style={styles.errorText}>{errors.selectedCategory.message}</Text>
       )}
       <Input
-        size='large'
-        label={"Concepto:"}
+        size='large'        label={"Concepto:"}
         placeholder="Hasta 25 caracteres"
         maxLength={25}
         {...register("concept")}

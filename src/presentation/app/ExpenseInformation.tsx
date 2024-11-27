@@ -4,20 +4,27 @@ import { Expense } from "../../domain/entities/expense.entity";
 import { useEffect, useState } from "react";
 import { ExpenseSqliteRepositoryImpl } from "@/src/infrastructure";
 import { GetExpenseByIdUseCase } from "@/src/application/use-cases/expense/get-expense-by-id.use-case";
-import { Layout, Text, Icon, TopNavigationAction } from "@ui-kitten/components";
+import {
+  Layout,
+  Text,
+  Icon,
+  TopNavigationAction,
+  Button,
+} from "@ui-kitten/components";
 import { Alert, StyleSheet, View } from "react-native";
 import { Category } from "../categories/components/Category";
 import { FullLoaderScreen } from "../common/screens/loaders/FullLoaderScreen";
 import { DeleteExpenseUseCase } from "@/src/application/use-cases/expense/delete-expense.use-case";
 import { useExpenseStore } from "../store/expense/useExpenseStore";
+import { useCardsStore } from "../store";
 
 export const ExpenseInformation = () => {
   const params = useLocalSearchParams<{ id: string }>();
   const [expense, setExpense] = useState<Expense | null>(null);
   const [loading, setLoading] = useState(true);
-  const expenseStore = useExpenseStore(state=>state.expense);
+  const expenseStore = useExpenseStore((state) => state.expense);
+  const cards = useCardsStore(state=>state.cards);
   const deleteExpenseStore = useExpenseStore((state) => state.deleteExpense);
-
   useEffect(() => {
     const getExpense = async () => {
       try {
@@ -33,10 +40,10 @@ export const ExpenseInformation = () => {
       }
     };
     getExpense();
-  }, [expenseStore]);
+  }, [expenseStore,cards]);
 
   const deleteExpense = (id: number) => {
-    Alert.alert("Cuidado", "¿Seguro de eliminar la categoria", [
+    Alert.alert("Cuidado", "¿Seguro de eliminar el gasto?", [
       {
         text: "Cancelar",
         style: "cancel",
@@ -88,16 +95,35 @@ export const ExpenseInformation = () => {
               <Category
                 category={expense.category}
                 showTitle={false}
-                onPress={() => router.push({pathname: "/categoryInformation", params: {id:expense.category.id}})}
+                onPress={() =>
+                  router.push({
+                    pathname: "/categoryInformation",
+                    params: { id: expense.category.id },
+                  })
+                }
               />
             </Layout>
             <Layout style={styles.details}>
               <Text style={{ fontSize: 20 }}>Método de Pago:</Text>
-              <Text style={{ fontSize: 20 }}>
-                {expense.paymentMethod.type === "cash"
-                  ? "Efectivo"
-                  : expense.paymentMethod.name}
-              </Text>
+              {expense.paymentMethod.type === "cash" ? (
+                <Text>Efectivo</Text>
+              ) : (
+                <Button
+                  appearance="ghost"
+                  size="giant"
+                  onPress={() =>
+                    router.push({
+                      pathname:
+                        expense.paymentMethod.type === "credit"
+                          ? "/creditCard"
+                          : "/debitCard",
+                      params: { id: expense.paymentMethod.type ==="credit"? expense.paymentMethod.id : expense.paymentMethod.type ==="debit" ? expense.paymentMethod.id: 0 },
+                    })
+                  }
+                >
+                  {expense.paymentMethod.name}
+                </Button>
+              )}
             </Layout>
             <Layout style={styles.details}>
               <Text style={{ fontSize: 20 }}>Fecha:</Text>

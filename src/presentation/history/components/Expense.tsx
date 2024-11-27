@@ -21,7 +21,7 @@ export const Expense = ({ expense, style }: ExpenseProps) => {
       showTitle={false}
       onPress={()=>router.push({pathname: "/ExpenseInformation", params: {id:expense.id}})}
     />
-    <Text style={styles.itemTitle}>{expense.category.type}</Text>
+    <Text style={styles.itemTitle}>{expense.concept ? expense.concept: expense.type}</Text>
 
     <Layout style={[styles.expenseContainer]}>
       <Text style={styles.expenseText} appearance="default">
@@ -44,10 +44,9 @@ const styles = StyleSheet.create({
   },
   itemContainer: {
     flexDirection: "row",
-    paddingVertical: 15,
+    marginVertical: 10,
     paddingHorizontal: 20,
     alignItems: "center",
-    marginVertical: 10,
   },
   iconContainer: {
     width: 40,

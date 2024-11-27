@@ -19,11 +19,11 @@ export const HistoryScreen = () => {
   const transactions: Array<ExpenseEntity | IncomeEntity> = [
     ...expense,
     ...incomes
-  ];
+  ].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()).reverse();
 
   return (
     <Layout style={[styles.mainContainer, { paddingTop: top }]}>
-      <ScrollView style={styles.scrollContainer}>
+      <Layout style={styles.scrollContainer}>
         {transactions.length === 0 ? (
           <Layout
             style={{
@@ -49,7 +49,7 @@ export const HistoryScreen = () => {
             )
           ))
         )}
-      </ScrollView>
+      </Layout>
       <CreateTransactionButton />
     </Layout>
   );

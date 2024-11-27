@@ -11,14 +11,12 @@ export const DebitCardInformtaion = ({ debitCard }: Props) => {
 
 
   return (
-    <Layout>
+
       <Layout style={style.detailsContainer}>
-        <Text style={style.detail}>Nombre: {debitCard.name}{"\n"}</Text>
         <Text style={style.detail}>Balance: {debitCard.currentBalance}{"\n"}</Text>
         <Text style={style.detail}>deuda: {debitCard.debt}{"\n"}</Text>
         <Text style={style.detail}>Limite de gasto: {debitCard.limitDebit}{"\n"}</Text>
       </Layout>
-    </Layout>
   );
 };
 

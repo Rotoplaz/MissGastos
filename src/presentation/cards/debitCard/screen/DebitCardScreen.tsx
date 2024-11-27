@@ -86,16 +86,18 @@ export const DebitCardScreen = () => {
             </ScrollView>
           ) : (
             <Layout style={{height: "80%",justifyContent: "center", alignItems: "center"}}>
-              <Card lastFourDigits={debitCard.lastFourDigits} />
+              <Card lastFourDigits={debitCard.lastFourDigits} name={debitCard.name} />
               <DebitCardInformtaion debitCard={debitCard!} />
               <Layout style={style.actionsContainer}>
                 <Button
+                  size="large"
                   style={style.exit}
                   appearance="ghost"
-                  accessoryLeft={<Icon name="trash-2-outline" fill="white" />}
+                  accessoryLeft={<Icon name="trash-2-outline" fill="red" />}
                   onPress={handleDelete}
                 />
                 <Button
+                  size="large"
                   style={style.exit}
                   appearance="ghost"
                   accessoryLeft={<Icon name="edit-outline" fill="white" />}
@@ -124,8 +126,9 @@ const style = StyleSheet.create({
     fontSize: 24,
   },
   exit: {
-    width: 50,
-    height: 50,
+    borderRadius: 50,
+    paddingHorizontal: 20,
+    paddingVertical:30
   },
   cardContainer: {
     marginTop: 10,
@@ -156,7 +159,6 @@ const style = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-around",
     width: 200,
-    marginTop: 30,
   },
   iconButton: {
     height: 190,
