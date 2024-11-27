@@ -1,9 +1,6 @@
 import { CategoryForm } from "../categories/components/CategoryForm";
 import { LayoutWithTopNavigation } from "../common/layouts/LayoutWithTopNavigation";
 
-import { StyleSheet } from "react-native";
-
-
 
 export const CreateCategory = () => {
 

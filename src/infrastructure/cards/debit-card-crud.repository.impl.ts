@@ -30,9 +30,9 @@ export class DebitCardRepositoryImpl implements DebitCardRepository {
       currentBalance,
       limitDebit
     );
+    
     const createdCard = await this.getDebitCardById(debitCard.lastInsertRowId)
     await db.closeAsync();
-
     return createdCard!;
   }
 
@@ -93,6 +93,8 @@ export class DebitCardRepositoryImpl implements DebitCardRepository {
   async deleteDebitCard(id: number): Promise<void> {
     const db = await getDataBase();
     try {
+      await db.runAsync("DELETE FROM Expense WHERE cardId = $id", { $id: id });
+      
       await db.runAsync("DELETE FROM Card WHERE id = $id", { $id: id });
       return;
     } catch (error) {

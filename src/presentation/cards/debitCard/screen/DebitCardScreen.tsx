@@ -37,8 +37,8 @@ export const DebitCardScreen = () => {
 
   const handleDelete = async () => {
     Alert.alert(
-      "Confirmar Eliminación",
       "¿Estás seguro de que quieres eliminar esta tarjeta?",
+      "Se eliminara todo lo relacionado a ella",
       [
         { text: "Cancelar", style: "cancel" },
         {

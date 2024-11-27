@@ -5,11 +5,13 @@ import { Category } from "@/src/domain/entities/category.entity";
 import { ExpenseSqliteRepositoryImpl } from "@/src/infrastructure";
 import { GetAllExpenseUseCase } from "@/src/application/use-cases/expense/get-all-expense.use-case";
 import { useCategoryStore } from "../../store/categories/useCategoryStore";
+import { useCardsStore } from "../../store";
 
 export const useExpense = () => {
   const expense = useExpenseStore((state) => state.expense);
   const setExpense = useExpenseStore((state) => state.setExpense);
   const categories = useCategoryStore(state=>state.categories);
+  const cards = useCardsStore(state=>state.cards);
   const [maxCategoryExpense, setMaxCategoryExpense] = useState<{
     amount: number;
     category: Category;
@@ -33,7 +35,7 @@ export const useExpense = () => {
       setExpense(expense);
     };
     getExpense();
-  }, [categories]);
+  }, [categories,cards]);
 
   return {maxCategoryExpense, expense};
 };

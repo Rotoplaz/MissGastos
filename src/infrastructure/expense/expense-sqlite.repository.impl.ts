@@ -7,19 +7,25 @@ import { getDataBase } from "../db/database";
 export class ExpenseSqliteRepositoryImpl implements ExpenseRepository {
   async getExpensesGroupByCategory(): Promise<ExpenseChartDto[]> {
     const db = await getDataBase();
-    const expensesGroupByCategory = await db.getAllAsync<{
-      type: string;
-      totalExpense: number;
-      color: string;
-    }>("SELECT  c.color, c.type, SUM(e.amount) AS totalExpense FROM Expense e JOIN Category c ON e.categoryId = c.id GROUP BY c.type;");
-    await db.closeAsync();
-    return expensesGroupByCategory;
+    try {
+      const expensesGroupByCategory = await db.getAllAsync<{
+        type: string;
+        totalExpense: number;
+        color: string;
+      }>("SELECT c.color, c.type, SUM(e.amount) AS totalExpense FROM Expense e JOIN Category c ON e.categoryId = c.id GROUP BY c.type;");
+      return expensesGroupByCategory;
+    } catch (error) {
+      throw new Error("Error getting expenses group by category: " + error);
+    } finally {
+      await db.closeAsync();
+    }
   }
 
   async getExpenseById(id: number): Promise<Expense | null> {
     const db = await getDataBase();
-    const query = `
-      SELECT 
+    try {
+      const query = `
+        SELECT 
           e.id AS expenseId,
           e.amount,
           e.concept,
@@ -38,132 +44,98 @@ export class ExpenseSqliteRepositoryImpl implements ExpenseRepository {
           ca.dueDate,
           ca.currentBalance,
           ca.limitDebit
-      FROM 
+        FROM 
           Expense e
-      LEFT JOIN 
+        LEFT JOIN 
           Category c ON e.categoryId = c.id
-      LEFT JOIN 
+        LEFT JOIN 
           Card ca ON e.cardId = ca.id
-      WHERE 
+        WHERE 
           e.id = ?
-    `;
-    const expenseRow = await db.getFirstAsync<any>(query, [id]); // Cambiamos a "any" para mapear el resultado.
-    await db.closeAsync();
+      `;
+      const expenseRow = await db.getFirstAsync<any>(query, [id]);
   
-    if (!expenseRow) {
-      return null; // Si no hay datos, retorna null.
+      if (!expenseRow) {
+        return null;
+      }
+  
+      const expense: Expense = {
+        id: expenseRow.expenseId,
+        amount: expenseRow.amount,
+        concept: expenseRow.concept,
+        date: new Date(expenseRow.date),
+        paymentMethod: expenseRow.paymentMethod === "cash"
+          ? { type: "cash" }
+          : expenseRow.paymentMethod === "credit"
+          ? {
+              id: expenseRow.cardId,
+              name: expenseRow.cardName,
+              lastFourDigits: expenseRow.lastFourDigits,
+              debt: expenseRow.cardDebt,
+              creditLimit: expenseRow.creditLimit,
+              dueDate: expenseRow.dueDate ? new Date(expenseRow.dueDate) : new Date(),
+              type: "credit",
+            }
+          : {
+              id: expenseRow.cardId,
+              name: expenseRow.cardName,
+              lastFourDigits: expenseRow.lastFourDigits,
+              debt: expenseRow.cardDebt,
+              currentBalance: expenseRow.currentBalance,
+              limitDebit: expenseRow.limitDebit,
+              type: "debit",
+            },
+        category: {
+          id: expenseRow.categoryId,
+          type: expenseRow.categoryName,
+          color: expenseRow.categoryColor,
+          icon: expenseRow.categoryIcon,
+        },
+        type: "expense",
+      };
+      return expense;
+    } catch (error) {
+      throw new Error("Error getting expense by id: " + error);
+    } finally {
+      await db.closeAsync();
     }
-  
-    // Mapeamos el resultado a un objeto Expense.
-    const expense: Expense = {
-      id: expenseRow.expenseId,
-      amount: expenseRow.amount,
-      concept: expenseRow.concept,
-      date: new Date(expenseRow.date),
-      paymentMethod: expenseRow.paymentMethod === "cash"
-        ? { type: "cash" }
-        : expenseRow.paymentMethod === "credit"
-        ? {
-            id: expenseRow.cardId,
-            name: expenseRow.cardName,
-            lastFourDigits: expenseRow.lastFourDigits,
-            debt: expenseRow.cardDebt,
-            creditLimit: expenseRow.creditLimit,
-            dueDate: expenseRow.dueDate ? new Date(expenseRow.dueDate) : new Date(),
-            type: "credit",
-          }
-        : {
-            id: expenseRow.cardId,
-            name: expenseRow.cardName,
-            lastFourDigits: expenseRow.lastFourDigits,
-            debt: expenseRow.cardDebt,
-            currentBalance: expenseRow.currentBalance,
-            limitDebit: expenseRow.limitDebit,
-            type: "debit",
-          },
-      category: {
-        id: expenseRow.categoryId,
-        type: expenseRow.categoryName,
-        color: expenseRow.categoryColor,
-        icon: expenseRow.categoryIcon,
-      },
-      type: "expense",
-    };
-    return expense;
   }
   
   async createExpense(expense: Omit<Expense, "id">): Promise<Expense> {
     const { amount, concept, category, date } = expense;
-
     const db = await getDataBase();
-    switch (expense.paymentMethod.type) {
-      case "credit": {
-        const infoDatabse = await db.runAsync(
-          "INSERT INTO Expense (amount, concept, categoryId, paymentMethod, cardId, date) VALUES (?,?,?,?,?,?)",
-          amount,
-          concept ? concept : null,
-          category.id,
-          expense.paymentMethod.type,
-          expense.paymentMethod.id,
-          date.toISOString().split("T")[0]
-        );
-        await db.closeAsync();
-        return {
-          id: infoDatabse.lastInsertRowId,
-          amount,
-          category,
-          paymentMethod: expense.paymentMethod,
-          concept,
-          date,
-          type: "expense"
-        };
+    try {
+      let query = "";
+      let params: any[] = [];
+      
+      switch (expense.paymentMethod.type) {
+        case "credit":
+        case "debit":
+          query = "INSERT INTO Expense (amount, concept, categoryId, paymentMethod, cardId, date) VALUES (?,?,?,?,?,?)";
+          params = [amount, concept || null, category.id, expense.paymentMethod.type, expense.paymentMethod.id, date.toISOString().split("T")[0]];
+          break;
+        case "cash":
+          query = "INSERT INTO Expense (amount, concept, categoryId, paymentMethod, cardId, date) VALUES (?,?,?,?,?,?)";
+          params = [amount, concept || null, category.id, expense.paymentMethod.type, null, date.toISOString().split("T")[0]];
+          break;
+        default:
+          throw new Error("PaymentMethod not allowed");
       }
-      case "cash": {
-        const infoDatabse = await db.runAsync(
-          "INSERT INTO Expense (amount, concept, categoryId, paymentMethod, cardId,date) VALUES (?,?,?,?,?,?)",
-          amount,
-          concept ? concept : null,
-          category.id,
-          expense.paymentMethod.type,
-          null,
-          date.toISOString().split("T")[0]
-        );
-        await db.closeAsync();
-        return {
-          id: infoDatabse.lastInsertRowId,
-          amount,
-          category,
-          paymentMethod: expense.paymentMethod,
-          concept,
-          date,
-          type: "expense"
-        };
-      }
-      case "debit": {
-        const infoDatabse = await db.runAsync(
-          "INSERT INTO Expense (amount, concept, categoryId, paymentMethod, cardId, date) VALUES (?,?,?,?,?,?)",
-          amount,
-          concept ? concept : null,
-          category.id,
-          expense.paymentMethod.type,
-          expense.paymentMethod.id,
-          date.toISOString().split("T")[0]
-        );
-        await db.closeAsync();
-        return {
-          id: infoDatabse.lastInsertRowId,
-          amount,
-          category,
-          paymentMethod: expense.paymentMethod,
-          concept,
-          date,
-          type: "expense"
-        };
-      }
-
-      default:
-        await db.closeAsync();
-        throw new Error("PaymentMethod not allowed");
+  
+      const infoDatabse = await db.runAsync(query, ...params);
+      return {
+        id: infoDatabse.lastInsertRowId,
+        amount,
+        category,
+        paymentMethod: expense.paymentMethod,
+        concept,
+        date,
+        type: "expense"
+      };
+    } catch (error) {
+      throw new Error("Error creating expense: " + error);
+    } finally {
+      await db.closeAsync();
     }
   }
 
@@ -171,7 +143,7 @@ export class ExpenseSqliteRepositoryImpl implements ExpenseRepository {
     const updates: string[] = [];
     const values: (string | number | null)[] = [];
     const db = await getDataBase();
-
+    try{
     switch (expense.paymentMethod?.type) {
       case "credit": {
         if (expense.amount !== undefined) {
@@ -307,59 +279,79 @@ export class ExpenseSqliteRepositoryImpl implements ExpenseRepository {
         await db.closeAsync();
         throw new Error("PaymentMethod not allowed");
     }
+    } catch (error) {
+      throw new Error("Error updating expense: " + error);
+    } finally {
+      await db.closeAsync();
+    }
   }
+
   async deleteExpense(id: number): Promise<void> {
     const db = await getDataBase();
-    await db.runAsync("DELETE FROM Expense WHERE id = $id", { $id: id });
-    await db.closeAsync();
-    return;
+    try {
+      await db.runAsync("DELETE FROM Expense WHERE id = $id", { $id: id });
+    } catch (error) {
+      throw new Error("Error deleting expense: " + error);
+    } finally {
+      await db.closeAsync();
+    }
   }
+
   async getAllExpenses(): Promise<Expense[]> {
     const db = await getDataBase();
-    const query = `
-      SELECT 
-        e.id,
-        e.amount,
-        e.concept,
-        e.date,
-        e.paymentMethod,
-        e.cardId,
-        c.id AS categoryId,
-        c.type AS categoryType,
-        c.color AS categoryColor,
-        c.icon AS categoryIcon
-      FROM Expense e
-      JOIN Category c ON e.categoryId = c.id
-    `;
-    const allExpenses = await db.getAllAsync(query);
-    await db.closeAsync();
-
-    return allExpenses.map((row:any) => ({
-      id: row.id,
-      amount: row.amount,
-      concept: row.concept,
-      date: new Date(row.date),
-      paymentMethod: row.paymentMethod,
-      cardId: row.cardId,
-      category: {
-        id: row.categoryId,
-        type: row.categoryType,
-        color: row.categoryColor,
-        icon: row.categoryIcon,
-      },
-      type: "expense"
-    }));
+    try {
+      const query = `
+        SELECT 
+          e.id,
+          e.amount,
+          e.concept,
+          e.date,
+          e.paymentMethod,
+          e.cardId,
+          c.id AS categoryId,
+          c.type AS categoryType,
+          c.color AS categoryColor,
+          c.icon AS categoryIcon
+        FROM Expense e
+        JOIN Category c ON e.categoryId = c.id
+      `;
+      const allExpenses = await db.getAllAsync(query);
+  
+      return allExpenses.map((row: any) => ({
+        id: row.id,
+        amount: row.amount,
+        concept: row.concept,
+        date: new Date(row.date),
+        paymentMethod: row.paymentMethod,
+        cardId: row.cardId,
+        category: {
+          id: row.categoryId,
+          type: row.categoryType,
+          color: row.categoryColor,
+          icon: row.categoryIcon,
+        },
+        type: "expense"
+      }));
+    } catch (error) {
+      console.log("holaaaaaa")
+      await db.closeAsync();
+      throw new Error("Error getting all expenses: " + error);
+    } finally {
+      await db.closeAsync();
+    }
   }
+
   async getExpensesByCategory?(category: Category): Promise<Expense[]> {
     const db = await getDataBase();
-    const allExpense = await db.getAllAsync<Expense>(
-      "SELECT * FROM Expense WHERE categoryId = ?",
-      [category.id]
-    );
-    await db.closeAsync();
-    return allExpense;
+    try {
+      const allExpense = await db.getAllAsync<Expense>("SELECT * FROM Expense WHERE categoryId = ?", [category.id]);
+      return allExpense;
+    } catch (error) {
+      throw new Error("Error getting expenses by category: " + error);
+    } finally {
+      await db.closeAsync();
+    }
   }
-
   async getExpensesByDateRange(
     startDate: Date,
     endDate: Date

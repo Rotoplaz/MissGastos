@@ -10,6 +10,7 @@ interface CategoryStoreState {
     addCategory: (category:Category) => Category[];
     updateCategory: (category:Category) => Category[];
     deleteCategory: (category: Category) => void;
+    resetStoreCategory: () =>void;
 }
 
 const initialData = {
@@ -43,5 +44,8 @@ export const useCategoryStore = create<CategoryStoreState>()((set,get)=>({
     },
     deleteCategory: (category: Category) =>{
         set({categories: get().categories.filter(categoryInStore => categoryInStore.id !==category.id)});
+    },
+    resetStoreCategory: () => {
+        set({...initialData});
     }
 }));

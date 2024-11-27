@@ -97,6 +97,7 @@ export class CreditCardCrudRepositoryImpl implements CreditCardRepository {
   async deleteCreditCard(id: number): Promise<void> {
     const db = await getDataBase();
     try {
+      await db.runAsync("DELETE FROM Expense WHERE cardId = $id", { $id: id });
       await db.runAsync("DELETE FROM Card WHERE id = $id", { $id: id });
       return;
     } catch (error) {
