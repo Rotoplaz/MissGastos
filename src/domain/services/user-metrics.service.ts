@@ -3,6 +3,7 @@ import { Expense } from "../entities/expense.entity";
 import { Income } from "../entities/income.entity";
 import { DebitCard } from "../entities/payment-methods.entity";
 import { User } from "../entities/user.entity";
+import { DebitCardRepository } from "../repositories/debit-cards.repository";
 
 export class UserMetricsService {
     
@@ -55,6 +56,45 @@ export class UserMetricsService {
         }
         return 0;
     }
+
+    debitCardMetrics(debitCard: DebitCard, expense:Expense[]):number{
+        const expenseDebitCard = expense
+        .map(item => {
+            if (item.paymentMethod.type === "debit" && debitCard.id === item.paymentMethod.id) {
+                return {
+                    debitCardId: item.paymentMethod.id,
+                    amount: item.amount
+                };
+            }
+            return null;
+        })
+        .filter(item => item !== null); 
+        
+
+        const totalSum = expenseDebitCard.reduce((acc, item) => acc + item.amount, 0);
+
+        const relatedDebitCard = expenseDebitCard.find(item => item.debitCardId === debitCard.id);
+
+        const limitDebitCard = relatedDebitCard ? debitCard.limitDebit : null;
+
+        if (limitDebitCard === null) {
+            throw new Error("No se encontró un límite para la tarjeta de débito.");
+        }
+
+        const expensePercentageLessThanLimit = (limitDebitCard * 80) / 100;
+        const expensePercentageAboveLimit = (limitDebitCard * 100) / 100;
+
+        if (totalSum >= expensePercentageLessThanLimit && totalSum < expensePercentageAboveLimit){
+            return 1;   
+        }
+
+        if ( totalSum >= expensePercentageAboveLimit){
+            return 2;
+        }
+        return 0;
+    }
+    
+
     
     totalAmountIncomes(income:Income[], expense:Expense[]):number{
         const totalSum = income.reduce((acc, item) => acc + item.amount, 0);
