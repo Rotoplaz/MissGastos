@@ -19,7 +19,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./src/presentation/assets/icons/icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.xansaul.MissGastos"
     },
     "web": {
       "bundler": "metro",
@@ -37,6 +38,15 @@
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "router": {
+        "origin": false,
+        "root": "./src/presentation/app"
+      },
+      "eas": {
+        "projectId": "9287b1f6-7cc3-4191-802b-94d33b11b68d"
+      }
     }
   }
 }

@@ -11,8 +11,21 @@ import { UserRepositorySqliteImpl } from "@/src/infrastructure/user/user-sqli.re
 import { UpdateUserUseCase } from "@/src/application/use-cases/user/update-user.user-case";
 import { CreateUserUseCase } from "@/src/application/use-cases/user/create-suer.use-case";
 import { LayoutWithTopNavigation } from "../common/layouts/LayoutWithTopNavigation";
+import * as FileSystem from 'expo-file-system';
 
-// Esquema de validación
+const saveImageToLocal = async (imageUri: string) => {
+  const fileName = imageUri.split('/').pop(); // Extrae el nombre del archivo
+  const localUri = `${FileSystem.documentDirectory}${fileName}`;
+
+  await FileSystem.copyAsync({
+    from: imageUri,
+    to: localUri,
+  });
+
+  return localUri; // Devuelve la ruta local
+};
+
+
 const userSchema = z.object({
   name: z
     .string()
@@ -68,9 +81,10 @@ export default function Profile() {
     try {
       const image = await new PickImageUseCase().execute();
       if (!image) return;
-
+      const localImageUri = await saveImageToLocal(image);
+      
       const userWithImage = await new UpdateUserUseCase(userRepository).execute({
-        profilePictureUrl: image,
+        profilePictureUrl: localImageUri,
       });
       setUser(userWithImage);
     } catch (error) {
