@@ -71,10 +71,16 @@ export const ExpenseInformation = () => {
     <LayoutWithTopNavigation
       titleScreen="Detalles del Gasto"
       accessoryRight={() => (
-        <TopNavigationAction
-          onPress={() => deleteExpense(expense.id)}
-          icon={<Icon name="trash-outline" fill="red" />}
-        />
+        <Layout style={{flexDirection: "row"}}>
+          <TopNavigationAction
+            onPress={() =>router.push({pathname: "/updateExpense", params: {id:expense.id}})}
+            icon={<Icon name="edit-outline" fill="#086fcf"/>}
+          />
+          <TopNavigationAction
+            onPress={() => deleteExpense(expense.id)}
+            icon={<Icon name="trash-outline" fill="red" />}
+          />
+        </Layout>
       )}
     >
       <Layout style={styles.container}>

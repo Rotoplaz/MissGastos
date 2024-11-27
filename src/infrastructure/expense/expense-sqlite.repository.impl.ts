@@ -177,10 +177,8 @@ export class ExpenseSqliteRepositoryImpl implements ExpenseRepository {
         values.push(id);
         await db.runAsync(updateQuery, ...values);
 
-        const updatedExpense = await db.getFirstAsync<Expense>(
-          "SELECT * FROM Expense WHERE id = ?",
-          [id]
-        );
+        const updatedExpense = await this.getExpenseById(id);
+
         if (!updatedExpense) {
           await db.closeAsync();
           throw new Error("Error updating Expense with id ${id}.");
@@ -220,10 +218,7 @@ export class ExpenseSqliteRepositoryImpl implements ExpenseRepository {
         values.push(id);
         await db.runAsync(updateQuery, ...values);
 
-        const updatedExpense = await db.getFirstAsync<Expense>(
-          "SELECT * FROM Expense WHERE id = ?",
-          [id]
-        );
+        const updatedExpense = await this.getExpenseById(id);
         if (!updatedExpense) {
           await db.closeAsync();
           throw new Error("Error updating Expense with id ${id}.");
@@ -264,16 +259,14 @@ export class ExpenseSqliteRepositoryImpl implements ExpenseRepository {
         values.push(id);
         await db.runAsync(updateQuery, ...values);
 
-        const updatedExpense = await db.getFirstAsync<Expense>(
-          "SELECT * FROM Expense WHERE id = ?",
-          [id]
-        );
+
+        const updatedExpense = await this.getExpenseById(id);
         if (!updatedExpense) {
           await db.closeAsync();
           throw new Error("Error updating Expense with id ${id}.");
         }
         await db.closeAsync();
-        return updatedExpense;
+        return  updatedExpense!;
       }
       default:
         await db.closeAsync();
@@ -281,9 +274,7 @@ export class ExpenseSqliteRepositoryImpl implements ExpenseRepository {
     }
     } catch (error) {
       throw new Error("Error updating expense: " + error);
-    } finally {
-      await db.closeAsync();
-    }
+    } 
   }
 
   async deleteExpense(id: number): Promise<void> {

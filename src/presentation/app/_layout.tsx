@@ -56,6 +56,7 @@ export default function RootLayout() {
             <Stack.Screen name="categoryInformation" />
             <Stack.Screen name="ExpenseInformation" />
             <Stack.Screen name="incomeInformation" />
+            <Stack.Screen name="updateExpense" />
             
           </Stack>
         </Layout>

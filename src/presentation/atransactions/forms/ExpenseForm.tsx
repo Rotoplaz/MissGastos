@@ -8,7 +8,7 @@ import {
   OverflowMenu,
   Text,
 } from "@ui-kitten/components";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { StyleSheet } from "react-native";
 import { Category as CategoryEntity } from "@/src/domain/entities/category.entity";
@@ -21,12 +21,14 @@ import { zodSchemaTransaction } from "../zod-schemas/expense/zod-schemas";
 import { useCardsStore } from "../../store";
 import { ExpenseSqliteRepositoryImpl } from "@/src/infrastructure";
 import { CreateExpenseUseCase } from "@/src/application/use-cases/expense/create-expense.use-case";
+import { UpdateExpenseUseCase } from "@/src/application/use-cases/expense/update-expense.use-case";
 import { Category } from "../../categories/components/Category";
 import { useExpenseStore } from "../../store/expense/useExpenseStore";
 import { router } from "expo-router";
 import { useCategoryStore } from "../../store/categories/useCategoryStore";
-import { List, ListItem } from "@ui-kitten/components";
+import { List } from "@ui-kitten/components";
 import { useTheme } from "@react-navigation/native";
+import { Expense } from "@/src/domain/entities/expense.entity";
 
 interface FormData {
   amount: string;
@@ -35,7 +37,11 @@ interface FormData {
   paymentMethod: CreditCard | Cash | DebitCard | null;
 }
 
-export const ExpenseForm = () => {
+interface Props {
+  expense: Expense | null;
+}
+
+export const ExpenseForm = ({ expense }: Props) => {
   const {
     register,
     handleSubmit,
@@ -45,63 +51,90 @@ export const ExpenseForm = () => {
   } = useForm<FormData>({
     resolver: zodResolver(zodSchemaTransaction),
     defaultValues: {
-      amount: "",
-      concept: "",
-      selectedCategory: null,
-      paymentMethod: null,
+      amount: expense?.amount.toString() || "",
+      concept: expense?.concept || "",
+      selectedCategory: expense?.category || null,
+      paymentMethod: expense?.paymentMethod || null,
     },
   });
 
   const theme = useTheme();
-
   const addExpenseStore = useExpenseStore((state) => state.addExpense);
+  const updateExpenseStore = useExpenseStore((state) => state.updateExpense);
 
   const [selectedCategory, setSelectedCategory] =
-    useState<null | CategoryEntity>(null);
+    useState<null | CategoryEntity>(expense?.category || null);
+
+  const [paymentMethod, setPaymentMethod] = useState<"cash" | "card" | null>(
+    expense?.paymentMethod?.type
+      ? expense?.paymentMethod?.type === "cash"
+        ? "cash"
+        : "card"
+      : null
+  );
+
+  const cards = useCardsStore((state) => state.cards);
+  const [visible, setVisible] = useState(false);
+  const [selectedCardIndex, setSelectedCardIndex] = useState<null | number>(
+    expense?.paymentMethod.type === "credit" ||
+      expense?.paymentMethod.type === "debit"
+      ? cards.findIndex((card:CreditCard | DebitCard)=>card.id === (expense.paymentMethod as any).id )
+      : null
+  );
+
+  const categories = useCategoryStore((state) => state.categories);
 
   const onSelectCategory = (category: CategoryEntity) => {
     setSelectedCategory(category);
     setValue("selectedCategory", category);
   };
 
-  const [paymentMethod, setPaymentMethod] = useState<"cash" | "card" | null>(
-    null
-  );
-  const [visible, setVisible] = useState(false);
-  const [selectedCardIndex, setSelectedCardIndex] = useState<null | number>(
-    null
-  );
-  const cards = useCardsStore((state) => state.cards);
-  const categories = useCategoryStore((state) => state.categories);
-
   const renderToggleButton = () => (
     <Button onPress={() => setVisible(true)}>
       {selectedCardIndex !== null
-        ? cards[selectedCardIndex].name
+        ? cards[selectedCardIndex]?.name || ""
         : "Selecciona tu tarjeta"}
     </Button>
   );
 
   const onSelect = (index: number) => {
+    console.log(cards[index])
+    console.log(expense?.paymentMethod)
+
     setSelectedCardIndex(index);
     setValue("paymentMethod", cards[index]);
-
     setVisible(false);
   };
 
   const onSubmit = async (data: FormData) => {
     const expensesRepository = new ExpenseSqliteRepositoryImpl();
-    const transaction = await new CreateExpenseUseCase(
-      expensesRepository
-    ).execute({
-      amount: +data.amount,
-      category: data.selectedCategory!,
-      date: new Date(),
-      paymentMethod: data.paymentMethod!,
-      concept: data.concept,
-      type: "expense",
-    });
-    addExpenseStore(transaction);
+
+    if (expense) {
+      const expenseUpdated = await new UpdateExpenseUseCase(expensesRepository).execute(expense.id,{
+        amount: +data.amount,
+        category: data.selectedCategory!,
+        date: new Date(),
+        paymentMethod: data.paymentMethod!,
+        concept: data.concept,
+        type: "expense",
+      });
+
+      updateExpenseStore(expenseUpdated);
+
+    } else {
+      const newTransaction = await new CreateExpenseUseCase(
+        expensesRepository
+      ).execute({
+        amount: +data.amount,
+        category: data.selectedCategory!,
+        date: new Date(),
+        paymentMethod: data.paymentMethod!,
+        concept: data.concept,
+        type: "expense",
+      });
+      addExpenseStore(newTransaction);
+    }
+
     router.back();
   };
 
@@ -129,8 +162,8 @@ export const ExpenseForm = () => {
     <Layout style={styles.mainContainer}>
       <Layout style={styles.amountContainer}>
         <Input
-          size='large'
-          label={"Dinero gastado"}
+          size="large"
+          label="Dinero gastado"
           placeholder="Cantidad"
           keyboardType="numeric"
           {...register("amount")}
@@ -147,17 +180,6 @@ export const ExpenseForm = () => {
 
       <Text style={styles.sectionTitle}>Tipo de gasto:</Text>
       <Layout style={styles.iconRow}>
-        {/* {categories.slice(0, 4).map((category) => (
-          <Category
-            key={category.id}
-            category={category}
-            style={{
-              backgroundColor:
-                selectedCategory?.id === category.id ? "#000" : category.color,
-            }}
-            onPress={() => onSelectCategory(category)}
-          />
-        ))} */}
         <List
           style={{ maxHeight: 300, backgroundColor: theme.colors.background }}
           horizontal
@@ -170,8 +192,10 @@ export const ExpenseForm = () => {
       {errors.selectedCategory && (
         <Text style={styles.errorText}>{errors.selectedCategory.message}</Text>
       )}
+
       <Input
-        size='large'        label={"Concepto:"}
+        size="large"
+        label="Concepto:"
         placeholder="Hasta 25 caracteres"
         maxLength={25}
         {...register("concept")}
@@ -188,7 +212,7 @@ export const ExpenseForm = () => {
             paymentMethod === "cash" && styles.selectedPaymentButton,
           ]}
           status={paymentMethod === "cash" ? "primary" : "basic"}
-          appearance={paymentMethod === "cash" ? "filled": 'outline'}
+          appearance={paymentMethod === "cash" ? "filled" : "outline"}
         >
           Efectivo
         </Button>
@@ -199,7 +223,7 @@ export const ExpenseForm = () => {
             paymentMethod === "card" && styles.selectedPaymentButton,
           ]}
           status={paymentMethod === "card" ? "primary" : "basic"}
-          appearance={paymentMethod === "card" ? "filled": 'outline'}
+          appearance={paymentMethod === "card" ? "filled" : "outline"}
         >
           Tarjeta
         </Button>
@@ -238,14 +262,13 @@ export const ExpenseForm = () => {
       )}
 
       <Button style={styles.createButton} onPress={handleSubmit(onSubmit)}>
-        Crear
+        {expense ? "Actualizar" : "Crear"}
       </Button>
     </Layout>
   );
 };
 
 export default ExpenseForm;
-
 const styles = StyleSheet.create({
   iconBar: {
     width: 24,
